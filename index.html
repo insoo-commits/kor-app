@@ -126,6 +126,9 @@ h1{font-family:var(--display);font-size:clamp(30px,7vw,48px);line-height:1.1;mar
 .letters{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .letter{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:2px;text-align:left;background:var(--sheet)}
 .letter b{font-size:34px;line-height:1.1;font-weight:600;color:var(--accent)}
+/* big for a single letter or syllable, smaller for a phrase such as "자음 + 모음(오른쪽)" */
+.letter b.mid{font-size:26px}
+.letter b.long{font-size:19px;line-height:1.35;word-break:keep-all}
 .letter span{font-size:15px;color:var(--muted)}
 .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
 table{border-collapse:collapse;width:100%;font-size:17px}
@@ -286,6 +289,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-14%20v0.18"></script>
-<script src="app.js?v=2026-11-14%20v0.18"></script>
+<script src="audio/index.js?v=2026-11-14%20v0.19"></script>
+<script src="app.js?v=2026-11-14%20v0.19"></script>
 </body></html>

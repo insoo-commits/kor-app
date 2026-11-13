@@ -244,7 +244,7 @@ function renderLearn(b){
       h("button", {class: "btn", type: "button", onclick: () => playBundle(false)}, T.repBundle)),
     sec("m", (b.m || []).map(m => h("div", {class: "tip"}, note(m)))),
     sec("l", !(b.l || []).length ? null : h("div", {class: "letters"}, (b.l || []).map(l => h("button", {class: "letter", type: "button", "data-say": l[2] || l[0], onclick: ev => playSingle(ev.currentTarget)},
-      h("b", {class: "ko"}, l[0]), h("span", null, l[1]), l[2] ? h("span", {class: "ko"}, "🔊 " + l[2]) : null)))),
+      h("b", {class: "ko" + ([...l[0]].length > 4 ? " long" : [...l[0]].length > 2 ? " mid" : "")}, l[0]), h("span", null, l[1]), l[2] ? h("span", {class: "ko"}, "🔊 " + l[2]) : null)))),
     b.x && b.x.length > 1 ? sec("x", h("div", {class: "tablewrap"}, h("table", null,
       h("thead", null, h("tr", null, b.x[0].map(c => h("th", {class: "ko"}, c)))),
       h("tbody", null, b.x.slice(1).map(r => h("tr", null, r.map(c => h("td", null, c)))))))) : null,
