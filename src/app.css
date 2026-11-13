@@ -115,12 +115,14 @@ h1{font-family:var(--display);font-size:clamp(30px,7vw,48px);line-height:1.1;mar
 .rowbtns.now .spk,.now>.spk{border-color:var(--accent);background:var(--accent-soft)}
 .rows{border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .letters{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.letter{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:2px;text-align:left;background:var(--sheet)}
+.letter{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;text-align:left;background:var(--sheet);color:var(--ink);font:inherit;cursor:pointer}
+.letter .lt{display:grid;gap:2px}
 .letter b{font-size:34px;line-height:1.1;font-weight:600;color:var(--accent)}
 /* big for a single letter or syllable, smaller for a phrase such as "자음 + 모음(오른쪽)" */
 .letter b.mid{font-size:26px}
 .letter b.long{font-size:19px;line-height:1.35;word-break:keep-all}
-.letter span{font-size:15px;color:var(--muted)}
+.letter .llo{font-size:17px;color:var(--ink)}
+.letter .lsay{font-size:16px;color:var(--muted)}
 .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
 table{border-collapse:collapse;width:100%;font-size:17px}
 th,td{padding:10px 14px;text-align:left;border-top:1px solid var(--line);vertical-align:top}
@@ -245,6 +247,12 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .line{align-items:start}
   .line>.spk{margin-top:-4px}
   .line.head>.spk{margin-top:0}
+  .letter{padding:8px 10px;gap:8px}
+  .letter b{font-size:28px}
+  .letter b.mid{font-size:22px}
+  .letter b.long{font-size:16px}
+  .letter .llo{font-size:15px}
+  .letter .lsay{font-size:14px}
 }
 
 /* ※ key words under a sentence */
