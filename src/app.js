@@ -6,7 +6,7 @@ const byCode = new Map(IDX.map((r, i) => [r[0], i]));
 const $ = id => document.getElementById(id);
 const areaOf = c => c.slice(0, 2), subOf = c => c.slice(0, 4);
 const T = {
-  sec: {m: "ວິທີສ້າງປະໂຫຍກ", l: "ຕົວອັກສອນ", x: "ຕາຕະລາງ", w: "ຄຳສັບ", c: "ການປ່ຽນຮູບຄຳ", e: "ປະໂຫຍກຕົວຢ່າງ", tp: "ຂໍ້ແນະນຳ", pr: "ຄຳຄູ່", dl: "ບົດສົນທະນາ", sm: "ສະຫຼຸບ", qz: "ຄຳຖາມທວນຄືນ"},
+  sec: {m: "ວິທີສ້າງປະໂຫຍກ", l: "ຕົວອັກສອນ", x: "ຕາຕະລາງ", w: "ຄຳສັບ", f: "ສຳນວນທີ່ໃຊ້ເລື້ອຍໆ", c: "ການປ່ຽນຮູບຄຳ", e: "ປະໂຫຍກຕົວຢ່າງ", tp: "ຂໍ້ແນະນຳ", pr: "ຄຳຄູ່", dl: "ບົດສົນທະນາ", sm: "ສະຫຼຸບ", qz: "ຄຳຖາມທວນຄືນ"},
   level: "ລະດັບ", repBundle: "🔊 ຟັງຊ້ຳບົດນີ້", repDlg: "🔊 ຟັງບົດສົນທະນາຊ້ຳ", repAll: "🔊 ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
   hidePr: "ເຊື່ອງຄຳອ່ານ", showKo: "ສະແດງຄຳອະທິບາຍພາສາເກົາຫຼີ", known: "ຈື່ແລ້ວ", flip: "ແຕະເພື່ອເບິ່ງຄວາມໝາຍ", onlyNew: "ສະເພາະຄຳທີ່ຍັງບໍ່ຈື່",
   showAns: "ເບິ່ງຄຳຕອບ", again: "ເຮັດອີກຄັ້ງ", score: "ຄະແນນ", noCards: "ບົດນີ້ບໍ່ມີບັດຄຳ.", allKnown: "ຈື່ໝົດທຸກຄຳແລ້ວ!", noQuiz: "ບົດນີ້ມີຄຳສັບບໍ່ພໍສຳລັບແບບທົດສອບ.",
@@ -248,7 +248,8 @@ function renderLearn(b){
     b.x && b.x.length > 1 ? sec("x", h("div", {class: "tablewrap"}, h("table", null,
       h("thead", null, h("tr", null, b.x[0].map(c => h("th", {class: "ko"}, c)))),
       h("tbody", null, b.x.slice(1).map(r => h("tr", null, r.map(c => h("td", null, c)))))))) : null,
-    sec("w", (b.w || []).map(w => h("div", {class: "word" + ((w[3] || []).length ? "" : " solo")}, line(w[0], w[1], w[2], "head"), (w[3] || []).length ? h("div", {class: "exs"}, w[3].map(e => line(e[0], e[1], e[2], "ex"))) : null))),
+    sec("w", (b.w || []).map(wordBox)),
+    sec("f", (b.f || []).map(wordBox)),
     sec("c", (b.c || []).length ? h("div", {class: "rows grid2"}, b.c.map(c => line(c[1], c[2], c[3], "", c[0]))) : null),
     sec("e", (b.e || []).length ? h("div", {class: "rows grid2"}, b.e.map(e => line(e[0], e[1], e[2]))) : null),
     sec("tp", (b.tp || []).map(t => h("div", {class: "tip"}, note(t)))),
@@ -265,11 +266,15 @@ function renderLearn(b){
   ];
 }
 
+/* a headword (word or expression) with its example sentences */
+function wordBox(w){ return h("div", {class: "word" + ((w[3] || []).length ? "" : " solo")}, line(w[0], w[1], w[2], "head"), (w[3] || []).length ? h("div", {class: "exs"}, w[3].map(e => line(e[0], e[1], e[2], "ex"))) : null); }
+
 /* ---------- cards ---------- */
 function items(b){
   const out = [];
   (b.l || []).forEach((l, j) => out.push({id: b.code + "~l" + j, ko: l[0], pr: "", lo: l[1], say: l[2] || l[0]}));
   (b.w || []).forEach((w, j) => out.push({id: b.code + "~w" + j, ko: w[0], pr: w[1], lo: w[2]}));
+  (b.f || []).forEach((w, j) => out.push({id: b.code + "~f" + j, ko: w[0], pr: w[1], lo: w[2]}));
   (b.c || []).forEach((c, j) => out.push({id: b.code + "~c" + j, ko: c[1], pr: c[2], lo: c[3]}));
   (b.e || []).forEach((e, j) => out.push({id: b.code + "~e" + j, ko: e[0], pr: e[1], lo: e[2]}));
   return out.filter(x => x.ko && x.lo);
@@ -395,7 +400,7 @@ function clipsOf(b){
   const out = [], seen = new Set();
   const add = (lang, raw) => { const t = lang === "lo" ? cleanLo(raw) : cleanKo(raw); if (!t) return; const k = clipKey(lang, t); if (!CLIPS[k] || seen.has(k)) return; seen.add(k); out.push({k, t}); };
   (b.l || []).forEach(l => add("ko", l[2] || l[0]));
-  (b.w || []).forEach(w => { add("ko", w[0]); add("lo", w[2]); (w[3] || []).forEach(e => add("ko", e[0])); });
+  [].concat(b.w || [], b.f || []).forEach(w => { add("ko", w[0]); add("lo", w[2]); (w[3] || []).forEach(e => add("ko", e[0])); });
   (b.c || []).forEach(c => add("ko", c[1])); (b.e || []).forEach(e => add("ko", e[0])); (b.dl || []).forEach(d => add("ko", d[1]));
   return out;
 }

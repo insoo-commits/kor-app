@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-14 v0.22";
+const VER = "2026-11-14 v0.23";
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
 fs.mkdirSync(path.join(root, "preview"), {recursive: true});
@@ -39,7 +39,7 @@ function want(lang, raw){
 }
 for (const [a] of M.areas) for (const b of JSON.parse(fs.readFileSync(path.join(root, "data", a + ".json"), "utf8"))){
   (b.l || []).forEach(l => want("ko", l[2] || l[0]));
-  (b.w || []).forEach(w => { want("ko", w[0]); want("lo", w[2]); (w[3] || []).forEach(e => want("ko", e[0])); });
+  [].concat(b.w || [], b.f || []).forEach(w => { want("ko", w[0]); want("lo", w[2]); (w[3] || []).forEach(e => want("ko", e[0])); });
   (b.c || []).forEach(c => want("ko", c[1]));
   (b.e || []).forEach(e => want("ko", e[0]));
   (b.dl || []).forEach(d => want("ko", d[1]));
