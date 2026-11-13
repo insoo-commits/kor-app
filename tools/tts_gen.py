@@ -15,6 +15,22 @@ import argparse, asyncio, json, os, subprocess, sys, tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AUDIO = os.path.join(ROOT, "audio")
 VOICE = {"ko": "ko-KR-SunHiNeural", "lo": "lo-LA-KeomanyNeural"}
+VOWEL = dict(zip("ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ", "아애야얘어에여예오와왜외요우워웨위유으의이"))
+
+
+def spoken(clip):
+    """What the voice actually reads (the clip name still comes from the shown text).
+    Grammar headwords such as "-아서, -어서" are read without the dash, and a form that starts
+    with a bare consonant ("-ㄴ데") is left out because it cannot be pronounced on its own;
+    a lone vowel letter such as "ㅓ" is read as its sound ("어")."""
+    t = clip["text"]
+    if clip["lang"] != "ko":
+        return t
+    if t.startswith("-"):
+        forms = [f.strip().lstrip("-") for f in t.split(",")]
+        forms = [f for f in forms if f and not ("ㄱ" <= f[0] <= "ㅎ")] or forms
+        t = ", ".join(forms)
+    return "".join(VOWEL.get(ch, ch) for ch in t).replace('"', "")
 
 
 async def make(clip, sem, proxy, failed):
@@ -25,7 +41,7 @@ async def make(clip, sem, proxy, failed):
             fd, raw = tempfile.mkstemp(suffix=".mp3")
             os.close(fd)
             try:
-                await edge_tts.Communicate(clip["text"], VOICE[clip["lang"]], proxy=proxy).save(raw)
+                await edge_tts.Communicate(spoken(clip), VOICE[clip["lang"]], proxy=proxy).save(raw)
                 if os.path.getsize(raw) < 200:
                     raise RuntimeError("empty audio")
                 tmp = out + ".part"

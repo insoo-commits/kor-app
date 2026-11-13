@@ -230,9 +230,9 @@ function renderLearn(b){
     b.x && b.x.length > 1 ? sec("x", h("div", {class: "tablewrap"}, h("table", null,
       h("thead", null, h("tr", null, b.x[0].map(c => h("th", {class: "ko"}, c)))),
       h("tbody", null, b.x.slice(1).map(r => h("tr", null, r.map(c => h("td", null, c)))))))) : null,
-    sec("w", (b.w || []).map(w => h("div", {class: "word"}, line(w[0], w[1], w[2], "head"), (w[3] || []).map(e => line(e[0], e[1], e[2], "ex"))))),
-    sec("c", (b.c || []).length ? h("div", {class: "rows"}, b.c.map(c => line(c[1], c[2], c[3], "", c[0]))) : null),
-    sec("e", (b.e || []).length ? h("div", {class: "rows"}, b.e.map(e => line(e[0], e[1], e[2]))) : null),
+    sec("w", (b.w || []).map(w => h("div", {class: "word" + ((w[3] || []).length ? "" : " solo")}, line(w[0], w[1], w[2], "head"), (w[3] || []).length ? h("div", {class: "exs"}, w[3].map(e => line(e[0], e[1], e[2], "ex"))) : null))),
+    sec("c", (b.c || []).length ? h("div", {class: "rows grid2"}, b.c.map(c => line(c[1], c[2], c[3], "", c[0]))) : null),
+    sec("e", (b.e || []).length ? h("div", {class: "rows grid2"}, b.e.map(e => line(e[0], e[1], e[2]))) : null),
     sec("tp", (b.tp || []).map(t => h("div", {class: "tip"}, note(t)))),
     sec("pr", (b.pr || []).length ? h("div", {class: "pairs"}, b.pr.map(p => h("div", {class: "pair"}, p.flatMap((x, j) => j ? [h("i", null, "↔"), x] : [x])))) : null),
     sec("dl", dl.length ? [
