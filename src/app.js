@@ -106,13 +106,13 @@ async function say(tok, text, lao){
     if (!P.paused) return true;
   }
 }
-async function sayItem(tok, it, label){
+async function sayItem(tok, it, label, noLo){
   const n = +S.rep || 1;
   mark(it.el);
   if (it.head){
     showPlayer(label + " · " + it.ko);
     if (!(await say(tok, it.ko))) return false; await gap(300);
-    if (it.lo && (loVoice || hasClip("lo", it.lo))){ if (!(await say(tok, it.lo, true))) return false; await gap(300); }
+    if (!noLo && it.lo && (loVoice || hasClip("lo", it.lo))){ if (!(await say(tok, it.lo, true))) return false; await gap(300); }
     if (!(await say(tok, it.ko))) return false;
     for (let k = 1; k < n; k++){ await gap(350); if (!(await say(tok, it.ko))) return false; }
   } else for (let k = 0; k < n; k++){
@@ -168,7 +168,7 @@ async function playWord(box){
   box.classList.add("playing");
   for (;;){
     const q = [...box.querySelectorAll("[data-say]")].map(el => ({el, ko: el.dataset.say, lo: el.dataset.lo || "", head: el.dataset.head === "1"}));
-    for (let i = 0; i < q.length; i++) if (!(await sayItem(tok, q[i], "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round))){ box.classList.remove("playing"); return; }
+    for (let i = 0; i < q.length; i++) if (!(await sayItem(tok, q[i], "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round, P.round > 1))){ box.classList.remove("playing"); return; }
     P.round++; await gap(400);
     if (tok !== P.tok){ box.classList.remove("playing"); return; }
   }
