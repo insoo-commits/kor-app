@@ -269,3 +269,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .word>.line.head{padding-right:14px}
   .sec .word .exs .line:first-child{padding-top:40px}
 }
+
+.wrep.hrep{position:static;order:2;flex:none;font-weight:400}
+.sec>h3::after{order:1}
+.sec:has(.letters.playing) .hrep{border-color:var(--accent);background:var(--accent-soft)}

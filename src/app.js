@@ -243,7 +243,8 @@ function drawBand(b){
 }
 
 /* ---------- lesson view ---------- */
-const sec = (key, ...kids) => kids.flat().filter(Boolean).length ? h("section", {class: "sec"}, h("h3", null, T.sec[key]), kids) : null;
+const sec = (key, ...kids) => kids.flat().filter(Boolean).length ? h("section", {class: "sec"}, h("h3", null, T.sec[key],
+  key === "l" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playWord(ev.currentTarget.closest(".sec").querySelector(".letters"))}, T.repLetters) : null), kids) : null;
 const note = pair => [h("p", {class: "note-lo"}, pair[1] || pair[0]), S.showKo && pair[1] ? h("p", {class: "note-ko ko"}, pair[0]) : null];
 /* ※ key words of a sentence: [[word, Lao-script reading, Lao meaning], …] */
 const gloss = g => g && g.length ? h("div", {class: "gl"}, "※ ", g.flatMap((x, j) => [j ? " · " : null, h("span", {class: "ko"}, x[0]), " ", h("span", {class: "p"}, x[1]), " (", h("span", {class: "gm"}, x[2]), ")"])) : null;
@@ -261,7 +262,7 @@ function renderLearn(b){
       h("button", {class: "btn", type: "button", onclick: () => playBundle(true)}, T.repAll),
       h("button", {class: "btn", type: "button", onclick: () => playBundle(false)}, T.repBundle)),
     sec("m", (b.m || []).map(m => h("div", {class: "tip"}, note(m)))),
-    sec("l", !(b.l || []).length ? null : h("div", {class: "rowbtns", style: "justify-content:flex-end;margin-bottom:8px"}, h("button", {class: "btn", type: "button", onclick: ev => playWord(ev.currentTarget.parentNode.nextElementSibling)}, T.repLetters)),
+    sec("l",
       !(b.l || []).length ? null : h("div", {class: "letters"}, (b.l || []).map(l => h("button", {class: "letter", type: "button", "data-say": l[2] || l[0], onclick: ev => playSingle(ev.currentTarget)},
       h("span", {class: "spk", "aria-hidden": "true"}, "🔊"),
       h("span", {class: "lt"}, h("b", {class: "ko" + ([...l[0]].length > 4 ? " long" : [...l[0]].length > 2 ? " mid" : "")}, l[0]), h("span", {class: "llo"}, l[1]), l[2] ? h("span", {class: "lsay ko"}, l[2]) : null))))),
