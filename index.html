@@ -206,6 +206,12 @@ th{border-top:0;background:var(--raise);font-size:14px;color:var(--muted);font-w
 
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .top{--sky1:#1C2A3A;--sky2:#3A2F3A;--sun:#E7C27A;--m1:#2E4250;--m2:#28403A;--m3:#22382F;--ink2:#C9D3D8;--wall:#4A443C;--wood:#8A6A52;--roof:#1A1F25;--pine:#2C4A36}}
 :root[data-theme="dark"] .top{--sky1:#1C2A3A;--sky2:#3A2F3A;--sun:#E7C27A;--m1:#2E4250;--m2:#28403A;--m3:#22382F;--ink2:#C9D3D8;--wall:#4A443C;--wood:#8A6A52;--roof:#1A1F25;--pine:#2C4A36}
+
+/* phone: Korean in word and sentence rows one step smaller (RYU, 2026-11-14) */
+@media (max-width:759px){
+  .line .k{font-size:18px}
+  .line.head .k{font-size:22px}
+}
 </style></head>
 <body>
 <div class="wrap" id="app" data-g="K1">
@@ -266,6 +272,6 @@ th{border-top:0;background:var(--raise);font-size:14px;color:var(--muted);font-w
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-14%20v0.10"></script>
-<script src="app.js?v=2026-11-14%20v0.10"></script>
+<script src="audio/index.js?v=2026-11-14%20v0.11"></script>
+<script src="app.js?v=2026-11-14%20v0.11"></script>
 </body></html>
