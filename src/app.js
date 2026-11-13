@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 const areaOf = c => c.slice(0, 2), subOf = c => c.slice(0, 4);
 const T = {
   sec: {m: "ວິທີສ້າງປະໂຫຍກ", l: "ຕົວອັກສອນ", x: "ຕາຕະລາງ", w: "ຄຳສັບ", c: "ການປ່ຽນຮູບຄຳ", e: "ປະໂຫຍກຕົວຢ່າງ", tp: "ຂໍ້ແນະນຳ", pr: "ຄຳຄູ່", dl: "ບົດສົນທະນາ", sm: "ສະຫຼຸບ", qz: "ຄຳຖາມທວນຄືນ"},
-  level: "ລະດັບ", repBundle: "🔊 ຟັງຊ້ຳບົດນີ້", repAll: "🔊 ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
+  level: "ລະດັບ", repBundle: "🔊 ຟັງຊ້ຳບົດນີ້", repDlg: "🔊 ຟັງບົດສົນທະນາຊ້ຳ", repAll: "🔊 ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
   hidePr: "ເຊື່ອງຄຳອ່ານ", showKo: "ສະແດງຄຳອະທິບາຍພາສາເກົາຫຼີ", known: "ຈື່ແລ້ວ", flip: "ແຕະເພື່ອເບິ່ງຄວາມໝາຍ", onlyNew: "ສະເພາະຄຳທີ່ຍັງບໍ່ຈື່",
   showAns: "ເບິ່ງຄຳຕອບ", again: "ເຮັດອີກຄັ້ງ", score: "ຄະແນນ", noCards: "ບົດນີ້ບໍ່ມີບັດຄຳ.", allKnown: "ຈື່ໝົດທຸກຄຳແລ້ວ!", noQuiz: "ບົດນີ້ມີຄຳສັບບໍ່ພໍສຳລັບແບບທົດສອບ.",
   pick: "ເລືອກຄວາມໝາຍທີ່ຖືກຕ້ອງ", pickKo: "ເລືອກຄຳພາສາເກົາຫຼີທີ່ຖືກຕ້ອງ", loading: "ກຳລັງໂຫຼດ…", loadFail: "ໂຫຼດບົດຮຽນບໍ່ໄດ້. ກະລຸນາເປີດໜ້ານີ້ຄືນໃໝ່.",
@@ -156,6 +156,23 @@ async function playBundle(chain){
     if (tok !== P.tok) return;
   }
 }
+/* dialogue repeat: the dialogue lines once each, in order, round and round until stopped */
+async function playDialogue(box){
+  if (P.mode === "dialog") return stopPlay();
+  stopPlay();
+  const tok = ++P.tok; P.mode = "dialog"; P.paused = false; P.round = 1;
+  for (;;){
+    const q = [...box.querySelectorAll("[data-say]")];
+    if (!q.length) return stopPlay();
+    for (let i = 0; i < q.length; i++){
+      mark(q[i]); showPlayer("🔊 " + (i + 1) + "/" + q.length + " · ↻" + P.round + " · " + q[i].dataset.say);
+      if (!(await say(tok, q[i].dataset.say))) return;
+      await gap(600);
+    }
+    P.round++; await gap(900);
+    if (tok !== P.tok) return;
+  }
+}
 function stopPlay(){
   P.tok++; P.mode = ""; P.paused = false;
   quiet();
@@ -236,6 +253,7 @@ function renderLearn(b){
     sec("tp", (b.tp || []).map(t => h("div", {class: "tip"}, note(t)))),
     sec("pr", (b.pr || []).length ? h("div", {class: "pairs"}, b.pr.map(p => h("div", {class: "pair"}, p.flatMap((x, j) => j ? [h("i", null, "↔"), x] : [x])))) : null),
     sec("dl", dl.length ? [
+      h("div", {class: "rowbtns", style: "justify-content:flex-end;margin-bottom:8px"}, h("button", {class: "btn", type: "button", onclick: ev => playDialogue(ev.currentTarget.parentNode.nextElementSibling)}, T.repDlg)),
       h("div", {class: "rows dlg"}, dl.map(d => h("div", {class: "line", "data-say": d[1], "data-lo": d[2]}, spk(), h("div", null, h("div", {class: "who ko"}, d[0]), h("div", {class: "k ko"}, d[1]), h("div", {class: "m"}, d[2])))))] : null),
     sec("sm", b.sm && b.sm.length ? h("div", {class: "tip"}, note(b.sm)) : null),
     sec("qz", (b.qz || []).map(q => { const a = h("div", {class: "a", hidden: true}, q[1]);
