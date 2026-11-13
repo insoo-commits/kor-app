@@ -183,6 +183,10 @@ th{border-top:0;background:var(--raise);font-size:14px;color:var(--muted);font-w
   .sec .word .exs{border-left:1px solid var(--line)}
   .sec .word .exs .line{flex:1;align-content:center;padding-left:14px}
   .sec .word .exs .line:first-child{border-top:0}
+  /* example sentence: speaker button at the right edge, vertically centred */
+  .sec .word .exs .line{grid-template-columns:minmax(0,1fr) 38px;align-items:center;padding-left:20px}
+  .sec .word .exs .line>.spk{grid-column:2;grid-row:1}
+  .sec .word .exs .line>div{grid-column:1;grid-row:1}
   /* conjugation and example rows: two per row */
   .rows.grid2{display:grid;grid-template-columns:1fr 1fr}
   .rows.grid2>.line{border-top:0;border-bottom:1px solid var(--line);margin-bottom:-1px}
