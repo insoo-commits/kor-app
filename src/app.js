@@ -312,7 +312,9 @@ function renderCards(b){
   if (!list.length) return [filter, h("p", {class: "empty"}, T.allKnown)];
   if (cardAt >= list.length) cardAt = 0;
   const it = list[cardAt], known = !!S.known[it.id];
-  const move = d => { cardAt = (cardAt + d + list.length) % list.length; cardOpen = false; render(); };
+  const move = d => { const playing = P.mode === "single" && !P.paused;   // keep playing: the new card starts right away
+    cardAt = (cardAt + d + list.length) % list.length; cardOpen = false; render();
+    if (playing){ const el = document.querySelector(".cardnav .mid[data-say]"); if (el) playSingle(el); } };
   return [filter,
     h("button", {class: "card" + (known ? " known" : ""), type: "button", onclick: () => { cardOpen = !cardOpen; render(); }},
       h("div", null, h("div", {class: "k ko"}, it.ko), it.pr && !S.hidePr ? h("div", {class: "p"}, it.pr) : null,
