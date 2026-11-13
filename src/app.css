@@ -160,7 +160,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .hit .k{font-size:18px;font-weight:600}
 .hit .where{font-size:14px;color:var(--muted);grid-row:1 / span 2;grid-column:2;align-self:center;text-align:right}
 .empty{color:var(--muted);padding:20px 0;text-align:center}
-.player{position:sticky;bottom:12px;align-self:center;display:flex;gap:10px;align-items:center;background:var(--ink);color:var(--bg);border-radius:999px;padding:8px 10px 8px 18px;font-size:16px;max-width:100%}
+.player{position:sticky;bottom:12px;z-index:5;align-self:center;display:flex;gap:10px;align-items:center;background:var(--ink);color:var(--bg);border-radius:999px;padding:8px 10px 8px 18px;font-size:16px;max-width:100%}
 .player[hidden]{display:none}
 .player .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .player button{border:0;border-radius:999px;background:var(--bg);color:var(--ink);padding:4px 14px;font-weight:600;flex:none}
@@ -241,6 +241,10 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .sec>h3{font-size:16px}
   .wrep{font-size:12px;padding:2px 8px}
   .word>.line.head{padding-right:104px}
+  /* speaker button at the top, in front of the Korean line */
+  .line{align-items:start}
+  .line>.spk{margin-top:-4px}
+  .line.head>.spk{margin-top:0}
 }
 
 /* ※ key words under a sentence */
