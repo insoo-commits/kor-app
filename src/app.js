@@ -197,7 +197,7 @@ function drawGroups(){
   $("groups").replaceChildren(...AREAS.map(a => {
     const rows = IDX.filter(r => r[0].startsWith(a[0] + "-")), d = rows.filter(r => S.done[r[0]]).length;
     return h("button", {class: "group", type: "button", "data-g": a[0], "aria-pressed": a[0] === cur ? "true" : "false", onclick: () => go(rows[0][0])},
-      h("i"), a[2], h("small", {class: "ko"}, a[1] + " · " + d + "/" + rows.length));
+      h("span", {class: "gn"}, h("i"), a[2]), h("small", {class: "ko"}, a[1] + " · " + d + "/" + rows.length));
   }));
   const on = $("groups").querySelector('[aria-pressed="true"]'); if (on && on.scrollIntoView) on.scrollIntoView({block: "nearest", inline: "nearest"});
 }

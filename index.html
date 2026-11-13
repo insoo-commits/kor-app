@@ -46,7 +46,10 @@ button,select{cursor:pointer}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .wrap{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 56px;display:flex;flex-direction:column;gap:14px}
 
-.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;padding:18px 20px;border-radius:16px;background:var(--accent-soft);border:1px solid var(--line)}
+.top{position:relative;overflow:hidden;isolation:isolate;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;padding:18px 20px;min-height:150px;border-radius:16px;background:var(--accent-soft);border:1px solid var(--line);
+  --sky1:#CFE4F3;--sky2:#F7EBDD;--sun:#F3B98A;--m1:#A9C3CF;--m2:#7FA39A;--m3:#5F8A79;--ink2:#3C4A52;--wall:#F4EEE4;--wood:#6B4A35;--roof:#3D4650;--pine:#3F6B4E}
+.top .scene{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.top .brand,.top .stats{background:color-mix(in srgb,var(--sheet) 72%,transparent);border-radius:12px;padding:6px 12px;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
 .brand{display:flex;flex-direction:column;gap:2px;min-width:0}
 .eyebrow{font-size:14px;color:var(--muted);font-weight:600}
 h1{font-family:var(--display);font-size:clamp(30px,7vw,48px);line-height:1.1;margin:0;font-weight:700;color:var(--accent);letter-spacing:-.01em}
@@ -58,7 +61,10 @@ h1{font-family:var(--display);font-size:clamp(30px,7vw,48px);line-height:1.1;mar
 .search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted)}
 
 .groups,.subs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
-.group{flex:0 0 auto;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:6px 14px 6px 10px;font-weight:600;font-size:16px;white-space:nowrap}
+/* area button: Lao name on the first line, Korean name and progress on a second, right-aligned line (keeps each button narrow) */
+.group{flex:0 0 auto;display:flex;flex-direction:column;align-items:stretch;gap:0;border:1px solid var(--line);background:var(--sheet);border-radius:14px;padding:5px 14px 5px 10px;font-weight:600;font-size:16px;white-space:nowrap;line-height:1.4}
+.group .gn{display:flex;align-items:center;gap:8px}
+.group small{text-align:right;font-size:13px}
 .group i{width:10px;height:10px;border-radius:50%;background:var(--accent)}
 .group small{font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
 .group[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--sheet)}
@@ -191,10 +197,37 @@ th{border-top:0;background:var(--raise);font-size:14px;color:var(--muted);font-w
   .rows.grid2>.line{border-top:0;border-bottom:1px solid var(--line);margin-bottom:-1px}
   .rows.grid2>.line:nth-child(odd){border-right:1px solid var(--line)}
 }
+
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .top{--sky1:#1C2A3A;--sky2:#3A2F3A;--sun:#E7C27A;--m1:#2E4250;--m2:#28403A;--m3:#22382F;--ink2:#C9D3D8;--wall:#4A443C;--wood:#8A6A52;--roof:#1A1F25;--pine:#2C4A36}}
+:root[data-theme="dark"] .top{--sky1:#1C2A3A;--sky2:#3A2F3A;--sun:#E7C27A;--m1:#2E4250;--m2:#28403A;--m3:#22382F;--ink2:#C9D3D8;--wall:#4A443C;--wood:#8A6A52;--roof:#1A1F25;--pine:#2C4A36}
 </style></head>
 <body>
 <div class="wrap" id="app" data-g="K1">
   <header class="top">
+    <svg class="scene" viewBox="0 0 800 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <!-- Korean scene drawn for the app: Bukhansan-like ridges, Namsan hill with the tower, a hanok roof and a pine -->
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky1)"/><stop offset="1" stop-color="var(--sky2)"/></linearGradient>
+      </defs>
+      <rect width="800" height="200" fill="url(#sky)"/>
+      <circle cx="560" cy="100" r="18" fill="var(--sun)"/>
+      <path d="M0 150 L70 112 L120 128 L190 90 L240 108 L300 84 L350 104 L420 80 L470 100 L540 86 L600 108 L660 92 L730 112 L800 98 V200 H0Z" fill="var(--m1)"/>
+      <path d="M0 168 L90 140 L170 152 L260 126 L340 148 L430 130 L500 146 L560 124 L640 142 L720 132 L800 148 V200 H0Z" fill="var(--m2)"/>
+      <!-- Namsan hill and tower -->
+      <path d="M250 180 Q330 132 410 180Z" fill="var(--m3)"/>
+      <g fill="var(--ink2)"><rect x="328" y="118" width="4" height="40"/><path d="M322 124 h16 l-2 6 h-12z"/><rect x="326" y="130" width="8" height="4" rx="1"/><rect x="329.4" y="104" width="1.2" height="15"/></g>
+      <!-- hanok: stone base, wooden posts, white walls, curved tiled roof with lifted eaves -->
+      <g transform="translate(-130 0)">
+        <path d="M570 190 H770 V200 H570Z" fill="var(--m3)"/>
+        <path d="M584 166 H756 V190 H584Z" fill="var(--wall)"/>
+        <path d="M590 166 V190 M630 166 V190 M670 166 V190 M710 166 V190 M750 166 V190" stroke="var(--wood)" stroke-width="4"/>
+        <path d="M542 150 Q560 158 588 154 Q610 140 616 132 Q670 124 724 132 Q730 140 752 154 Q780 158 798 150 Q790 166 756 168 H584 Q550 166 542 150Z" fill="var(--roof)"/>
+        <path d="M612 133 Q670 118 728 133" stroke="var(--roof)" stroke-width="6" fill="none" stroke-linecap="round"/>
+      </g>
+      <!-- pine -->
+      <path d="M95 200 Q100 168 92 146 Q88 132 98 120" stroke="var(--wood)" stroke-width="5" fill="none"/>
+      <ellipse cx="78" cy="146" rx="30" ry="9" fill="var(--pine)"/><ellipse cx="114" cy="132" rx="26" ry="8" fill="var(--pine)"/><ellipse cx="94" cy="118" rx="20" ry="7" fill="var(--pine)"/>
+    </svg>
     <div class="brand">
       <span class="eyebrow">ຮຽນພາສາເກົາຫຼີຕາມຫົວຂໍ້</span>
       <h1 class="ko">한국어 배우기</h1>
@@ -227,6 +260,6 @@ th{border-top:0;background:var(--raise);font-size:14px;color:var(--muted);font-w
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-13%20v0.6"></script>
-<script src="app.js?v=2026-11-13%20v0.6"></script>
+<script src="audio/index.js?v=2026-11-14%20v0.7"></script>
+<script src="app.js?v=2026-11-14%20v0.7"></script>
 </body></html>

@@ -1,5 +1,29 @@
 <div class="wrap" id="app" data-g="K1">
   <header class="top">
+    <svg class="scene" viewBox="0 0 800 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <!-- Korean scene drawn for the app: Bukhansan-like ridges, Namsan hill with the tower, a hanok roof and a pine -->
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky1)"/><stop offset="1" stop-color="var(--sky2)"/></linearGradient>
+      </defs>
+      <rect width="800" height="200" fill="url(#sky)"/>
+      <circle cx="560" cy="100" r="18" fill="var(--sun)"/>
+      <path d="M0 150 L70 112 L120 128 L190 90 L240 108 L300 84 L350 104 L420 80 L470 100 L540 86 L600 108 L660 92 L730 112 L800 98 V200 H0Z" fill="var(--m1)"/>
+      <path d="M0 168 L90 140 L170 152 L260 126 L340 148 L430 130 L500 146 L560 124 L640 142 L720 132 L800 148 V200 H0Z" fill="var(--m2)"/>
+      <!-- Namsan hill and tower -->
+      <path d="M250 180 Q330 132 410 180Z" fill="var(--m3)"/>
+      <g fill="var(--ink2)"><rect x="328" y="118" width="4" height="40"/><path d="M322 124 h16 l-2 6 h-12z"/><rect x="326" y="130" width="8" height="4" rx="1"/><rect x="329.4" y="104" width="1.2" height="15"/></g>
+      <!-- hanok: stone base, wooden posts, white walls, curved tiled roof with lifted eaves -->
+      <g transform="translate(-130 0)">
+        <path d="M570 190 H770 V200 H570Z" fill="var(--m3)"/>
+        <path d="M584 166 H756 V190 H584Z" fill="var(--wall)"/>
+        <path d="M590 166 V190 M630 166 V190 M670 166 V190 M710 166 V190 M750 166 V190" stroke="var(--wood)" stroke-width="4"/>
+        <path d="M542 150 Q560 158 588 154 Q610 140 616 132 Q670 124 724 132 Q730 140 752 154 Q780 158 798 150 Q790 166 756 168 H584 Q550 166 542 150Z" fill="var(--roof)"/>
+        <path d="M612 133 Q670 118 728 133" stroke="var(--roof)" stroke-width="6" fill="none" stroke-linecap="round"/>
+      </g>
+      <!-- pine -->
+      <path d="M95 200 Q100 168 92 146 Q88 132 98 120" stroke="var(--wood)" stroke-width="5" fill="none"/>
+      <ellipse cx="78" cy="146" rx="30" ry="9" fill="var(--pine)"/><ellipse cx="114" cy="132" rx="26" ry="8" fill="var(--pine)"/><ellipse cx="94" cy="118" rx="20" ry="7" fill="var(--pine)"/>
+    </svg>
     <div class="brand">
       <span class="eyebrow">ຮຽນພາສາເກົາຫຼີຕາມຫົວຂໍ້</span>
       <h1 class="ko">한국어 배우기</h1>
