@@ -163,9 +163,22 @@ th{border-top:0;background:var(--raise);font-size:14px;color:var(--muted);font-w
 .player button{border:0;border-radius:999px;background:var(--bg);color:var(--ink);padding:4px 14px;font-weight:600;flex:none}
 .foot{font-size:14px;color:var(--muted);max-width:75ch;margin:0}
 .ver{text-align:center;font-size:12px;color:var(--muted)}
+/* word-card buttons: ← | 🔊 1/13 | remembered | → on one line; on a phone "remembered" gets its own full-width line */
+.cardnav{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center}
+.cardnav .mid{display:flex;gap:10px;align-items:center;justify-content:center}
 @media (max-width:560px){
-  .body{padding:14px 12px 18px} .band{padding:14px 14px} .controls{padding:10px 12px}
-  .band h2{font-size:20px} .seg{width:100%} .seg button{flex:1;padding:6px 4px}
+  .body{padding:14px 12px 18px} .band{padding:14px 14px}
+  .band h2{font-size:20px} .seg button{flex:1;padding:8px 4px}
+  /* controls: tabs, then the lesson list, then times + speed side by side */
+  .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px}
+  .controls .seg,#bsel{grid-column:1 / -1;width:100%}
+  #bsel{text-overflow:ellipsis}
+  .cardnav{grid-template-columns:1fr auto 1fr}
+  .cardnav .prev{grid-column:1;grid-row:1}
+  .cardnav .mid{grid-column:2;grid-row:1}
+  .cardnav .next{grid-column:3;grid-row:1}
+  .cardnav .knownbtn{grid-column:1 / -1;grid-row:2;padding:10px}
+  .cardnav .btn{white-space:nowrap}
   .line.ex{padding-left:14px}
 }
 @media (prefers-reduced-motion:no-preference){.btn,.choice,.spk,.group,.sub{transition:border-color .12s,background-color .12s}}

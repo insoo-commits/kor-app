@@ -287,11 +287,11 @@ function renderCards(b){
     h("button", {class: "card" + (known ? " known" : ""), type: "button", onclick: () => { cardOpen = !cardOpen; render(); }},
       h("div", null, h("div", {class: "k ko"}, it.ko), it.pr && !S.hidePr ? h("div", {class: "p"}, it.pr) : null,
         cardOpen ? h("div", {class: "m"}, it.lo) : h("div", {class: "hint"}, T.flip))),
-    h("div", {class: "rowbtns", style: "justify-content:space-between"},
-      h("button", {class: "btn", type: "button", onclick: () => move(-1)}, T.prev),
-      h("div", {class: "rowbtns", "data-say": it.say || it.ko}, spk(), h("span", {class: "count"}, (cardAt + 1) + " / " + list.length),
-        h("button", {class: "btn" + (known ? " good" : ""), type: "button", onclick: () => { if (known) delete S.known[it.id]; else S.known[it.id] = 1; save(); drawStats(); if (!known && S.onlyNew){ cardOpen = false; render(); } else render(); }}, (known ? "✓ " : "") + T.known)),
-      h("button", {class: "btn primary", type: "button", onclick: () => move(1)}, T.nextCard))];
+    h("div", {class: "cardnav"},
+      h("button", {class: "btn prev", type: "button", onclick: () => move(-1)}, T.prev),
+      h("div", {class: "mid", "data-say": it.say || it.ko}, spk(), h("span", {class: "count"}, (cardAt + 1) + " / " + list.length)),
+        h("button", {class: "btn knownbtn" + (known ? " good" : ""), type: "button", onclick: () => { if (known) delete S.known[it.id]; else S.known[it.id] = 1; save(); drawStats(); if (!known && S.onlyNew){ cardOpen = false; render(); } else render(); }}, (known ? "✓ " : "") + T.known),
+      h("button", {class: "btn primary next", type: "button", onclick: () => move(1)}, T.nextCard))];
 }
 
 /* ---------- quiz: four choices built from the bundle's own words ---------- */
