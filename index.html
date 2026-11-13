@@ -173,13 +173,11 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .player[hidden]{display:none}
 .player .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .player button{border:0;border-radius:999px;background:var(--bg);color:var(--ink);padding:4px 14px;font-weight:600;flex:none}
-.dlbox{background:var(--sheet);border:1px solid var(--line);border-radius:16px;padding:16px 20px;display:grid;gap:10px}
-.dlbox[hidden]{display:none}
-.dlbox h2{margin:0;font-size:18px;font-weight:700}
-.dlbox h2 small{font-size:14px;font-weight:500;color:var(--muted);margin-left:6px}
-.dlbox p{margin:0;font-size:15px;color:var(--muted)}
-.dlzips{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
-.dlzips .btn{text-align:left;border-left:4px solid var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dlline{margin:14px 0 0;text-align:center;font-size:15px}
+.dlline[hidden]{display:none}
+.dlline a{color:var(--accent);font-weight:600;text-decoration:none}
+.dlline a:hover{text-decoration:underline}
+.dlline .count{color:var(--muted);margin-left:6px}
 .foot{font-size:14px;color:var(--muted);margin:0}
 .ver{text-align:center;font-size:12px;color:var(--muted)}
 /* word-card buttons: ← | 🔊 1/13 | remembered | → on one line; on a phone "remembered" gets its own full-width line */
@@ -291,17 +289,12 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
     <div class="body" id="view"><p class="empty">ກຳລັງໂຫຼດ…</p></div>
   </section>
   <div class="player" id="player" hidden><span class="t ko" id="pt"></span><button id="ppause" type="button">ຢຸດຊົ່ວຄາວ</button><button id="pstop" type="button">ຍົກເລີກ</button></div>
-  <section class="dlbox" id="dlbox" aria-labelledby="dlh">
-    <h2 id="dlh">ດາວໂຫຼດສຽງ (mp3) <small class="ko">음성 내려받기</small></h2>
-    <p>ບັນທຶກສຽງທັງໝົດໄວ້ໃນແອັບ ເພື່ອຟັງໄດ້ໂດຍບໍ່ມີອິນເຕີເນັດ, ຫຼື ດາວໂຫຼດໄຟລ໌ mp3 ຂອງແຕ່ລະໝວດເປັນ zip ໄປໃສ່ຄອມ ຫຼື ໂທລະສັບ.</p>
-    <div class="rowbtns"><button class="btn primary" id="dlSave" type="button">⤓ ບັນທຶກສຽງທັງໝົດໄວ້ໃນແອັບ</button><span class="count" id="dlMsg"></span></div>
-    <div class="dlzips" id="dlZips"></div>
-  </section>
+  <p class="dlline" id="dlbox"><a href="#" id="dlAll">⤓ ດາວໂຫຼດສຽງ mp3 ທັງໝົດ (zip) · <span class="ko">음성 전체 내려받기</span></a> <span class="count" id="dlMsg"></span></p>
   <p class="foot" id="voiceNote"></p>
   <p class="foot">ປຸ່ມ 🔊 ອ່ານດ້ວຍສຽງພາສາເກົາຫຼີຂອງອຸປະກອນ. ເຄື່ອງໝາຍ “ຈື່ແລ້ວ” ແລະ “ຮຽນຈົບແລ້ວ” ຖືກບັນທຶກໄວ້ໃນອຸປະກອນນີ້ເທົ່ານັ້ນ. ປະໂຫຍກຕົວຢ່າງແມ່ນແຕ່ງຂຶ້ນເພື່ອການຮຽນ.</p>
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-14%20v0.21"></script>
-<script src="app.js?v=2026-11-14%20v0.21"></script>
+<script src="audio/index.js?v=2026-11-14%20v0.22"></script>
+<script src="app.js?v=2026-11-14%20v0.22"></script>
 </body></html>
