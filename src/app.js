@@ -367,7 +367,14 @@ $("repSel").addEventListener("change", ev => { S.rep = ev.target.value; save(); 
 $("rateSel").addEventListener("change", ev => { S.rate = ev.target.value; save(); if (AEL) try { AEL.playbackRate = +S.rate || 1; } catch (e) {} });
 $("pstop").addEventListener("click", stopPlay);
 $("ppause").addEventListener("click", togglePause);
-$("view").addEventListener("click", ev => { const m = ev.target.closest(".hidelo .m, .hidepr .p"); if (m) m.classList.toggle("show"); });
+$("view").addEventListener("click", ev => {
+  const m = ev.target.closest(".hidelo .m, .hidepr .p");
+  if (m && !m.classList.contains("show")){ m.classList.add("show"); return; }
+  /* a tap anywhere on a sentence or word box plays it on repeat; a second tap stops it */
+  if (ev.target.closest("button, a, input, select, label")) return;
+  const sel = window.getSelection && String(window.getSelection()); if (sel) return;
+  const el = ev.target.closest(".line[data-say]"); if (el) playSingle(el);
+});
 let qTimer = 0;
 $("q").addEventListener("input", ev => {
   clearTimeout(qTimer);
