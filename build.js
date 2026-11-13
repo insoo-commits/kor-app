@@ -7,16 +7,19 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-13 v0.3";
+const VER = "2026-11-13 v0.4";
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
 fs.mkdirSync(path.join(root, "preview"), {recursive: true});
 
+// Lao names of the bundle titles (src/titles-lo.txt: "code | Lao"), shown in brackets in the lesson list
+const tlo = new Map(fs.readFileSync(path.join(root, "src/titles-lo.txt"), "utf8").split("\n").filter(l => l.trim() && !l.startsWith("#")).map(l => l.split(" | ").map(x => x.trim())));
 const idx = [];
 for (const [a] of M.areas){
   const list = JSON.parse(fs.readFileSync(path.join(bundles, a + ".json"), "utf8"));
   for (const b of list){
-    idx.push([b.code, b.t, b.lv, b.type]);
+    idx.push([b.code, b.t, b.lv, b.type, tlo.get(b.code) || ""]);
+    if (!tlo.get(b.code)) console.warn("no Lao title for " + b.code);
     if (!M.subs[b.code.slice(0, 4)]) throw new Error("no sub-group name for " + b.code);
   }
   fs.writeFileSync(path.join(root, "data", a + ".json"), JSON.stringify(list));

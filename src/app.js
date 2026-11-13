@@ -196,14 +196,14 @@ function drawSubs(){
 }
 function drawControls(){
   const s = subOf(S.code), rows = IDX.filter(r => r[0].startsWith(s + "-"));
-  $("bsel").replaceChildren(...rows.map(r => { const o = h("option", {value: r[0]}, (S.done[r[0]] ? "✓ " : "") + r[0].slice(5) + " · " + r[1]); o.selected = r[0] === S.code; return o; }));
+  $("bsel").replaceChildren(...rows.map(r => { const o = h("option", {value: r[0]}, (S.done[r[0]] ? "✓ " : "") + r[0].slice(5) + " · " + r[1] + (r[4] ? " (" + r[4] + ")" : "")); o.selected = r[0] === S.code; return o; }));
   document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === S.mode ? "true" : "false"));
   $("repSel").value = S.rep; $("rateSel").value = S.rate;
 }
 function drawBand(b){
   const r = IDX[byCode.get(S.code)];
   $("band").replaceChildren(
-    h("div", null, h("div", {class: "code"}, r[0]), h("h2", {class: "ko"}, r[1]),
+    h("div", null, h("div", {class: "code"}, r[0]), h("h2", {class: "ko"}, r[1]), r[4] ? h("div", {class: "tlo"}, r[4]) : null,
       b && b.i && b.i[1] ? h("p", null, b.i[1]) : null, b && b.i && S.showKo ? h("p", {class: "sub-ko ko"}, b.i[0]) : null),
     h("div", {class: "tags"}, h("span", {class: "tag"}, T.level + " " + r[2]), h("span", {class: "tag ko"}, r[3]), S.done[r[0]] ? h("span", {class: "tag"}, "✓ " + T.done) : null));
 }
@@ -307,7 +307,7 @@ function renderQuiz(b){
 let query = "";
 function renderSearch(){
   const q = query.toLowerCase(), hits = [];
-  for (const r of IDX) if (r[1].toLowerCase().includes(q)) hits.push({code: r[0], ko: r[1], lo: "", pr: ""});
+  for (const r of IDX) if (r[1].toLowerCase().includes(q) || (r[4] && r[4].includes(q))) hits.push({code: r[0], ko: r[1], lo: r[4] || "", pr: ""});
   for (const a of AREAS) for (const b of cache.get(a[0]) || []){
     for (const it of items(b)) if (it.ko.toLowerCase().includes(q) || it.lo.toLowerCase().includes(q) || (it.pr || "").includes(q)) hits.push({code: b.code, ko: it.ko, lo: it.lo, pr: it.pr});
     if (hits.length > 80) break;
