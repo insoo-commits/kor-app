@@ -130,11 +130,11 @@ async function playSingle(el){
   const tok = ++P.tok; P.mode = "single"; P.paused = false;
   mark(el);
   const ko = el.dataset.say, lo = el.dataset.lo || "";
-  const withLo = el.dataset.head === "1" && lo && (loVoice || hasClip("lo", lo));   // a headword: Korean, Lao, Korean, over and over
+  const withLo = el.dataset.head === "1" && lo && (loVoice || hasClip("lo", lo));   // a headword: Korean, Lao, then Korean over and over
   for (let k = 1; tok === P.tok; k++){
     showPlayer("🔊 ∞ · " + k + " · " + ko);
     if (!(await say(tok, ko))) return;
-    if (withLo){ await gap(300); if (!(await say(tok, lo, true))) return; await gap(300); if (!(await say(tok, ko))) return; }
+    if (withLo && k === 1){ await gap(300); if (!(await say(tok, lo, true))) return; }
     await gap(500);
   }
 }
