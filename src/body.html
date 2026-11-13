@@ -1,0 +1,33 @@
+<div class="wrap" id="app" data-g="K1">
+  <header class="top">
+    <div class="brand">
+      <span class="eyebrow">ຮຽນພາສາເກົາຫຼີຕາມຫົວຂໍ້</span>
+      <h1 class="ko">한국어 배우기</h1>
+    </div>
+    <div class="stats" id="stats"></div>
+  </header>
+  <label class="search" for="q">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="ຄົ້ນຫາດ້ວຍພາສາເກົາຫຼີ ຫຼື ພາສາລາວ (ຕົວຢ່າງ: 밥, ເຂົ້າ)" autocomplete="off">
+  </label>
+  <nav class="groups" id="groups" aria-label="ໝວດໃຫຍ່"></nav>
+  <nav class="subs" id="subs" role="tablist" aria-label="ໝວດຍ່ອຍ"></nav>
+  <section class="sheet" id="sheet">
+    <div class="band" id="band"></div>
+    <div class="controls" id="controls">
+      <div class="seg" role="group" aria-label="ວິທີຮຽນ">
+        <button id="m-learn" data-mode="learn" type="button">ປະໂຫຍກ</button>
+        <button id="m-cards" data-mode="cards" type="button">ຄຳສັບ</button>
+        <button id="m-quiz" data-mode="quiz" type="button">ແບບທົດສອບ</button>
+      </div>
+      <select id="bsel" class="bsel" aria-label="ເລືອກບົດ"></select>
+      <select id="repSel" class="bsel" aria-label="ຈຳນວນຄັ້ງທີ່ອ່ານ"><option value="1">🔊 ×1</option><option value="2">🔊 ×2</option><option value="3">🔊 ×3</option><option value="4">🔊 ×4</option><option value="5">🔊 ×5</option></select>
+      <select id="rateSel" class="bsel" aria-label="ຄວາມໄວ"><option value="0.8">x 0.8</option><option value="1">x 1.0</option><option value="1.2">x 1.2</option><option value="1.5">x 1.5</option><option value="2">x 2.0</option></select>
+    </div>
+    <div class="body" id="view"><p class="empty">ກຳລັງໂຫຼດ…</p></div>
+  </section>
+  <div class="player" id="player" hidden><span class="t ko" id="pt"></span><button id="ppause" type="button">ຢຸດຊົ່ວຄາວ</button><button id="pstop" type="button">ຍົກເລີກ</button></div>
+  <p class="foot" id="voiceNote"></p>
+  <p class="foot">ປຸ່ມ 🔊 ອ່ານດ້ວຍສຽງພາສາເກົາຫຼີຂອງອຸປະກອນ. ເຄື່ອງໝາຍ “ຈື່ແລ້ວ” ແລະ “ຮຽນຈົບແລ້ວ” ຖືກບັນທຶກໄວ້ໃນອຸປະກອນນີ້ເທົ່ານັ້ນ. ປະໂຫຍກຕົວຢ່າງແມ່ນແຕ່ງຂຶ້ນເພື່ອການຮຽນ.</p>
+  <p class="ver" id="ver"></p>
+</div>
