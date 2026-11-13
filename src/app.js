@@ -244,7 +244,8 @@ function drawBand(b){
 
 /* ---------- lesson view ---------- */
 const sec = (key, ...kids) => kids.flat().filter(Boolean).length ? h("section", {class: "sec"}, h("h3", null, T.sec[key],
-  key === "l" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playWord(ev.currentTarget.closest(".sec").querySelector(".letters"))}, T.repLetters) : null), kids) : null;
+  key === "l" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playWord(ev.currentTarget.closest(".sec").querySelector(".letters"))}, T.repLetters)
+  : key === "dl" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playDialogue(ev.currentTarget.closest(".sec").querySelector(".dlg"))}, T.repDlg) : null), kids) : null;
 const note = pair => [h("p", {class: "note-lo"}, pair[1] || pair[0]), S.showKo && pair[1] ? h("p", {class: "note-ko ko"}, pair[0]) : null];
 /* ※ key words of a sentence: [[word, Lao-script reading, Lao meaning], …] */
 const gloss = g => g && g.length ? h("div", {class: "gl"}, "※ ", g.flatMap((x, j) => [j ? " · " : null, h("span", {class: "ko"}, x[0]), " ", h("span", {class: "p"}, x[1]), " (", h("span", {class: "gm"}, x[2]), ")"])) : null;
@@ -259,8 +260,8 @@ function renderLearn(b){
       h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.hideLo, onchange: ev => { S.hideLo = ev.target.checked; save(); render(); }}), T.hideLo),
       h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.showKo, onchange: ev => { S.showKo = ev.target.checked; save(); render(); }}), T.showKo),
       h("span", {style: "flex:1"}),
-      h("button", {class: "btn", type: "button", onclick: () => playBundle(true)}, T.repAll),
-      h("button", {class: "btn", type: "button", onclick: () => playBundle(false)}, T.repBundle)),
+      h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, T.repAll),
+      h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(false)}, T.repBundle)),
     sec("m", (b.m || []).map(m => h("div", {class: "tip"}, note(m)))),
     sec("l",
       !(b.l || []).length ? null : h("div", {class: "letters"}, (b.l || []).map(l => h("button", {class: "letter", type: "button", "data-say": l[2] || l[0], onclick: ev => playSingle(ev.currentTarget)},
@@ -276,7 +277,6 @@ function renderLearn(b){
     sec("tp", (b.tp || []).map(t => h("div", {class: "tip"}, note(t)))),
     sec("pr", (b.pr || []).length ? h("div", {class: "pairs"}, b.pr.map(p => h("div", {class: "pair"}, p.flatMap((x, j) => j ? [h("i", null, "↔"), x] : [x])))) : null),
     sec("dl", dl.length ? [
-      h("div", {class: "rowbtns", style: "justify-content:flex-end;margin-bottom:8px"}, h("button", {class: "btn", type: "button", onclick: ev => playDialogue(ev.currentTarget.parentNode.nextElementSibling)}, T.repDlg)),
       h("div", {class: "rows dlg"}, dl.map(d => h("div", {class: "line", "data-say": d[1], "data-lo": d[2]}, spk(), h("div", null, h("div", {class: "who ko"}, d[0]), h("div", {class: "k ko"}, d[1]), h("div", {class: "m"}, d[2]), gloss(d[3])))))] : null),
     sec("sm", b.sm && b.sm.length ? h("div", {class: "tip"}, note(b.sm)) : null),
     sec("qz", (b.qz || []).map(q => { const a = h("div", {class: "a", hidden: true}, q[1]);
