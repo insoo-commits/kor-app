@@ -165,11 +165,17 @@ th{border-top:0;background:var(--raise);font-size:14px;color:var(--muted);font-w
 /* Word + example sentences on a wide screen: the word sits in its own column on the left and its sentences fill the right,
    so a card uses the whole width instead of leaving the right half empty. */
 @media (min-width:760px){
-  .sec .word{display:grid;grid-template-columns:minmax(220px,32%) minmax(0,1fr)}
-  .sec .word>.line.head{background:var(--accent-soft);grid-template-columns:1fr;justify-items:start;align-content:center;padding:18px 20px;gap:6px}
-  .sec .word>.line.head>.spk{order:2}
+  /* all word cards of a section share one column grid (subgrid), so the left column is as wide as the longest
+     word or phrase in that section (at least 200px, at most half), and the cards stay aligned */
+  .sec:has(> .word){display:grid;grid-template-columns:fit-content(50%) minmax(0,1fr);row-gap:10px}
+  .sec:has(> .word)>h3{grid-column:1 / -1;margin-bottom:0}
+  .sec .word{display:grid;grid-template-columns:subgrid;grid-column:1 / -1}
+  .sec .word+.word{margin-top:0}
+  .sec .word>.line.head{background:var(--accent-soft);min-width:200px;align-content:center;align-items:center}
+  .sec .word>.line.head .k{font-size:21px;font-weight:700;line-height:1.5}
+  .sec .word>.line.head .m{font-size:inherit}
   .sec .word .exs{border-left:1px solid var(--line)}
-  .sec .word .exs .line{padding-left:16px;flex:1;align-content:center}
+  .sec .word .exs .line{flex:1;align-content:center;padding-left:14px}
   .sec .word .exs .line:first-child{border-top:0}
   /* conjugation and example rows: two per row */
   .rows.grid2{display:grid;grid-template-columns:1fr 1fr}
