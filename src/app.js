@@ -129,9 +129,12 @@ async function playSingle(el){
   stopPlay();
   const tok = ++P.tok; P.mode = "single"; P.paused = false;
   mark(el);
+  const ko = el.dataset.say, lo = el.dataset.lo || "";
+  const withLo = el.dataset.head === "1" && lo && (loVoice || hasClip("lo", lo));   // a headword: Korean, Lao, Korean, over and over
   for (let k = 1; tok === P.tok; k++){
-    showPlayer("🔊 ∞ · " + k + " · " + el.dataset.say);
-    if (!(await say(tok, el.dataset.say))) return;
+    showPlayer("🔊 ∞ · " + k + " · " + ko);
+    if (!(await say(tok, ko))) return;
+    if (withLo){ await gap(300); if (!(await say(tok, lo, true))) return; await gap(300); if (!(await say(tok, ko))) return; }
     await gap(500);
   }
 }
