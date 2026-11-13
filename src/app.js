@@ -173,7 +173,7 @@ async function playWord(box){
     if (tok !== P.tok){ box.classList.remove("playing"); return; }
   }
 }
-/* dialogue repeat: the dialogue lines once each, in order, round and round until stopped */
+/* dialogue repeat: each dialogue line S.rep times, in order, round and round until stopped */
 async function playDialogue(box){
   if (P.mode === "dialog") return stopPlay();
   stopPlay();
@@ -182,9 +182,8 @@ async function playDialogue(box){
     const q = [...box.querySelectorAll("[data-say]")];
     if (!q.length) return stopPlay();
     for (let i = 0; i < q.length; i++){
-      mark(q[i]); showPlayer("🔊 " + (i + 1) + "/" + q.length + " · ↻" + P.round + " · " + q[i].dataset.say);
-      if (!(await say(tok, q[i].dataset.say))) return;
-      await gap(600);
+      if (!(await sayItem(tok, {el: q[i], ko: q[i].dataset.say}, "🔊 " + (i + 1) + "/" + q.length + " · ↻" + P.round))) return;
+      await gap(350);
     }
     P.round++; await gap(900);
     if (tok !== P.tok) return;
