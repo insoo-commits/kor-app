@@ -164,6 +164,13 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .player[hidden]{display:none}
 .player .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .player button{border:0;border-radius:999px;background:var(--bg);color:var(--ink);padding:4px 14px;font-weight:600;flex:none}
+.dlbox{background:var(--sheet);border:1px solid var(--line);border-radius:16px;padding:16px 20px;display:grid;gap:10px}
+.dlbox[hidden]{display:none}
+.dlbox h2{margin:0;font-size:18px;font-weight:700}
+.dlbox h2 small{font-size:14px;font-weight:500;color:var(--muted);margin-left:6px}
+.dlbox p{margin:0;font-size:15px;color:var(--muted)}
+.dlzips{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.dlzips .btn{text-align:left;border-left:4px solid var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .foot{font-size:14px;color:var(--muted);margin:0}
 .ver{text-align:center;font-size:12px;color:var(--muted)}
 /* word-card buttons: ← | 🔊 1/13 | remembered | → on one line; on a phone "remembered" gets its own full-width line */

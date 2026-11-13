@@ -384,6 +384,49 @@ $("q").addEventListener("input", ev => {
     if (query) Promise.all(AREAS.map(a => loadArea(a[0]).catch(() => null))).then(() => { if (query) render(); });
   }, 200);
 });
+/* ---------- audio download ----------
+   1) save every clip into the app (the service worker keeps each fetched clip in IndexedDB) so it plays offline
+   2) one zip per area, built in the browser, with the files named and numbered in playing order */
+const allKeys = () => Object.keys(window.AUDIO_INDEX || {});
+const fetchPool = async (items, n, work, tick) => { let i = 0, done = 0;
+  await Promise.all(Array.from({length: n}, async () => { while (i < items.length){ const it = items[i++]; try { await work(it); } catch (e) {} tick(++done); } })); };
+let dlBusy = false;
+$("dlSave").addEventListener("click", async () => {
+  if (dlBusy) return; const keys = allKeys(); if (!keys.length) return;
+  dlBusy = true; const msg = $("dlMsg"); let fail = 0;
+  await fetchPool(keys, 6, k => fetch("audio/" + k + ".mp3").then(r => { if (!r.ok) fail++; return r.arrayBuffer(); }), d => { msg.textContent = d + " / " + keys.length; });
+  msg.textContent = fail ? "✓ " + (keys.length - fail) + " / " + keys.length + " (" + fail + " ✗)" : "✓ " + keys.length + " / " + keys.length;
+  dlBusy = false;
+});
+function clipsOf(b){
+  const out = [], seen = new Set();
+  const add = (lang, raw) => { const t = lang === "lo" ? cleanLo(raw) : cleanKo(raw); if (!t) return; const k = clipKey(lang, t); if (!CLIPS[k] || seen.has(k)) return; seen.add(k); out.push({k, t}); };
+  (b.l || []).forEach(l => add("ko", l[2] || l[0]));
+  (b.w || []).forEach(w => { add("ko", w[0]); add("lo", w[2]); (w[3] || []).forEach(e => add("ko", e[0])); });
+  (b.c || []).forEach(c => add("ko", c[1])); (b.e || []).forEach(e => add("ko", e[0])); (b.dl || []).forEach(d => add("ko", d[1]));
+  return out;
+}
+const safeName = t => t.replace(/[\\/:*?"<>|]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 60);
+let zipLib = null;
+const loadZip = () => zipLib || (zipLib = new Promise((res, rej) => { const s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"; s.onload = () => res(window.JSZip); s.onerror = () => { zipLib = null; rej(new Error("zip")); }; document.head.appendChild(s); }));
+async function zipArea(a, btn){
+  if (dlBusy) return; dlBusy = true; const msg = $("dlMsg"), label = btn.textContent;
+  try {
+    const [JSZip, list] = await Promise.all([loadZip(), loadArea(a[0])]);
+    const zip = new JSZip(), jobs = [];
+    for (const b of list){ const dir = zip.folder(safeName(b.code + " " + b.t)); clipsOf(b).forEach((c, i) => jobs.push({dir, name: String(i + 1).padStart(3, "0") + " " + safeName(c.t) + ".mp3", k: c.k})); }
+    await fetchPool(jobs, 6, j => fetch("audio/" + j.k + ".mp3").then(r => r.ok ? r.arrayBuffer() : null).then(buf => { if (buf) j.dir.file(j.name, buf); }), d => { btn.textContent = "… " + d + " / " + jobs.length; });
+    btn.textContent = "… zip";
+    const blob = await zip.generateAsync({type: "blob", compression: "STORE"});
+    const url = URL.createObjectURL(blob), link = document.createElement("a");
+    link.href = url; link.download = "KOR-Lang-" + a[0] + ".zip"; document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    msg.textContent = "✓ " + a[0] + ".zip";
+  } catch (e) { msg.textContent = "✗ " + a[0]; }
+  btn.textContent = label; dlBusy = false;
+}
+$("dlZips").replaceChildren(...AREAS.map(a => { const b = h("button", {class: "btn", type: "button", "data-g": a[0], onclick: ev => zipArea(a, ev.currentTarget)}, "⤓ " + a[0] + " · " + a[2]); return b; }));
+if (!allKeys().length) $("dlbox").hidden = true;
 window.addEventListener("hashchange", route);
 $("ver").textContent = META.ver;
 route();
