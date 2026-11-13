@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 const areaOf = c => c.slice(0, 2), subOf = c => c.slice(0, 4);
 const T = {
   sec: {m: "ວິທີສ້າງປະໂຫຍກ", l: "ຕົວອັກສອນ", x: "ຕາຕະລາງ", w: "ຄຳສັບ", f: "ສຳນວນທີ່ໃຊ້ເລື້ອຍໆ", c: "ການປ່ຽນຮູບຄຳ", e: "ປະໂຫຍກຕົວຢ່າງ", tp: "ຂໍ້ແນະນຳ", pr: "ຄຳຄູ່", dl: "ບົດສົນທະນາ", sm: "ສະຫຼຸບ", qz: "ຄຳຖາມທວນຄືນ"},
-  level: "ລະດັບ", repBundle: "🔊 ຟັງຊ້ຳບົດນີ້", repDlg: "🔊 ຟັງບົດສົນທະນາຊ້ຳ", repAll: "🔊 ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
+  level: "ລະດັບ", repBundle: "🔊 ຟັງຊ້ຳບົດນີ້", repDlg: "🔊 ຟັງບົດສົນທະນາຊ້ຳ", repWord: "🔁 ຟັງຊ້ຳຄຳນີ້", repAll: "🔊 ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
   hidePr: "ເຊື່ອງຄຳອ່ານ", showKo: "ສະແດງຄຳອະທິບາຍພາສາເກົາຫຼີ", known: "ຈື່ແລ້ວ", flip: "ແຕະເພື່ອເບິ່ງຄວາມໝາຍ", onlyNew: "ສະເພາະຄຳທີ່ຍັງບໍ່ຈື່",
   showAns: "ເບິ່ງຄຳຕອບ", again: "ເຮັດອີກຄັ້ງ", score: "ຄະແນນ", noCards: "ບົດນີ້ບໍ່ມີບັດຄຳ.", allKnown: "ຈື່ໝົດທຸກຄຳແລ້ວ!", noQuiz: "ບົດນີ້ມີຄຳສັບບໍ່ພໍສຳລັບແບບທົດສອບ.",
   pick: "ເລືອກຄວາມໝາຍທີ່ຖືກຕ້ອງ", pickKo: "ເລືອກຄຳພາສາເກົາຫຼີທີ່ຖືກຕ້ອງ", loading: "ກຳລັງໂຫຼດ…", loadFail: "ໂຫຼດບົດຮຽນບໍ່ໄດ້. ກະລຸນາເປີດໜ້ານີ້ຄືນໃໝ່.",
@@ -157,6 +157,19 @@ async function playBundle(chain){
     if (tok !== P.tok) return;
   }
 }
+/* word repeat: the word and its example sentences, each played the way the bundle repeat plays it (same 횟수), round and round until stopped */
+async function playWord(box){
+  if (P.mode === "word" && P.box === box) return stopPlay();
+  stopPlay();
+  const tok = ++P.tok; P.mode = "word"; P.box = box; P.paused = false; P.round = 1;
+  box.classList.add("playing");
+  for (;;){
+    const q = [...box.querySelectorAll("[data-say]")].map(el => ({el, ko: el.dataset.say, lo: el.dataset.lo || "", head: el.dataset.head === "1"}));
+    for (let i = 0; i < q.length; i++) if (!(await sayItem(tok, q[i], "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round))){ box.classList.remove("playing"); return; }
+    P.round++; await gap(400);
+    if (tok !== P.tok){ box.classList.remove("playing"); return; }
+  }
+}
 /* dialogue repeat: the dialogue lines once each, in order, round and round until stopped */
 async function playDialogue(box){
   if (P.mode === "dialog") return stopPlay();
@@ -175,7 +188,7 @@ async function playDialogue(box){
   }
 }
 function stopPlay(){
-  P.tok++; P.mode = ""; P.paused = false;
+  P.tok++; P.mode = ""; P.paused = false; if (P.box){ P.box.classList.remove("playing"); P.box = null; }
   quiet();
   mark(null); showPlayer("");
 }
@@ -229,8 +242,10 @@ function drawBand(b){
 /* ---------- lesson view ---------- */
 const sec = (key, ...kids) => kids.flat().filter(Boolean).length ? h("section", {class: "sec"}, h("h3", null, T.sec[key]), kids) : null;
 const note = pair => [h("p", {class: "note-lo"}, pair[1] || pair[0]), S.showKo && pair[1] ? h("p", {class: "note-ko ko"}, pair[0]) : null];
-const line = (ko, pr, lo, cls, from) => h("div", {class: "line " + (cls || ""), "data-say": ko, "data-lo": lo, "data-head": cls === "head" ? "1" : null}, spk(),
-  h("div", null, from ? h("div", {class: "from ko"}, from) : null, h("div", {class: "k ko"}, ko), pr ? h("div", {class: "p"}, pr) : null, h("div", {class: "m"}, lo)));
+/* ※ key words of a sentence: [[word, Lao-script reading, Lao meaning], …] */
+const gloss = g => g && g.length ? h("div", {class: "gl"}, "※ ", g.flatMap((x, j) => [j ? " · " : null, h("span", {class: "ko"}, x[0]), " ", h("span", {class: "p"}, x[1]), " (", h("span", {class: "gm"}, x[2]), ")"])) : null;
+const line = (ko, pr, lo, cls, from, g) => h("div", {class: "line " + (cls || ""), "data-say": ko, "data-lo": lo, "data-head": cls === "head" ? "1" : null}, spk(),
+  h("div", null, from ? h("div", {class: "from ko"}, from) : null, h("div", {class: "k ko"}, ko), pr ? h("div", {class: "p"}, pr) : null, h("div", {class: "m"}, lo), gloss(g)));
 function renderLearn(b){
   const i = byCode.get(b.code), next = IDX[i + 1], isDone = !!S.done[b.code];
   const dl = b.dl || [];
@@ -251,12 +266,12 @@ function renderLearn(b){
     sec("w", (b.w || []).map(wordBox)),
     sec("f", (b.f || []).map(wordBox)),
     sec("c", (b.c || []).length ? h("div", {class: "rows grid2"}, b.c.map(c => line(c[1], c[2], c[3], "", c[0]))) : null),
-    sec("e", (b.e || []).length ? h("div", {class: "rows grid2"}, b.e.map(e => line(e[0], e[1], e[2]))) : null),
+    sec("e", (b.e || []).length ? h("div", {class: "rows grid2"}, b.e.map(e => line(e[0], e[1], e[2], "", null, e[3]))) : null),
     sec("tp", (b.tp || []).map(t => h("div", {class: "tip"}, note(t)))),
     sec("pr", (b.pr || []).length ? h("div", {class: "pairs"}, b.pr.map(p => h("div", {class: "pair"}, p.flatMap((x, j) => j ? [h("i", null, "↔"), x] : [x])))) : null),
     sec("dl", dl.length ? [
       h("div", {class: "rowbtns", style: "justify-content:flex-end;margin-bottom:8px"}, h("button", {class: "btn", type: "button", onclick: ev => playDialogue(ev.currentTarget.parentNode.nextElementSibling)}, T.repDlg)),
-      h("div", {class: "rows dlg"}, dl.map(d => h("div", {class: "line", "data-say": d[1], "data-lo": d[2]}, spk(), h("div", null, h("div", {class: "who ko"}, d[0]), h("div", {class: "k ko"}, d[1]), h("div", {class: "m"}, d[2])))))] : null),
+      h("div", {class: "rows dlg"}, dl.map(d => h("div", {class: "line", "data-say": d[1], "data-lo": d[2]}, spk(), h("div", null, h("div", {class: "who ko"}, d[0]), h("div", {class: "k ko"}, d[1]), h("div", {class: "m"}, d[2]), gloss(d[3])))))] : null),
     sec("sm", b.sm && b.sm.length ? h("div", {class: "tip"}, note(b.sm)) : null),
     sec("qz", (b.qz || []).map(q => { const a = h("div", {class: "a", hidden: true}, q[1]);
       return h("div", {class: "qa"}, h("div", {class: "ko"}, q[0]), a, h("button", {class: "btn", type: "button", onclick: ev => { a.hidden = false; ev.currentTarget.remove(); }}, T.showAns)); })),
@@ -267,7 +282,10 @@ function renderLearn(b){
 }
 
 /* a headword (word or expression) with its example sentences */
-function wordBox(w){ return h("div", {class: "word" + ((w[3] || []).length ? "" : " solo")}, line(w[0], w[1], w[2], "head"), (w[3] || []).length ? h("div", {class: "exs"}, w[3].map(e => line(e[0], e[1], e[2], "ex"))) : null); }
+function wordBox(w){ const ex = w[3] || [];
+  return h("div", {class: "word" + (ex.length ? "" : " solo")},
+    h("button", {class: "wrep", type: "button", title: T.repWord, onclick: ev => { ev.stopPropagation(); playWord(ev.currentTarget.closest(".word")); }}, T.repWord),
+    line(w[0], w[1], w[2], "head"), ex.length ? h("div", {class: "exs"}, ex.map(e => line(e[0], e[1], e[2], "ex", null, e[3]))) : null); }
 
 /* ---------- cards ---------- */
 function items(b){
