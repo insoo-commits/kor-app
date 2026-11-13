@@ -222,8 +222,25 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 
 /* phone: Korean in word and sentence rows one step smaller (RYU, 2026-11-14) */
 @media (max-width:759px){
-  .line .k{font-size:18px}
-  .line.head .k{font-size:22px}
+  body{font-size:15px;line-height:1.6}
+  .line{grid-template-columns:34px minmax(0,1fr);gap:10px;padding:10px 12px}
+  .spk{width:34px;height:34px;font-size:14px}
+  .line .k{font-size:16px}
+  .line.head .k{font-size:20px}
+  .line.head .m{font-size:15px}
+  .line .p{font-size:13.5px}
+  .line .from{font-size:13.5px}
+  .gl{font-size:13px}
+  .gl .p{font-size:12.5px}
+  table{font-size:14px}
+  th{font-size:13.5px}
+  th,td{padding:8px 10px}
+  td:first-child{white-space:nowrap}
+  .pair{font-size:15px}
+  .band .tlo{font-size:15px}
+  .sec>h3{font-size:16px}
+  .wrep{font-size:12px;padding:2px 8px}
+  .word>.line.head{padding-right:104px}
 }
 
 /* ※ key words under a sentence */
