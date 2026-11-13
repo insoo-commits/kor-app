@@ -1,2 +1,5 @@
 preview/
 node_modules/
+audio/failed.json
+audio/*.part
+__pycache__/

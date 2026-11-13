@@ -55,22 +55,37 @@ function pickVoice(){
   const all = synth.getVoices(), vs = all.filter(v => /^ko/i.test(v.lang));
   koVoice = vs.find(v => /Google|Yuna|SunHi|InJoon|Natural/i.test(v.name)) || vs[0] || null;
   loVoice = all.find(v => /^lo/i.test(v.lang)) || null;
-  $("voiceNote").textContent = all.length && !koVoice ? T.noVoice : "";
+  $("voiceNote").textContent = all.length && !koVoice && !window.AUDIO_INDEX ? T.noVoice : "";
 }
-if (synth){ pickVoice(); try { synth.addEventListener("voiceschanged", pickVoice); } catch (e) {} } else $("voiceNote").textContent = T.noVoice;
-function clean(t){ return String(t).replace(/[①-⑳]/g, "").replace(/\([^)]*\)/g, " ").replace(/[\/·↔→~]/g, ", ").replace(/[຀-໿]+/g, " ").replace(/\s+/g, " ").trim(); }
+if (synth){ pickVoice(); try { synth.addEventListener("voiceschanged", pickVoice); } catch (e) {} } else if (!window.AUDIO_INDEX) $("voiceNote").textContent = T.noVoice;
+const CLIPS = window.AUDIO_INDEX || {};
+let AEL = null;
+const hasClip = (lang, text) => !!CLIPS[clipKey(lang, lang === "lo" ? cleanLo(text) : cleanKo(text))];
+/* a ready-made clip when there is one, the device's voice otherwise */
 function speakOne(text, lao){
   return new Promise(res => {
-    const t = lao ? String(text).replace(/[가-힣ㄱ-ㅣ]+/g, " ").trim() : clean(text);
-    if (!synth || !t || (lao && !loVoice)) return res();
-    const u = new SpeechSynthesisUtterance(t);
-    if (lao){ u.lang = loVoice.lang; u.voice = loVoice; } else { u.lang = "ko-KR"; if (koVoice) u.voice = koVoice; }
-    u.rate = +S.rate || 1;
+    const t = lao ? cleanLo(text) : cleanKo(text);
+    if (!t) return res();
     let fin = false; const end = () => { if (!fin){ fin = true; res(); } };
-    u.onend = end; u.onerror = end; setTimeout(end, 4000 + t.length * 450);
-    try { synth.speak(u); } catch (e) { end(); }
+    const tts = () => {
+      if (!synth || (lao && !loVoice)) return end();
+      const u = new SpeechSynthesisUtterance(t);
+      if (lao){ u.lang = loVoice.lang; u.voice = loVoice; } else { u.lang = "ko-KR"; if (koVoice) u.voice = koVoice; }
+      u.rate = +S.rate || 1; u.onend = end; u.onerror = end; setTimeout(end, 4000 + t.length * 450);
+      try { synth.speak(u); } catch (e) { end(); }
+    };
+    const key = clipKey(lao ? "lo" : "ko", t);
+    if (!CLIPS[key]) return tts();
+    try {
+      if (!AEL) AEL = new Audio();
+      AEL.onended = end; AEL.onerror = () => { if (!fin) tts(); };
+      AEL.src = "audio/" + key + ".mp3"; AEL.playbackRate = +S.rate || 1;
+      const pr = AEL.play(); if (pr && pr.catch) pr.catch(() => { if (!fin) tts(); });
+      setTimeout(end, 8000 + t.length * 600);
+    } catch (e) { tts(); }
   });
 }
+function quiet(){ if (synth) try { synth.cancel(); } catch (e) {} if (AEL) try { AEL.onended = AEL.onerror = null; AEL.pause(); } catch (e) {} }
 const gap = ms => new Promise(r => setTimeout(r, ms));
 function mark(el){
   document.querySelectorAll(".now").forEach(x => x.classList.remove("now"));
@@ -97,7 +112,7 @@ async function sayItem(tok, it, label){
   if (it.head){
     showPlayer(label + " · " + it.ko);
     if (!(await say(tok, it.ko))) return false; await gap(300);
-    if (loVoice && it.lo){ if (!(await say(tok, it.lo, true))) return false; await gap(300); }
+    if (it.lo && (loVoice || hasClip("lo", it.lo))){ if (!(await say(tok, it.lo, true))) return false; await gap(300); }
     if (!(await say(tok, it.ko))) return false;
     for (let k = 1; k < n; k++){ await gap(350); if (!(await say(tok, it.ko))) return false; }
   } else for (let k = 0; k < n; k++){
@@ -143,13 +158,13 @@ async function playBundle(chain){
 }
 function stopPlay(){
   P.tok++; P.mode = ""; P.paused = false;
-  if (synth) try { synth.cancel(); } catch (e) {}
+  quiet();
   mark(null); showPlayer("");
 }
 function togglePause(){
   if (!P.mode) return;
   P.paused = !P.paused;
-  if (P.paused && synth) try { synth.cancel(); } catch (e) {}
+  if (P.paused) quiet();
   $("ppause").textContent = P.paused ? T.resume : T.pause;
 }
 const spk = () => h("button", {class: "spk", type: "button", "aria-label": "ຟັງ", onclick: ev => { const el = ev.currentTarget.closest("[data-say]"); if (el) playSingle(el); }}, "🔊");
@@ -331,7 +346,7 @@ async function route(){
 document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => { S.mode = b.dataset.mode; stopPlay(); cardAt = 0; cardOpen = false; save(); drawControls(); render(); }));
 $("bsel").addEventListener("change", ev => go(ev.target.value));
 $("repSel").addEventListener("change", ev => { S.rep = ev.target.value; save(); });
-$("rateSel").addEventListener("change", ev => { S.rate = ev.target.value; save(); });
+$("rateSel").addEventListener("change", ev => { S.rate = ev.target.value; save(); if (AEL) try { AEL.playbackRate = +S.rate || 1; } catch (e) {} });
 $("pstop").addEventListener("click", stopPlay);
 $("ppause").addEventListener("click", togglePause);
 $("view").addEventListener("click", ev => { const m = ev.target.closest(".hidelo .m, .hidepr .p"); if (m) m.classList.toggle("show"); });
