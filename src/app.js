@@ -122,7 +122,8 @@ async function sayItem(tok, it, label){
   await gap(250);
   return tok === P.tok;
 }
-const queue = () => [...document.querySelectorAll("#view [data-say]")].map(el => ({el, ko: el.dataset.say, lo: el.dataset.lo || "", head: el.dataset.head === "1"}));
+/* bundle / all-bundle repeat: everything above the dialogue (the dialogue has its own repeat button) */
+const queue = () => [...document.querySelectorAll("#view [data-say]")].filter(el => !el.closest(".dlg")).map(el => ({el, ko: el.dataset.say, lo: el.dataset.lo || "", head: el.dataset.head === "1"}));
 async function playSingle(el){
   if (P.mode === "single" && el.classList.contains("now")) return stopPlay();
   stopPlay();
