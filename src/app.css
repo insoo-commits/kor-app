@@ -510,3 +510,5 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* chosen area: inside shown in reverse (light on dark screens, dark on light), colour lines stay (RYU 2026-11-15, v1.27) */
 .group[aria-pressed="true"]{background:var(--ink);border-left-color:var(--ink);border-right-color:var(--ink);border-top-color:var(--accent);border-bottom-color:var(--accent);color:var(--sheet)}
 .group[aria-pressed="true"] small{color:var(--sheet);opacity:.75}
+/* chosen sub: area-colour line on the rounded bottom edge only, like the area cards (RYU 2026-11-15, v1.28) */
+.sub[aria-selected="true"]{border-color:var(--line);border-bottom:3px solid var(--accent);box-shadow:none;padding-bottom:3px}
