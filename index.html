@@ -517,6 +517,9 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .group i{display:none}
 .group .gn,.group small{padding-left:4px}
 .group{border-top:3px solid var(--accent);border-bottom:3px solid var(--accent);padding-top:4px;padding-bottom:4px}  /* bottom line too (v1.26) */
+/* chosen area: inside shown in reverse (light on dark screens, dark on light), colour lines stay (RYU 2026-11-15, v1.27) */
+.group[aria-pressed="true"]{background:var(--ink);border-left-color:var(--ink);border-right-color:var(--ink);border-top-color:var(--accent);border-bottom-color:var(--accent);color:var(--sheet)}
+.group[aria-pressed="true"] small{color:var(--sheet);opacity:.75}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -662,6 +665,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-15%20v1.26"></script>
-<script src="app.js?v=2026-11-15%20v1.26"></script>
+<script src="audio/index.js?v=2026-11-15%20v1.27"></script>
+<script src="app.js?v=2026-11-15%20v1.27"></script>
 </body></html>
