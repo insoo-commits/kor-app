@@ -258,7 +258,7 @@ const note = pair => [h("p", {class: "note-lo"}, pair[1] || pair[0]), S.showKo &
 /* ※ key words of a sentence: [[word, Lao-script reading, Lao meaning], …] */
 const gloss = g => g && g.length ? h("div", {class: "gl"}, "※ ", g.flatMap((x, j) => [j ? " · " : null, h("span", {class: "ko"}, x[0]), " ", h("span", {class: "p"}, x[1]), " (", h("span", {class: "gm"}, x[2]), ")"])) : null;
 /* base form of a conjugation row ("저 ຂ້ອຍ"), shown at the bottom like the ※ notes */
-const fromNote = f => { if (!f) return null; const m = f.match(/^([^\u0E80-\u0EFF]*?)\s*([\u0E80-\u0EFF].*)?$/);
+const fromNote = f => { if (!f) return null; const m = f.match(/^([가-힣\s?!.~\-\/]*[가-힣?!.~])\s*(.*)$/);
   return h("div", {class: "gl"}, "※ ", h("span", {class: "ko"}, m ? m[1] : f), m && m[2] ? [" (", h("span", {class: "gm"}, m[2]), ")"] : null); };
 const line = (ko, pr, lo, cls, from, g) => h("div", {class: "line " + (cls || ""), "data-say": ko, "data-lo": lo, "data-head": cls === "head" ? "1" : null}, spk(),
   h("div", null, h("div", {class: "k ko"}, ko), pr ? h("div", {class: "p"}, pr) : null, h("div", {class: "m"}, lo), gloss(g), fromNote(from)));
@@ -283,7 +283,7 @@ function renderLearn(b){
       h("tbody", null, b.x.slice(1).map(r => h("tr", null, r.map(c => h("td", null, c)))))))) : null,
     sec("w", (b.w || []).map(wordBox)),
     sec("f", (b.f || []).map(wordBox)),
-    sec("c", (b.c || []).length ? h("div", {class: "rows grid2"}, b.c.map(c => line(c[1], c[2], c[3], "", c[0]))) : null),
+    sec("c", (b.c || []).length ? h("div", {class: "rows grid2"}, b.c.map(c => line(c[1], c[2], c[3], "", c[4] ? null : c[0], c[4]))) : null),
     sec("e", (b.e || []).length ? h("div", {class: "rows grid2"}, b.e.map(e => line(e[0], e[1], e[2], "", null, e[3]))) : null),
     sec("tp", (b.tp || []).map(t => h("div", {class: "tip"}, note(t)))),
     sec("pr", (b.pr || []).length ? h("div", {class: "pairs"}, b.pr.map(p => h("div", {class: "pair"}, p.flatMap((x, j) => j ? [h("i", null, "↔"), x] : [x])))) : null),
