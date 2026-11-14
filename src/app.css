@@ -479,3 +479,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .wrep{min-width:7.7em;justify-content:center;text-align:center;box-sizing:border-box}
 /* area chip: Korean line left-aligned under the Lao name (RYU 2026-11-15, v1.13) */
 .group small{text-align:left;padding-left:18px}
+/* footer lines run on without gaps (RYU 2026-11-15, v1.15) */
+.foot,.dlline,.ver{margin:0;line-height:1.55}
+.foot:empty{display:none}
+.foot+.foot,.foot+.dlline,.dlline+.ver,.foot+.ver{margin-top:-12px}
