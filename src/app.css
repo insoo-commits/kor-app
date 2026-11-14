@@ -454,3 +454,12 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* ※ note line runs to the right edge of the card, under the speaker column (speaker 38px + 12px gap; phone 34 + 10) (RYU 2026-11-14) */
 .line .gl{margin-right:-50px}
 @media (max-width:759px){ .line .gl{margin-right:-44px} }
+/* ※ note line: Korean words in grey instead of full black/white (dark grey on light, light grey on dark);
+   speaker buttons get a soft tint of the area colour so they stand apart from the grey cards, without shouting (RYU 2026-11-14) */
+:root{--gl-ko:#4A5351}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--gl-ko:#B4BEBB}}
+:root[data-theme="dark"]{--gl-ko:#B4BEBB}
+.gl .ko{color:var(--gl-ko)}
+.spk{background:color-mix(in srgb,var(--accent) 9%,var(--sheet));border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.spk .ico{color:var(--accent)}
+.spk:hover,.spk.on{background:color-mix(in srgb,var(--accent) 18%,var(--sheet));border-color:var(--accent)}
