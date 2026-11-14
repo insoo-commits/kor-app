@@ -261,7 +261,7 @@ function drawControls(){
   const lab = r => [h("span", {class: "ddk"}, (S.done[r[0]] ? "✓ " : "") + r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : ""];
   const curRow = rows.find(r => r[0] === S.code) || rows[0];
   $("bselBtn").replaceChildren(...lab(curRow));
-  $("bselList").replaceChildren(...rows.map(r => h("button", {type: "button", class: "ddi", role: "option", "aria-selected": r[0] === S.code ? "true" : "false", onclick: () => { ddClose(); go(r[0]); }}, ...lab(r))));
+  $("bselList").replaceChildren(...rows.map(r => h("button", {type: "button", class: "ddi", role: "option", "aria-selected": r[0] === S.code ? "true" : "false", onclick: () => { ddClose(); go(r[0]); }}, r[0] === S.code ? h("span", {class: "ddck", "aria-hidden": "true"}, "✔") : null, ...lab(r))));   // chosen lesson gets its own coloured check (RYU 2026-11-15)
   document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === S.mode ? "true" : "false"));
   $("repSel").value = S.rep; $("rateSel").value = S.rate;
 }
