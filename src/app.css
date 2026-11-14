@@ -78,6 +78,7 @@ h1{font-family:var(--display);font-size:clamp(30px,7vw,48px);line-height:1.1;mar
 .band .tags{display:flex;gap:6px;flex-wrap:wrap;font-size:14px}
 .tag{border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:1px 10px;color:var(--muted);white-space:nowrap}
 .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--line);background:var(--raise)}
+.ctl{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted,inherit);white-space:nowrap}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--sheet)}
 .seg button{border:0;background:none;padding:6px 14px;font-weight:600;font-size:16px}
 .seg button+button{border-left:1px solid var(--line)}
@@ -182,6 +183,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   /* controls: tabs, then the lesson list, then times + speed side by side */
   .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px}
   .controls .seg,#bsel{grid-column:1 / -1;width:100%}
+  .ctl{min-width:0;flex-direction:column;align-items:stretch;gap:2px} .ctl select{width:100%}
   #bsel{text-overflow:ellipsis}
   .cardnav{grid-template-columns:1fr auto 1fr}
   .cardnav .prev{grid-column:1;grid-row:1}

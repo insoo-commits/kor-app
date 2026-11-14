@@ -87,6 +87,7 @@ h1{font-family:var(--display);font-size:clamp(30px,7vw,48px);line-height:1.1;mar
 .band .tags{display:flex;gap:6px;flex-wrap:wrap;font-size:14px}
 .tag{border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:1px 10px;color:var(--muted);white-space:nowrap}
 .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--line);background:var(--raise)}
+.ctl{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted,inherit);white-space:nowrap}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--sheet)}
 .seg button{border:0;background:none;padding:6px 14px;font-weight:600;font-size:16px}
 .seg button+button{border-left:1px solid var(--line)}
@@ -191,6 +192,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   /* controls: tabs, then the lesson list, then times + speed side by side */
   .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px}
   .controls .seg,#bsel{grid-column:1 / -1;width:100%}
+  .ctl{min-width:0;flex-direction:column;align-items:stretch;gap:2px} .ctl select{width:100%}
   #bsel{text-overflow:ellipsis}
   .cardnav{grid-template-columns:1fr auto 1fr}
   .cardnav .prev{grid-column:1;grid-row:1}
@@ -340,18 +342,18 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
         <button id="m-quiz" data-mode="quiz" type="button">ແບບທົດສອບ</button>
       </div>
       <select id="bsel" class="bsel" aria-label="ເລືອກບົດ"></select>
-      <select id="repSel" class="bsel" aria-label="ຈຳນວນຄັ້ງທີ່ອ່ານ"><option value="1">1회</option><option value="2">2회</option><option value="3">3회</option><option value="4">4회</option><option value="5">5회</option></select>
-      <select id="rateSel" class="bsel" aria-label="ຄວາມໄວ"><option value="0.8">x 0.8</option><option value="1">x 1.0</option><option value="1.2">x 1.2</option><option value="1.5">x 1.5</option><option value="2">x 2.0</option></select>
+      <label class="ctl"><span>ຈຳນວນເທື່ອ <span class="ko">횟수</span></span><select id="repSel" class="bsel"><option value="1">1 ເທື່ອ</option><option value="2">2 ເທື່ອ</option><option value="3">3 ເທື່ອ</option><option value="4">4 ເທື່ອ</option><option value="5">5 ເທື່ອ</option></select></label>
+      <label class="ctl"><span>ຄວາມໄວ <span class="ko">속도</span></span><select id="rateSel" class="bsel"><option value="0.8">×0.8</option><option value="1">×1.0</option><option value="1.2">×1.2</option><option value="1.5">×1.5</option><option value="2">×2.0</option></select></label>
     </div>
     <div class="body" id="view"><p class="empty">ກຳລັງໂຫຼດ…</p></div>
   </section>
   <div class="player" id="player" hidden><span class="t ko" id="pt"></span><button id="ppause" type="button">ຢຸດຊົ່ວຄາວ</button><button id="pstop" type="button">ຍົກເລີກ</button></div>
   <p class="foot" id="voiceNote"></p>
-  <p class="foot">ປຸ່ມ <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></span>ອ່ານອອກສຽງພາສາເກົາຫຼີ. ປຸ່ມ <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>ອ່ານແຕ່ລະປະໂຫຍກຕາມຈຳນວນຄັ້ງທີ່ເລືອກ (1–5회) ແລະ ຫຼິ້ນຊ້ຳໄປເລື້ອຍໆ ຈົນກວ່າຈະກົດປຸ່ມນັ້ນອີກເທື່ອໜຶ່ງ ຫຼື ກົດ “ຍົກເລີກ”. ເຄື່ອງໝາຍ “ຈື່ແລ້ວ” ແລະ “ຮຽນຈົບແລ້ວ” ຖືກບັນທຶກໄວ້ໃນອຸປະກອນນີ້ເທົ່ານັ້ນ. ປະໂຫຍກຕົວຢ່າງແມ່ນແຕ່ງຂຶ້ນເພື່ອການຮຽນ.</p>
+  <p class="foot">ປຸ່ມ <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></span>ອ່ານອອກສຽງພາສາເກົາຫຼີ. ປຸ່ມ <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>ອ່ານແຕ່ລະປະໂຫຍກຕາມຈຳນວນຄັ້ງທີ່ເລືອກ (1–5 ເທື່ອ) ແລະ ຫຼິ້ນຊ້ຳໄປເລື້ອຍໆ ຈົນກວ່າຈະກົດປຸ່ມນັ້ນອີກເທື່ອໜຶ່ງ ຫຼື ກົດ “ຍົກເລີກ”. ເຄື່ອງໝາຍ “ຈື່ແລ້ວ” ແລະ “ຮຽນຈົບແລ້ວ” ຖືກບັນທຶກໄວ້ໃນອຸປະກອນນີ້ເທົ່ານັ້ນ. ປະໂຫຍກຕົວຢ່າງແມ່ນແຕ່ງຂຶ້ນເພື່ອການຮຽນ.</p>
   <p class="dlline" id="dlbox"><a href="#" id="dlAll">⤓ ດາວໂຫຼດສຽງ mp3 (zip) · <span class="ko">음성 내려받기</span></a> <span class="count" id="dlMsg"></span></p>
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-14%20v0.52"></script>
-<script src="app.js?v=2026-11-14%20v0.52"></script>
+<script src="audio/index.js?v=2026-11-14%20v0.53"></script>
+<script src="app.js?v=2026-11-14%20v0.53"></script>
 </body></html>
