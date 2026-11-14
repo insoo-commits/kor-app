@@ -429,6 +429,14 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .dlg .line{grid-template-columns:22px minmax(0,1fr) 34px;column-gap:10px}
   .dlg .line>.exn{width:20px;height:20px;font-size:11px;margin-top:2px}
 }
+/* review-quiz questions carry the same round number badge as examples and dialogue lines (RYU 2026-11-14) */
+.qa .qq{display:flex;align-items:flex-start;gap:12px;min-width:0}
+.qa .qq>.ko{min-width:0}
+.qa .qq>.exn{flex:none;display:grid;place-items:center;width:22px;height:22px;margin-top:2px;padding:0;border-radius:50%;
+  background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;line-height:1}
+.qa .qq~.a,.qa .qq~button{margin-left:34px}
+@media (min-width:760px){.qa .qq~.a,.qa .qq~button{margin-left:0}}
+@media (max-width:759px){.qa .qq{gap:10px}.qa .qq>.exn{width:20px;height:20px;font-size:11px}.qa .qq~.a,.qa .qq~button{margin-left:30px}}
 </style></head>
 <body>
 <div class="wrap" id="app" data-g="K1">
@@ -490,6 +498,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-14%20v0.82"></script>
-<script src="app.js?v=2026-11-14%20v0.82"></script>
+<script src="audio/index.js?v=2026-11-14%20v0.83"></script>
+<script src="app.js?v=2026-11-14%20v0.83"></script>
 </body></html>

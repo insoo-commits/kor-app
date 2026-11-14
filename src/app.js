@@ -314,8 +314,8 @@ function renderLearn(b){
     sec("dl", dl.length ? [
       h("div", {class: "rows dlg"}, dl.map((d, n) => h("div", {class: "line", "data-say": d[1], "data-lo": d[2]}, h("div", {class: "exn", "aria-label": String(n + 1)}, String(n + 1)), spk(), h("div", null, h("div", {class: "k ko"}, d[1]), d[4] ? h("div", {class: "p"}, d[4]) : null, h("div", {class: "m"}, d[2]), gloss(d[3])))))] : null),   // d[4]: Lao-script reading, as in the example sentences (RYU 2026-11-14)
     sec("sm", b.sm && b.sm.length ? h("div", {class: "tip"}, note(b.sm)) : null),
-    sec("qz", (b.qz || []).map(q => { const a = h("div", {class: "a", hidden: true}, q[1]);
-      return h("div", {class: "qa"}, h("div", {class: "ko"}, q[0]), a, h("button", {class: "btn", type: "button", onclick: ev => { a.hidden = false; ev.currentTarget.remove(); }}, T.showAns)); })),
+    sec("qz", (b.qz || []).map((q, n) => { const a = h("div", {class: "a", hidden: true}, q[1]);
+      return h("div", {class: "qa"}, h("div", {class: "qq"}, h("div", {class: "exn", "aria-label": String(n + 1)}, String(n + 1)), h("div", {class: "ko"}, q[0])), a, h("button", {class: "btn", type: "button", onclick: ev => { a.hidden = false; ev.currentTarget.remove(); }}, T.showAns)); })),
     h("div", {class: "rowbtns", style: "justify-content:space-between"},
       h("button", {class: "btn" + (isDone ? " good" : ""), type: "button", onclick: () => { if (isDone) delete S.done[b.code]; else S.done[b.code] = 1; save(); drawAll(); }}, isDone ? "✓ " + T.done : T.markDone),
       next ? h("button", {class: "btn primary", type: "button", onclick: () => go(next[0])}, T.next) : null)
