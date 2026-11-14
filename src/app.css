@@ -409,3 +409,14 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .sec .word .exs .line.ex{padding:8px 10px}
   .sec .word .exs{margin-top:6px}
 }
+/* dialogue lines carry the same round number badge as the example cards (RYU 2026-11-14) */
+.dlg .line{grid-template-columns:24px minmax(0,1fr) 38px;column-gap:12px}
+.dlg .line>.exn{display:grid;grid-column:1;grid-row:1;place-items:center;width:22px;height:22px;margin-top:3px;padding:0;
+  border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;line-height:1}
+.dlg .line>div:not(.exn){grid-column:2}
+.dlg .line>.spk{grid-column:3}
+.dlg .line.now>.exn{background:var(--now-bar);color:var(--sheet)}
+@media (max-width:759px){
+  .dlg .line{grid-template-columns:22px minmax(0,1fr) 34px;column-gap:10px}
+  .dlg .line>.exn{width:20px;height:20px;font-size:11px;margin-top:2px}
+}
