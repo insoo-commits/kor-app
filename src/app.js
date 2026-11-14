@@ -338,7 +338,7 @@ function wordBox(w){ const ex = w[3] || [];
   head.append(h("button", {class: "wrep", type: "button", title: T.repWord, onclick: ev => { ev.stopPropagation(); playWord(ev.currentTarget.closest(".word")); }}, ico("rep"), T.repWord));
   const cards = ex.map((e, n) => { const c = line(e[0], e[1], e[2], "ex", null, e[3]), body = c.children[1], k = body.querySelector(".k");
     const parts = hlWord(e[0], w[0]); if (parts) k.replaceChildren(...parts);
-    c.prepend(h("div", {class: "exn"}, T.example + " " + (n + 1))); return c; });
+    c.prepend(h("div", {class: "exn", title: T.example + " " + (n + 1), "aria-label": T.example + " " + (n + 1)}, String(n + 1))); return c; });
   return h("div", {class: "word" + (ex.length ? "" : " solo")}, head, ex.length ? h("div", {class: "exs"}, cards) : null); }
 
 /* ---------- cards ---------- */

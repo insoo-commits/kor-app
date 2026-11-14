@@ -386,6 +386,19 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* the word-repeat button sits at the top of the word line, level with the word (RYU 2026-11-14) */
 .sec .word>.line.head{align-items:start}
 .sec .word>.line.head>.wrep{align-self:start;margin-top:2px}
+
+/* example number: a small round badge in a narrow left column instead of the "ຕົວຢ່າງ N" text, on every screen,
+   so the sentences are set in a little from the left without losing width (RYU 2026-11-14) */
+.sec .word .exs .line.ex{grid-template-columns:24px minmax(0,1fr) 38px;column-gap:12px}
+.sec .word .exs .line.ex>.exn{display:grid;grid-column:1;grid-row:1;place-items:center;width:22px;height:22px;margin-top:3px;padding:0;
+  border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;line-height:1}
+.sec .word .exs .line.ex.now>.exn{background:var(--now-bar);color:var(--sheet)}
+@media (max-width:759px){
+  .sec .word .exs .line.ex{grid-template-columns:22px minmax(0,1fr) 34px;column-gap:10px}
+  .sec .word .exs .line.ex>div:not(.exn){grid-column:2}
+  .sec .word .exs .line.ex>.spk{grid-column:3}
+  .sec .word .exs .line.ex>.exn{width:20px;height:20px;font-size:11px;margin-top:2px}
+}
 </style></head>
 <body>
 <div class="wrap" id="app" data-g="K1">
@@ -447,6 +460,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-14%20v0.78"></script>
-<script src="app.js?v=2026-11-14%20v0.78"></script>
+<script src="audio/index.js?v=2026-11-14%20v0.79"></script>
+<script src="app.js?v=2026-11-14%20v0.79"></script>
 </body></html>
