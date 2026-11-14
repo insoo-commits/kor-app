@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 const areaOf = c => c.slice(0, 2), subOf = c => c.slice(0, 4);
 const T = {
   sec: {m: "ວິທີສ້າງປະໂຫຍກ", l: "ຕົວອັກສອນ", x: "ຕາຕະລາງ", w: "ຄຳສັບ", f: "ສຳນວນທີ່ໃຊ້ເລື້ອຍໆ", c: "ການປ່ຽນຮູບຄຳ", e: "ປະໂຫຍກຕົວຢ່າງ", tp: "ຂໍ້ແນະນຳ", pr: "ຄຳຄູ່", dl: "ບົດສົນທະນາ", sm: "ສະຫຼຸບ", qz: "ຄຳຖາມທວນຄືນ"},
-  level: "ລະດັບ", repBundle: "ຟັງຊ້ຳບົດນີ້", repDlg: "ຟັງບົດສົນທະນາຊ້ຳ", repWord: "ຟັງຊ້ຳຄຳນີ້", repGroup: "ຟັງຊ້ຳກຸ່ມນີ້", repSents: "ຟັງປະໂຫຍກຕົວຢ່າງຊ້ຳ", repLetters: "ຟັງຕົວອັກສອນຕໍ່ເນື່ອງ", repAll: "ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
+  level: "ລະດັບ", repBundle: "ຟັງຊ້ຳບົດນີ້", repDlg: "ຟັງບົດສົນທະນາຊ້ຳ", repWord: "ຟັງຊ້ຳຄຳນີ້", repGroup: "ຟັງຊ້ຳກຸ່ມນີ້", repLetters: "ຟັງຕົວອັກສອນຕໍ່ເນື່ອງ", repAll: "ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
   hidePr: "ເຊື່ອງຄຳອ່ານ", showKo: "ສະແດງຄຳອະທິບາຍພາສາເກົາຫຼີ", known: "ຈື່ແລ້ວ", flip: "ແຕະເພື່ອເບິ່ງຄວາມໝາຍ", onlyNew: "ສະເພາະຄຳທີ່ຍັງບໍ່ຈື່",
   showAns: "ເບິ່ງຄຳຕອບ", again: "ເຮັດອີກຄັ້ງ", score: "ຄະແນນ", noCards: "ບົດນີ້ບໍ່ມີບັດຄຳ.", allKnown: "ຈື່ໝົດທຸກຄຳແລ້ວ!", noQuiz: "ບົດນີ້ມີຄຳສັບບໍ່ພໍສຳລັບແບບທົດສອບ.",
   pick: "ເລືອກຄວາມໝາຍທີ່ຖືກຕ້ອງ", pickKo: "ເລືອກຄຳພາສາເກົາຫຼີທີ່ຖືກຕ້ອງ", loading: "ກຳລັງໂຫຼດ…", loadFail: "ໂຫຼດບົດຮຽນບໍ່ໄດ້. ກະລຸນາເປີດໜ້ານີ້ຄືນໃໝ່.",
@@ -198,18 +198,19 @@ async function playDialogue(box){
     if (tok !== P.tok) return;
   }
 }
-/* sentence repeat (word and expression sections): only the example sentences of that section, each S.rep times,
-   in order, round and round until stopped; the same button stops it */
+/* section repeat (word and expression sections), RYU 2026-11-14: for each word in turn, the word in Korean, its Lao
+   meaning, then the word in Korean as many times as 횟수 says; after that each of its example sentences in Korean
+   that many times; then the next word. Round and round until stopped; the same button stops it */
 async function playSents(box){
   if (P.mode === "sents" && P.box === box) return stopPlay();
   stopPlay();
   const tok = ++P.tok; P.mode = "sents"; P.box = box; P.paused = false; P.round = 1;
   box.classList.add("playing");
   for (;;){
-    const q = [...box.querySelectorAll(".exs [data-say]")];
+    const q = [...box.querySelectorAll("[data-say]")].map(el => ({el, ko: el.dataset.say, lo: el.dataset.lo || "", head: el.dataset.head === "1"}));
     if (!q.length) return stopPlay();
     for (let i = 0; i < q.length; i++)
-      if (!(await sayItem(tok, {el: q[i], ko: q[i].dataset.say}, "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round))) return;
+      if (!(await sayItem(tok, q[i], "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round))) return;
     P.round++; await gap(600);
     if (tok !== P.tok) return;
   }
@@ -275,9 +276,8 @@ const sec = (key, ...kids) => kids.flat().filter(Boolean).length ? h("section", 
   key === "l" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playWord(ev.currentTarget.closest(".sec").querySelector(".letters"))}, ico("rep"), T.repLetters)
   : key === "c" || key === "e" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playWord(ev.currentTarget.closest(".sec").querySelector(".rows"))}, ico("rep"), T.repGroup)
   : key === "dl" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playDialogue(ev.currentTarget.closest(".sec").querySelector(".dlg"))}, ico("rep"), T.repDlg)
-  /* words and expressions: repeat only the example sentences of the section, same place and look as the dialogue repeat (RYU 2026-11-14) */
-  : (key === "w" || key === "f") && kids.flat().some(k => k && k.querySelector && k.querySelector(".exs [data-say]"))
-    ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playSents(ev.currentTarget.closest(".sec"))}, ico("rep"), T.repSents) : null), kids) : null;
+  /* words and expressions: repeat the whole section, word by word, same place and look as the dialogue repeat (RYU 2026-11-14) */
+  : key === "w" || key === "f" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playSents(ev.currentTarget.closest(".sec"))}, ico("rep"), T.repGroup) : null), kids) : null;
 const note = pair => [h("p", {class: "note-lo"}, pair[1] || pair[0]), S.showKo && pair[1] ? h("p", {class: "note-ko ko"}, pair[0]) : null];
 /* ※ key words of a sentence: [[word, Lao-script reading, Lao meaning], …] */
 const gloss = g => g && g.length ? h("div", {class: "gl"}, "※ ", g.flatMap((x, j) => [j ? " · " : null, h("span", {class: "ko"}, x[0]), " ", h("span", {class: "p"}, x[1]), " (", h("span", {class: "gm"}, x[2]), ")"])) : null;
