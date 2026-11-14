@@ -1,5 +1,5 @@
-/* iPad control row: a little less than the 1.35x text so the row stays on one line, boxes a bit taller (RYU 2026-11-14, v0.96) */
-html.tab .controls .seg button{font-size:19px;height:38px}
-html.tab .controls .bsel{font-size:19px;height:40px}
-html.tab .controls .ctl{font-size:16px}
-html.tab .ddi{font-size:19px}
+/* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
+html.tab .controls .seg button{font-size:18px;height:36px}
+html.tab .controls .bsel{font-size:18px;height:38px}
+html.tab .controls .ctl{font-size:15px}
+html.tab .ddi{font-size:17px}

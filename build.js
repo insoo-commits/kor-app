@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-14 v0.96";
+const VER = "2026-11-14 v0.97";
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
 fs.mkdirSync(path.join(root, "preview"), {recursive: true});
@@ -27,7 +27,7 @@ for (const [a] of M.areas){
 const meta = "window.KO_META=" + JSON.stringify({areas: M.areas, subs: M.subs, idx, ver: VER}) + ";";
 // iPad / large touch screens (html.tab, set by the same check as the Lao app): text bigger, layout width unchanged.
 // Every px font-size in app.css gets an html.tab copy scaled by TAB_K, inside the same @media block (RYU 2026-11-14, v0.96).
-const TAB_K = 1.35;
+const TAB_K = 1.2;
 function tabCss(src){
   const s = src.replace(/\/\*[\s\S]*?\*\//g, ""), out = [];
   const pre = sel => sel.split(",").map(x => x.trim()).filter(Boolean).map(x => /^(html|:root)\b/.test(x) ? x.replace(/^(html|:root)/, "html.tab") : "html.tab " + x).join(",");
