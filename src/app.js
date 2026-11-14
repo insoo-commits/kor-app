@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 const areaOf = c => c.slice(0, 2), subOf = c => c.slice(0, 4);
 const T = {
   sec: {m: "ວິທີສ້າງປະໂຫຍກ", l: "ຕົວອັກສອນ", x: "ຕາຕະລາງ", w: "ຄຳສັບ", f: "ສຳນວນທີ່ໃຊ້ເລື້ອຍໆ", c: "ການປ່ຽນຮູບຄຳ", e: "ປະໂຫຍກຕົວຢ່າງ", tp: "ຂໍ້ແນະນຳ", pr: "ຄຳຄູ່", dl: "ບົດສົນທະນາ", sm: "ສະຫຼຸບ", qz: "ຄຳຖາມທວນຄືນ"},
-  level: "ລະດັບ", repBundle: "ຟັງຊ້ຳບົດນີ້", repDlg: "ຟັງບົດສົນທະນາຊ້ຳ", repWord: "ຟັງຊ້ຳຄຳນີ້", repGroup: "ຟັງຊ້ຳກຸ່ມນີ້", repLetters: "ຟັງຕົວອັກສອນຕໍ່ເນື່ອງ", repAll: "ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
+  level: "ລະດັບ", repBundle: "ຟັງຊ້ຳບົດນີ້", repDlg: "ຟັງບົດສົນທະນາຊ້ຳ", repWord: "ຟັງຊ້ຳຄຳນີ້", repGroup: "ຟັງຊ້ຳກຸ່ມນີ້", example: "ຕົວຢ່າງ", repLetters: "ຟັງຕົວອັກສອນຕໍ່ເນື່ອງ", repAll: "ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
   hidePr: "ເຊື່ອງຄຳອ່ານ", showKo: "ສະແດງຄຳອະທິບາຍພາສາເກົາຫຼີ", known: "ຈື່ແລ້ວ", flip: "ແຕະເພື່ອເບິ່ງຄວາມໝາຍ", onlyNew: "ສະເພາະຄຳທີ່ຍັງບໍ່ຈື່",
   showAns: "ເບິ່ງຄຳຕອບ", again: "ເຮັດອີກຄັ້ງ", score: "ຄະແນນ", noCards: "ບົດນີ້ບໍ່ມີບັດຄຳ.", allKnown: "ຈື່ໝົດທຸກຄຳແລ້ວ!", noQuiz: "ບົດນີ້ມີຄຳສັບບໍ່ພໍສຳລັບແບບທົດສອບ.",
   pick: "ເລືອກຄວາມໝາຍທີ່ຖືກຕ້ອງ", pickKo: "ເລືອກຄຳພາສາເກົາຫຼີທີ່ຖືກຕ້ອງ", loading: "ກຳລັງໂຫຼດ…", loadFail: "ໂຫຼດບົດຮຽນບໍ່ໄດ້. ກະລຸນາເປີດໜ້ານີ້ຄືນໃໝ່.",
@@ -323,10 +323,23 @@ function renderLearn(b){
 }
 
 /* a headword (word or expression) with its example sentences */
+/* the headword inside an example sentence, underlined: the word itself, or the stem of a -다 word (가다 → 가),
+   or for longer stems one syllable less (출근하다 → 출근 in 출근해요). Returns null when it is not found. */
+function hlWord(sent, head){
+  const base = head.replace(/\(.*?\)/g, "").replace(/[~\-]/g, "").trim(); if (!base) return null;
+  const stem = base.replace(/다$/, ""), tries = [base, stem];
+  if (stem.length >= 2) tries.push(stem.slice(0, -1));
+  for (const t of tries){ if (!t) continue; const at = sent.indexOf(t);
+    if (at >= 0) return [sent.slice(0, at), h("span", {class: "hw"}, t), sent.slice(at + t.length)]; }
+  return null;
+}
 function wordBox(w){ const ex = w[3] || [];
-  return h("div", {class: "word" + (ex.length ? "" : " solo")},
-    h("button", {class: "wrep", type: "button", title: T.repWord, onclick: ev => { ev.stopPropagation(); playWord(ev.currentTarget.closest(".word")); }}, ico("rep"), T.repWord),
-    line(w[0], w[1], w[2], "head"), ex.length ? h("div", {class: "exs"}, ex.map(e => line(e[0], e[1], e[2], "ex", null, e[3]))) : null); }
+  const head = line(w[0], w[1], w[2], "head");
+  head.append(h("button", {class: "wrep", type: "button", title: T.repWord, onclick: ev => { ev.stopPropagation(); playWord(ev.currentTarget.closest(".word")); }}, ico("rep"), T.repWord));
+  const cards = ex.map((e, n) => { const c = line(e[0], e[1], e[2], "ex", null, e[3]), body = c.children[1], k = body.querySelector(".k");
+    const parts = hlWord(e[0], w[0]); if (parts) k.replaceChildren(...parts);
+    c.prepend(h("div", {class: "exn"}, T.example + " " + (n + 1))); return c; });
+  return h("div", {class: "word" + (ex.length ? "" : " solo")}, head, ex.length ? h("div", {class: "exs"}, cards) : null); }
 
 /* ---------- cards ---------- */
 function items(b){
