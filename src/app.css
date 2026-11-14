@@ -215,16 +215,16 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .sec:has(> .word)>h3{grid-column:1 / -1;margin-bottom:0}
   .sec .word{display:grid;grid-template-columns:subgrid;grid-column:1 / -1}
   .sec .word+.word{margin-top:0}
-  .sec .word>.line.head{background:var(--accent-soft);min-width:200px;align-content:center;align-items:center}
+  .sec .word>.line.head{background:var(--accent-soft);min-width:200px;align-content:center}
   .sec .word>.line.head .k{font-size:19px;font-weight:700;line-height:1.5}
   .sec .word>.line.head .m{font-size:inherit}
   .sec .word .exs{border-left:1px solid var(--line)}
   .sec .word .exs .line{flex:1;align-content:center;padding-left:14px}
   .sec .word .exs .line:first-child{border-top:0}
-  /* example sentence: speaker button on the left, in front of the Korean line, and the Lao meaning left-aligned,
-     the same as on the phone (RYU 2026-11-14, PC and tablet) */
-  .sec .word .exs .line{align-items:start}
-  .sec .word .exs .line>.spk{margin-top:-4px}
+  /* every row (headword, example sentence, dialogue, conjugation): speaker button on the left at the top, level with
+     the Korean line, and the Lao meaning left-aligned, the same as on the phone (RYU 2026-11-14, PC and tablet) */
+  .line{align-items:start}
+  .line>.spk{margin-top:-4px}
   /* conjugation and example rows: two per row */
   .rows.grid2{display:grid;grid-template-columns:1fr 1fr}
   .rows.grid2>.line{border-top:0;border-bottom:1px solid var(--line);margin-bottom:-1px}
