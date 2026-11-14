@@ -509,7 +509,9 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .group .gn{padding-left:12px}
 .group small{padding-left:12px}
 /* sub cards: no top colour line; the chosen card shows by its border colour (RYU 2026-11-15, v1.23) */
-.sub{border-top:1px solid var(--line);border-radius:12px;padding-top:9px}
+.sub{border-top:1px solid var(--line);border-radius:12px;padding:4px 12px 5px;line-height:1.3}
+.sub .name{font-size:14.5px}
+.sub .kn,.sub .prog{font-size:12px}  /* sub cards a bit smaller and flatter than area cards (RYU 2026-11-15, v1.24) */
 .sub[aria-selected="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
 
 /* tablet text (generated) */
@@ -588,6 +590,8 @@ html.tab .top .stats{font-size:14.4px}
 html.tab .top .stats b{font-size:16.8px}
 html.tab .band #bsel .bsel{font-size:24px}
 @media (max-width:759px){html.tab .band #bsel .bsel{font-size:21.6px}}
+html.tab .sub .name{font-size:17.4px}
+html.tab .sub .kn,html.tab .sub .prog{font-size:14.4px}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -654,6 +658,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-15%20v1.23"></script>
-<script src="app.js?v=2026-11-15%20v1.23"></script>
+<script src="audio/index.js?v=2026-11-15%20v1.24"></script>
+<script src="app.js?v=2026-11-15%20v1.24"></script>
 </body></html>
