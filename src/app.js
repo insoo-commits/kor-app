@@ -7,13 +7,19 @@ const $ = id => document.getElementById(id);
 const areaOf = c => c.slice(0, 2), subOf = c => c.slice(0, 4);
 const T = {
   sec: {m: "ວິທີສ້າງປະໂຫຍກ", l: "ຕົວອັກສອນ", x: "ຕາຕະລາງ", w: "ຄຳສັບ", f: "ສຳນວນທີ່ໃຊ້ເລື້ອຍໆ", c: "ການປ່ຽນຮູບຄຳ", e: "ປະໂຫຍກຕົວຢ່າງ", tp: "ຂໍ້ແນະນຳ", pr: "ຄຳຄູ່", dl: "ບົດສົນທະນາ", sm: "ສະຫຼຸບ", qz: "ຄຳຖາມທວນຄືນ"},
-  level: "ລະດັບ", repBundle: "🔁 ຟັງຊ້ຳບົດນີ້", repDlg: "🔁 ຟັງບົດສົນທະນາຊ້ຳ", repWord: "🔁 ຟັງຊ້ຳຄຳນີ້", repLetters: "🔁 ຟັງຕົວອັກສອນຕໍ່ເນື່ອງ", repAll: "🔁 ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
+  level: "ລະດັບ", repBundle: "ຟັງຊ້ຳບົດນີ້", repDlg: "ຟັງບົດສົນທະນາຊ້ຳ", repWord: "ຟັງຊ້ຳຄຳນີ້", repLetters: "ຟັງຕົວອັກສອນຕໍ່ເນື່ອງ", repAll: "ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
   hidePr: "ເຊື່ອງຄຳອ່ານ", showKo: "ສະແດງຄຳອະທິບາຍພາສາເກົາຫຼີ", known: "ຈື່ແລ້ວ", flip: "ແຕະເພື່ອເບິ່ງຄວາມໝາຍ", onlyNew: "ສະເພາະຄຳທີ່ຍັງບໍ່ຈື່",
   showAns: "ເບິ່ງຄຳຕອບ", again: "ເຮັດອີກຄັ້ງ", score: "ຄະແນນ", noCards: "ບົດນີ້ບໍ່ມີບັດຄຳ.", allKnown: "ຈື່ໝົດທຸກຄຳແລ້ວ!", noQuiz: "ບົດນີ້ມີຄຳສັບບໍ່ພໍສຳລັບແບບທົດສອບ.",
   pick: "ເລືອກຄວາມໝາຍທີ່ຖືກຕ້ອງ", pickKo: "ເລືອກຄຳພາສາເກົາຫຼີທີ່ຖືກຕ້ອງ", loading: "ກຳລັງໂຫຼດ…", loadFail: "ໂຫຼດບົດຮຽນບໍ່ໄດ້. ກະລຸນາເປີດໜ້ານີ້ຄືນໃໝ່.",
   noHit: "ບໍ່ພົບຜົນການຄົ້ນຫາ.", searching: "ກຳລັງຄົ້ນຫາ…", lessons: "ບົດ", words: "ຄຳ",
   noVoice: "ອຸປະກອນນີ້ບໍ່ມີສຽງພາສາເກົາຫຼີ. ກະລຸນາຕິດຕັ້ງສຽງພາສາເກົາຫຼີໃນການຕັ້ງຄ່າ ຫຼື ໃຊ້ Chrome / Edge."
 };
+/* line icons (speaker, repeat) instead of emoji, so they take the theme colour */
+const ICO = {
+  spk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
+  rep: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>'
+};
+function ico(name){ const s = document.createElement("span"); s.className = "ico"; s.setAttribute("aria-hidden", "true"); s.innerHTML = ICO[name]; return s; }
 function h(tag, attrs, ...kids){
   const el = document.createElement(tag);
   if (attrs) for (const k in attrs){
@@ -94,7 +100,8 @@ function mark(el){
 }
 function showPlayer(text){
   $("player").hidden = !P.mode;
-  $("pt").textContent = text || "";
+  const t = text || "", m = t.match(/^(🔊|🔁)\s*/);
+  $("pt").replaceChildren(...(m ? [ico(m[1] === "🔊" ? "spk" : "rep"), t.slice(m[0].length)] : [t]));
   $("ppause").textContent = P.paused ? T.resume : T.pause;
 }
 async function hold(tok){ while (P.paused && tok === P.tok) await gap(150); return tok === P.tok; }
@@ -201,7 +208,7 @@ function togglePause(){
   if (P.paused) quiet();
   $("ppause").textContent = P.paused ? T.resume : T.pause;
 }
-const spk = () => h("button", {class: "spk", type: "button", "aria-label": "ຟັງ", onclick: ev => { const el = ev.currentTarget.closest("[data-say]"); if (el) playSingle(el); }}, "🔊");
+const spk = () => h("button", {class: "spk", type: "button", "aria-label": "ຟັງ", onclick: ev => { const el = ev.currentTarget.closest("[data-say]"); if (el) playSingle(el); }}, ico("spk"));
 
 /* ---------- chrome ---------- */
 function drawStats(){
@@ -244,8 +251,8 @@ function drawBand(b){
 
 /* ---------- lesson view ---------- */
 const sec = (key, ...kids) => kids.flat().filter(Boolean).length ? h("section", {class: "sec"}, h("h3", null, T.sec[key],
-  key === "l" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playWord(ev.currentTarget.closest(".sec").querySelector(".letters"))}, T.repLetters)
-  : key === "dl" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playDialogue(ev.currentTarget.closest(".sec").querySelector(".dlg"))}, T.repDlg) : null), kids) : null;
+  key === "l" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playWord(ev.currentTarget.closest(".sec").querySelector(".letters"))}, ico("rep"), T.repLetters)
+  : key === "dl" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playDialogue(ev.currentTarget.closest(".sec").querySelector(".dlg"))}, ico("rep"), T.repDlg) : null), kids) : null;
 const note = pair => [h("p", {class: "note-lo"}, pair[1] || pair[0]), S.showKo && pair[1] ? h("p", {class: "note-ko ko"}, pair[0]) : null];
 /* ※ key words of a sentence: [[word, Lao-script reading, Lao meaning], …] */
 const gloss = g => g && g.length ? h("div", {class: "gl"}, "※ ", g.flatMap((x, j) => [j ? " · " : null, h("span", {class: "ko"}, x[0]), " ", h("span", {class: "p"}, x[1]), " (", h("span", {class: "gm"}, x[2]), ")"])) : null;
@@ -260,12 +267,12 @@ function renderLearn(b){
       h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.hideLo, onchange: ev => { S.hideLo = ev.target.checked; save(); render(); }}), T.hideLo),
       h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.showKo, onchange: ev => { S.showKo = ev.target.checked; save(); render(); }}), T.showKo),
       h("div", {class: "rowbtns", style: "margin-left:auto;justify-content:flex-end"},
-        h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, T.repAll),
-        h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(false)}, T.repBundle))),
+        h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll),
+        h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(false)}, ico("rep"), T.repBundle))),
     sec("m", (b.m || []).map(m => h("div", {class: "tip"}, note(m)))),
     sec("l",
       !(b.l || []).length ? null : h("div", {class: "letters"}, (b.l || []).map(l => h("button", {class: "letter", type: "button", "data-say": l[2] || l[0], onclick: ev => playSingle(ev.currentTarget)},
-      h("span", {class: "spk", "aria-hidden": "true"}, "🔊"),
+      h("span", {class: "spk", "aria-hidden": "true"}, ico("spk")),
       h("span", {class: "lt"}, h("b", {class: "ko" + ([...l[0]].length > 4 ? " long" : [...l[0]].length > 2 ? " mid" : "")}, l[0]), h("span", {class: "llo"}, l[1]), l[2] ? h("span", {class: "lsay ko"}, l[2]) : null))))),
     b.x && b.x.length > 1 ? sec("x", h("div", {class: "tablewrap"}, h("table", null,
       h("thead", null, h("tr", null, b.x[0].map(c => h("th", {class: "ko"}, c)))),
@@ -290,7 +297,7 @@ function renderLearn(b){
 /* a headword (word or expression) with its example sentences */
 function wordBox(w){ const ex = w[3] || [];
   return h("div", {class: "word" + (ex.length ? "" : " solo")},
-    h("button", {class: "wrep", type: "button", title: T.repWord, onclick: ev => { ev.stopPropagation(); playWord(ev.currentTarget.closest(".word")); }}, T.repWord),
+    h("button", {class: "wrep", type: "button", title: T.repWord, onclick: ev => { ev.stopPropagation(); playWord(ev.currentTarget.closest(".word")); }}, ico("rep"), T.repWord),
     line(w[0], w[1], w[2], "head"), ex.length ? h("div", {class: "exs"}, ex.map(e => line(e[0], e[1], e[2], "ex", null, e[3]))) : null); }
 
 /* ---------- cards ---------- */
