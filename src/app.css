@@ -506,4 +506,4 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* area cards: no vertical bar; a colour line along the top edge that follows the rounded corners (RYU 2026-11-15, v1.25) */
 .group i{display:none}
 .group .gn,.group small{padding-left:4px}
-.group{border-top:3px solid var(--accent);padding-top:4px}
+.group{border-top:3px solid var(--accent);border-bottom:3px solid var(--accent);padding-top:4px;padding-bottom:4px}  /* bottom line too (v1.26) */
