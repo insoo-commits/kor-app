@@ -541,6 +541,9 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .sub[aria-selected="true"]{border-bottom-color:var(--accent)}
 .sub[aria-selected="true"] .name{color:var(--accent)}
 #subs{border-bottom:1px solid var(--line)}
+/* sub tabs sit closer: each as wide as its own name, small gap (RYU 2026-11-15, v1.35) */
+.subs{gap:2px}
+.sub,.sub[aria-selected="true"]{min-width:0;padding-left:10px;padding-right:10px}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -686,6 +689,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-15%20v1.34"></script>
-<script src="app.js?v=2026-11-15%20v1.34"></script>
+<script src="audio/index.js?v=2026-11-15%20v1.35"></script>
+<script src="app.js?v=2026-11-15%20v1.35"></script>
 </body></html>
