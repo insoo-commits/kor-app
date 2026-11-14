@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-15 v1.09";
+const VER = "2026-11-15 v1.10";
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
 fs.mkdirSync(path.join(root, "preview"), {recursive: true});
@@ -20,7 +20,7 @@ const wordSet = new Set(), sentSet = new Set();
 for (const [a] of M.areas){
   const list = JSON.parse(fs.readFileSync(path.join(bundles, a + ".json"), "utf8"));
   for (const b of list){
-    idx.push([b.code, b.t, b.lv, b.type, tlo.get(b.code) || ""]);
+    idx.push([b.code, b.t, b.lv, b.type, tlo.get(b.code) || "", (b.w || []).length + (b.f || []).length]);
     for (const k of ["w", "f"]) for (const w of b[k] || []){ wordSet.add(w[0]); for (const e of w[3] || []) sentSet.add(e[0]); }
     for (const d of b.dl || []) sentSet.add(d[1]);
     for (const k of ["c", "e", "x"]) for (const r of b[k] || []) if (typeof r[0] === "string") sentSet.add(r[0]);
