@@ -497,6 +497,12 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .top .stats{margin-left:auto;align-self:flex-end;gap:12px;font-size:12px;align-items:baseline;white-space:nowrap;padding:4px 10px}
 .top .stats span{display:inline-flex;align-items:baseline;gap:4px}
 .top .stats b{display:inline;font-size:14px}
+/* lesson picker in the band, in place of the lesson title (RYU 2026-11-15, v1.19) */
+.band .bandin{flex:1 1 100%;min-width:0}
+.band #bsel{width:100%;margin-bottom:10px}
+.band #bsel .bsel{height:44px;font-size:20px;font-weight:600;background:var(--sheet)}
+.band #bsel .ddo{font-weight:400}
+@media (max-width:759px){ .band #bsel .bsel{height:40px;font-size:18px} }
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -572,6 +578,8 @@ html.tab .band p.intro .sub-ko{font-size:18px}
 html.tab .qa button.btn{font-size:16.8px}
 html.tab .top .stats{font-size:14.4px}
 html.tab .top .stats b{font-size:16.8px}
+html.tab .band #bsel .bsel{font-size:24px}
+@media (max-width:759px){html.tab .band #bsel .bsel{font-size:21.6px}}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -638,6 +646,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-15%20v1.18"></script>
-<script src="app.js?v=2026-11-15%20v1.18"></script>
+<script src="audio/index.js?v=2026-11-15%20v1.19"></script>
+<script src="app.js?v=2026-11-15%20v1.19"></script>
 </body></html>

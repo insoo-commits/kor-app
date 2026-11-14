@@ -487,3 +487,9 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .top .stats{margin-left:auto;align-self:flex-end;gap:12px;font-size:12px;align-items:baseline;white-space:nowrap;padding:4px 10px}
 .top .stats span{display:inline-flex;align-items:baseline;gap:4px}
 .top .stats b{display:inline;font-size:14px}
+/* lesson picker in the band, in place of the lesson title (RYU 2026-11-15, v1.19) */
+.band .bandin{flex:1 1 100%;min-width:0}
+.band #bsel{width:100%;margin-bottom:10px}
+.band #bsel .bsel{height:44px;font-size:20px;font-weight:600;background:var(--sheet)}
+.band #bsel .ddo{font-weight:400}
+@media (max-width:759px){ .band #bsel .bsel{height:40px;font-size:18px} }

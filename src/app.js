@@ -268,7 +268,8 @@ function drawControls(){
 function drawBand(b){
   const r = IDX[byCode.get(S.code)];
   $("band").replaceChildren(
-    h("div", null, h("div", {class: "ttl"}, h("h2", {class: "ko"}, r[1]), r[4] ? h("div", {class: "tlo"}, r[4]) : null),   // codes stay internal, not shown (RYU 2026-11-14)
+    /* lesson title removed; the lesson picker sits in its place (RYU 2026-11-15, v1.19) */
+    h("div", {class: "bandin"}, $("bsel"),
       b && b.i ? h("p", {class: "intro"}, b.i[1] || "", b.i[1] ? " " : "", h("span", {class: "sub-ko ko"}, b.i[0])) : null));   // Lao then Korean in one run, always shown; level/type tags not shown (RYU 2026-11-14)
 }
 
