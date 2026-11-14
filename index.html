@@ -477,6 +477,13 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   box-shadow:0 1px 0 var(--accent),0 2px 4px var(--rep-sh2),inset 0 1px 0 var(--rep-hi),inset 0 -2px 3px color-mix(in srgb,var(--accent) 12%,transparent)}
 /* search box a little lower (RYU 2026-11-14, v0.91) */
 .search input{padding:4px 10px 4px 32px;line-height:1.5}
+/* review questions: compact rows, no fixed minimum height, smaller show-answer button (RYU 2026-11-14, v0.95) */
+.qa{padding:5px 12px;min-height:0;align-items:center}
+.qa+.qa{margin-top:6px}
+.qa .qq{align-items:center}
+.qa .qq>.exn{margin-top:0}
+.qa button.btn{padding:2px 12px;min-height:0;font-size:14px;line-height:1.5}
+@media (min-width:760px){ .qa{min-height:0;padding:5px 14px} }
 </style></head>
 <body>
 <div class="wrap" id="app" data-g="K1">
@@ -538,6 +545,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-14%20v0.94"></script>
-<script src="app.js?v=2026-11-14%20v0.94"></script>
+<script src="audio/index.js?v=2026-11-14%20v0.95"></script>
+<script src="app.js?v=2026-11-14%20v0.95"></script>
 </body></html>
