@@ -434,3 +434,13 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* lesson intro: Lao sentence and Korean sentence run on in one paragraph; the band is one full-width column now that the tags are gone (RYU 2026-11-14) */
 .band>div{flex:1 1 100%}
 .band p.intro .sub-ko{font-size:15px;color:var(--muted);word-break:keep-all}
+/* lower control row (문장/단어/퀴즈, lesson picker, count, speed): about the height of the repeat buttons below,
+   and tighter lines in the lesson list (RYU 2026-11-14) */
+.controls .seg button{height:30px;padding-top:0;padding-bottom:0;line-height:1}
+.controls .bsel{height:32px;padding-top:0;padding-bottom:0}
+.controls .ddb{align-items:center}
+.ddi{padding:5px 10px;line-height:1.35}
+@media (max-width:759px){
+  .controls .seg button{height:30px}
+  .controls .bsel{height:32px}
+}
