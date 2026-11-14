@@ -508,6 +508,9 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .group i{position:absolute;left:10px;top:9px;bottom:9px;width:4px;height:auto;border-radius:2px}
 .group .gn{padding-left:12px}
 .group small{padding-left:12px}
+/* sub cards: no top colour line; the chosen card shows by its border colour (RYU 2026-11-15, v1.23) */
+.sub{border-top:1px solid var(--line);border-radius:12px;padding-top:9px}
+.sub[aria-selected="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -651,6 +654,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-15%20v1.22"></script>
-<script src="app.js?v=2026-11-15%20v1.22"></script>
+<script src="audio/index.js?v=2026-11-15%20v1.23"></script>
+<script src="app.js?v=2026-11-15%20v1.23"></script>
 </body></html>
