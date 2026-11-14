@@ -11,7 +11,7 @@ const T = {
   hidePr: "ເຊື່ອງຄຳອ່ານ", showKo: "ສະແດງຄຳອະທິບາຍພາສາເກົາຫຼີ", known: "ຈື່ແລ້ວ", flip: "ແຕະເພື່ອເບິ່ງຄວາມໝາຍ", onlyNew: "ສະເພາະຄຳທີ່ຍັງບໍ່ຈື່",
   showAns: "ເບິ່ງຄຳຕອບ", again: "ເຮັດອີກຄັ້ງ", score: "ຄະແນນ", noCards: "ບົດນີ້ບໍ່ມີບັດຄຳ.", allKnown: "ຈື່ໝົດທຸກຄຳແລ້ວ!", noQuiz: "ບົດນີ້ມີຄຳສັບບໍ່ພໍສຳລັບແບບທົດສອບ.",
   pick: "ເລືອກຄວາມໝາຍທີ່ຖືກຕ້ອງ", pickKo: "ເລືອກຄຳພາສາເກົາຫຼີທີ່ຖືກຕ້ອງ", loading: "ກຳລັງໂຫຼດ…", loadFail: "ໂຫຼດບົດຮຽນບໍ່ໄດ້. ກະລຸນາເປີດໜ້ານີ້ຄືນໃໝ່.",
-  noHit: "ບໍ່ພົບຜົນການຄົ້ນຫາ.", searching: "ກຳລັງຄົ້ນຫາ…", lessons: "ບົດ", words: "ຄຳ",
+  noHit: "ບໍ່ພົບຜົນການຄົ້ນຫາ.", searching: "ກຳລັງຄົ້ນຫາ…", lessons: "ບົດ", words: "ຄຳສັບ", sents: "ປະໂຫຍກ",
   noVoice: "ອຸປະກອນນີ້ບໍ່ມີສຽງພາສາເກົາຫຼີ. ກະລຸນາຕິດຕັ້ງສຽງພາສາເກົາຫຼີໃນການຕັ້ງຄ່າ ຫຼື ໃຊ້ Chrome / Edge."
 };
 /* line icons (speaker, repeat) instead of emoji, so they take the theme colour */
@@ -230,8 +230,8 @@ const spk = () => h("button", {class: "spk", type: "button", "aria-label": "ຟ�
 
 /* ---------- chrome ---------- */
 function drawStats(){
-  const done = Object.keys(S.done).filter(c => byCode.has(c)).length, known = Object.keys(S.known).length;
-  $("stats").replaceChildren(h("span", null, h("b", null, done + " / " + IDX.length), T.lessons + " " + T.done), h("span", null, h("b", null, known), T.words + " " + T.known));
+  const n = x => Number(x).toLocaleString("en-US");
+  $("stats").replaceChildren(h("span", null, h("b", null, n(IDX.length)), T.lessons), h("span", null, h("b", null, n(META.nWords)), T.words), h("span", null, h("b", null, n(META.nSents)), T.sents));
 }
 function drawGroups(){
   const cur = areaOf(S.code);
