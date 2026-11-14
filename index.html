@@ -503,6 +503,11 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .band #bsel .bsel{height:44px;font-size:20px;font-weight:600;background:var(--sheet)}
 .band #bsel .ddo{font-weight:400}
 @media (max-width:759px){ .band #bsel .bsel{height:40px;font-size:18px} }
+/* area cards: a vertical bar instead of the round dot, running beside both lines (RYU 2026-11-15, v1.20) */
+.group{position:relative}
+.group i{position:absolute;left:10px;top:9px;bottom:9px;width:4px;height:auto;border-radius:2px}
+.group .gn{padding-left:12px}
+.group small{padding-left:12px}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -646,6 +651,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-15%20v1.19"></script>
-<script src="app.js?v=2026-11-15%20v1.19"></script>
+<script src="audio/index.js?v=2026-11-15%20v1.20"></script>
+<script src="app.js?v=2026-11-15%20v1.20"></script>
 </body></html>
