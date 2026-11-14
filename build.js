@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-14 v0.95";
+const VER = "2026-11-14 v0.96";
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
 fs.mkdirSync(path.join(root, "preview"), {recursive: true});
@@ -25,7 +25,24 @@ for (const [a] of M.areas){
   fs.writeFileSync(path.join(root, "data", a + ".json"), JSON.stringify(list));
 }
 const meta = "window.KO_META=" + JSON.stringify({areas: M.areas, subs: M.subs, idx, ver: VER}) + ";";
-const css = read("app.css"), body = read("body.html"), clip = read("clip.js"), js = clip + "\n" + read("app.js");
+// iPad / large touch screens (html.tab, set by the same check as the Lao app): text bigger, layout width unchanged.
+// Every px font-size in app.css gets an html.tab copy scaled by TAB_K, inside the same @media block (RYU 2026-11-14, v0.96).
+const TAB_K = 1.35;
+function tabCss(src){
+  const s = src.replace(/\/\*[\s\S]*?\*\//g, ""), out = [];
+  const pre = sel => sel.split(",").map(x => x.trim()).filter(Boolean).map(x => /^(html|:root)\b/.test(x) ? x.replace(/^(html|:root)/, "html.tab") : "html.tab " + x).join(",");
+  const rule = (sel, decl) => { const m = [...decl.matchAll(/font-size:\s*([\d.]+)px/g)].pop(); return m ? pre(sel) + "{font-size:" + (+(m[1] * TAB_K).toFixed(2)) + "px}" : ""; };
+  let i = 0;
+  const block = (end) => { const r = []; while (i < s.length){ while (/\s/.test(s[i] || "")) i++; if (i >= s.length || s[i] === "}"){ i++; break; }
+      const o = s.indexOf("{", i); if (o < 0){ i = s.length; break; } const head = s.slice(i, o).trim(); i = o + 1;
+      if (head.startsWith("@media")){ const inner = block(); if (inner.length) r.push(head + "{" + inner.join("") + "}"); }
+      else if (head.startsWith("@")){ let d = 1; while (i < s.length && d){ if (s[i] === "{") d++; else if (s[i] === "}") d--; i++; } }
+      else { const c = s.indexOf("}", i); const x = rule(head, s.slice(i, c)); if (x) r.push(x); i = c + 1; } }
+    return r; };
+  while (i < s.length){ const r = block(); out.push(...r); }
+  return "\n/* tablet text (generated) */\nhtml.tab{zoom:1}\n" + out.join("\n");
+}
+const css = read("app.css") + tabCss(read("app.css")) + "\n" + read("tab.css"), body = read("body.html"), clip = read("clip.js"), js = clip + "\n" + read("app.js");
 
 // audio: audio/list.json = every clip the app can use; audio/index.js = the clips that exist as mp3 in audio/
 const {cleanKo, cleanLo, clipKey} = new Function(clip + "; return {cleanKo, cleanLo, clipKey};")();
@@ -60,6 +77,7 @@ fs.writeFileSync(path.join(root, "index.html"), `<!doctype html>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1F5F8F">
 <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">${fonts}
+<script>(function(){var n=navigator,t=n.maxTouchPoints>0||"ontouchstart" in window;if((/iPad/.test(n.userAgent)||(/Macintosh/.test(n.userAgent)&&t))||(t&&Math.min(screen.width,screen.height)>=700))document.documentElement.classList.add("tab")})()</script>
 <style>body{margin:0}
 ${css}</style></head>
 <body>
