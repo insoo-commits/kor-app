@@ -477,3 +477,5 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 @media (min-width:760px){ .qa{min-height:0;padding:5px 14px} }
 /* all repeat buttons share one width (RYU 2026-11-15, v1.08) */
 .wrep{min-width:7.7em;justify-content:center;text-align:center;box-sizing:border-box}
+/* area chip: Korean line left-aligned under the Lao name (RYU 2026-11-15, v1.13) */
+.group small{text-align:left;padding-left:18px}
