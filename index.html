@@ -322,6 +322,15 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* all repeat buttons end on one line at the right: the word button sits 8px inside its card (+1px border),
    so the section and lesson buttons above it move in by the same amount (RYU 2026-11-14) */
 .wrep.hrep,.wrep.tbtn:last-child{margin-right:9px}
+
+/* the line being played: a warm highlighter colour with a bar on the left, so it never blends with the
+   tinted headword column or the grey example rows (RYU 2026-11-14) */
+:root{--now:#FFF1BF;--now-bar:#E0A100}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--now:#3D3418;--now-bar:#E2B25A}}
+:root[data-theme="dark"]{--now:#3D3418;--now-bar:#E2B25A}
+.line.now,.letter.now,.sec .word>.line.head.now{background:var(--now);box-shadow:inset 4px 0 0 var(--now-bar)}
+.now>.spk,.rowbtns.now .spk{border-color:var(--now-bar);background:var(--now)}
+@media (hover:hover){.line.now[data-say]:hover{background:var(--now)}}
 </style></head>
 <body>
 <div class="wrap" id="app" data-g="K1">
@@ -383,6 +392,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-14%20v0.72"></script>
-<script src="app.js?v=2026-11-14%20v0.72"></script>
+<script src="audio/index.js?v=2026-11-14%20v0.73"></script>
+<script src="app.js?v=2026-11-14%20v0.73"></script>
 </body></html>
