@@ -238,7 +238,11 @@ function drawSubs(){
 }
 function drawControls(){
   const s = subOf(S.code), rows = IDX.filter(r => r[0].startsWith(s + "-"));
-  $("bsel").replaceChildren(...rows.map(r => { const o = h("option", {value: r[0]}, (S.done[r[0]] ? "✓ " : "") + r[0].slice(5) + " · " + r[1] + (r[4] ? " (" + r[4] + ")" : "")); o.selected = r[0] === S.code; return o; }));
+  /* lesson picker: own list instead of the phone's native one, so each lesson stays on one line inside the box (RYU 2026-11-14) */
+  const lab = r => [h("span", {class: "ddk"}, (S.done[r[0]] ? "✓ " : "") + r[0].slice(5) + " · " + r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : ""];
+  const curRow = rows.find(r => r[0] === S.code) || rows[0];
+  $("bselBtn").replaceChildren(...lab(curRow));
+  $("bselList").replaceChildren(...rows.map(r => h("button", {type: "button", class: "ddi", role: "option", "aria-selected": r[0] === S.code ? "true" : "false", onclick: () => { ddClose(); go(r[0]); }}, ...lab(r))));
   document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === S.mode ? "true" : "false"));
   $("repSel").value = S.rep; $("rateSel").value = S.rate;
 }
@@ -409,7 +413,15 @@ async function route(){
   }
 }
 document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => { S.mode = b.dataset.mode; stopPlay(); cardAt = 0; cardOpen = false; save(); drawControls(); render(); }));
-$("bsel").addEventListener("change", ev => go(ev.target.value));
+function ddClose(){ $("bselList").hidden = true; $("bselBtn").setAttribute("aria-expanded", "false"); }
+$("bselBtn").addEventListener("click", () => {
+  const l = $("bselList"), open = l.hidden;
+  if (!open) return ddClose();
+  l.hidden = false; $("bselBtn").setAttribute("aria-expanded", "true");
+  const on = l.querySelector('[aria-selected="true"]'); if (on) l.scrollTop = on.offsetTop - l.clientHeight / 2 + on.offsetHeight / 2;
+});
+document.addEventListener("click", ev => { if (!ev.target.closest("#bsel")) ddClose(); });
+document.addEventListener("keydown", ev => { if (ev.key === "Escape") ddClose(); });
 $("repSel").addEventListener("change", ev => { S.rep = ev.target.value; save(); });
 $("rateSel").addEventListener("change", ev => { S.rate = ev.target.value; save(); if (AEL) try { AEL.playbackRate = +S.rate || 1; } catch (e) {} });
 $("pstop").addEventListener("click", stopPlay);
