@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 const areaOf = c => c.slice(0, 2), subOf = c => c.slice(0, 4);
 const T = {
   sec: {m: "ວິທີສ້າງປະໂຫຍກ", l: "ຕົວອັກສອນ", x: "ຕາຕະລາງ", w: "ຄຳສັບ", f: "ສຳນວນທີ່ໃຊ້ເລື້ອຍໆ", c: "ການປ່ຽນຮູບຄຳ", e: "ປະໂຫຍກຕົວຢ່າງ", tp: "ຂໍ້ແນະນຳ", pr: "ຄຳຄູ່", dl: "ບົດສົນທະນາ", sm: "ສະຫຼຸບ", qz: "ຄຳຖາມທວນຄືນ"},
-  level: "ລະດັບ", repBundle: "🔊 ຟັງຊ້ຳບົດນີ້", repDlg: "🔊 ຟັງບົດສົນທະນາຊ້ຳ", repWord: "🔁 ຟັງຊ້ຳຄຳນີ້", repLetters: "🔁 ຟັງຕົວອັກສອນຕໍ່ເນື່ອງ", repAll: "🔊 ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
+  level: "ລະດັບ", repBundle: "🔁 ຟັງຊ້ຳບົດນີ້", repDlg: "🔁 ຟັງບົດສົນທະນາຊ້ຳ", repWord: "🔁 ຟັງຊ້ຳຄຳນີ້", repLetters: "🔁 ຟັງຕົວອັກສອນຕໍ່ເນື່ອງ", repAll: "🔁 ຟັງຕໍ່ເນື່ອງທຸກບົດ", pause: "ຢຸດຊົ່ວຄາວ", resume: "▶ ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
   hidePr: "ເຊື່ອງຄຳອ່ານ", showKo: "ສະແດງຄຳອະທິບາຍພາສາເກົາຫຼີ", known: "ຈື່ແລ້ວ", flip: "ແຕະເພື່ອເບິ່ງຄວາມໝາຍ", onlyNew: "ສະເພາະຄຳທີ່ຍັງບໍ່ຈື່",
   showAns: "ເບິ່ງຄຳຕອບ", again: "ເຮັດອີກຄັ້ງ", score: "ຄະແນນ", noCards: "ບົດນີ້ບໍ່ມີບັດຄຳ.", allKnown: "ຈື່ໝົດທຸກຄຳແລ້ວ!", noQuiz: "ບົດນີ້ມີຄຳສັບບໍ່ພໍສຳລັບແບບທົດສອບ.",
   pick: "ເລືອກຄວາມໝາຍທີ່ຖືກຕ້ອງ", pickKo: "ເລືອກຄຳພາສາເກົາຫຼີທີ່ຖືກຕ້ອງ", loading: "ກຳລັງໂຫຼດ…", loadFail: "ໂຫຼດບົດຮຽນບໍ່ໄດ້. ກະລຸນາເປີດໜ້ານີ້ຄືນໃໝ່.",
@@ -146,7 +146,7 @@ async function playBundle(chain){
     const q = queue();
     if (!q.length && !chain) return stopPlay();
     for (let i = 0; i < q.length; i++){
-      const label = chain ? "🔊 " + S.code + " · " + (i + 1) + "/" + q.length : "🔊 " + (i + 1) + "/" + q.length + " · ↻" + P.round;
+      const label = chain ? "🔁 " + S.code + " · " + (i + 1) + "/" + q.length : "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round;
       if (!(await sayItem(tok, q[i], label))) return;
     }
     if (chain){
