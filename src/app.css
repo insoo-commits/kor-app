@@ -518,3 +518,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 :root[data-theme="dark"]{--rev-bg:#C9CFCD;--rev-ink:#2E3533}
 .group[aria-pressed="true"]{background:var(--rev-bg);border-left-color:var(--rev-bg);border-right-color:var(--rev-bg);color:var(--rev-ink)}
 .group[aria-pressed="true"] small{color:var(--rev-ink);opacity:.8}
+/* area cards: top and bottom lines grey for all; the chosen card filled with its own area colour (RYU 2026-11-15, v1.30) */
+.group{border-top-color:var(--muted);border-bottom-color:var(--muted)}
+.group[aria-pressed="true"]{background:var(--accent);border-left-color:var(--accent);border-right-color:var(--accent);border-top-color:var(--muted);border-bottom-color:var(--muted);color:var(--sheet)}
+.group[aria-pressed="true"] small{color:var(--sheet);opacity:.85}
