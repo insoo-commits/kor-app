@@ -225,6 +225,10 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
      the Korean line, and the Lao meaning left-aligned, the same as on the phone (RYU 2026-11-14, PC and tablet) */
   .line{align-items:start}
   .line>.spk{margin-top:-4px}
+  /* quiz item: one row, question in the left half and the answer (or the show-answer button) in the right half,
+     with a thin line down the middle, so the list takes about half the height (RYU 2026-11-14) */
+  .qa{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:28px;row-gap:0;align-items:center;min-height:62px;
+    background:linear-gradient(var(--line),var(--line)) center / 1px 100% no-repeat}
   /* conjugation and example rows: two per row */
   .rows.grid2{display:grid;grid-template-columns:1fr 1fr}
   .rows.grid2>.line{border-top:0;border-bottom:1px solid var(--line);margin-bottom:-1px}
