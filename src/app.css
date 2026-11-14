@@ -272,7 +272,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 
 .wrep.hrep{position:static;order:2;flex:none;font-weight:400}
 .sec>h3::after{order:1}
-.sec:has(.letters.playing) .hrep{border-color:var(--accent);background:var(--accent-soft)}
+.sec:has(.letters.playing) .hrep,.sec:has(.rows.playing) .hrep{border-color:var(--accent);background:var(--accent-soft)}
 .wrep.tbtn{position:static;flex:none}
 .ico{display:inline-flex;vertical-align:-0.2em;margin-right:.35em}
 .ico svg{width:1.15em;height:1.15em}
