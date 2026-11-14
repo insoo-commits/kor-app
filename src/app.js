@@ -221,7 +221,7 @@ function drawGroups(){
   $("app").setAttribute("data-g", cur);
   $("groups").replaceChildren(...AREAS.map(a => {
     const rows = IDX.filter(r => r[0].startsWith(a[0] + "-")), d = rows.filter(r => S.done[r[0]]).length;
-    return h("button", {class: "group", type: "button", "data-g": a[0], "aria-pressed": a[0] === cur ? "true" : "false", onclick: () => go(rows[0][0])},
+    return h("button", {class: "group", type: "button", "data-g": a[0], "aria-pressed": a[0] === cur ? "true" : "false", onclick: () => go(lastIn(S.lastA, a[0], rows))},
       h("span", {class: "gn"}, h("i"), a[2]), h("small", {class: "ko"}, a[1] + " · " + d + "/" + rows.length));
   }));
   const on = $("groups").querySelector('[aria-pressed="true"]'); if (on && on.scrollIntoView) on.scrollIntoView({block: "nearest", inline: "nearest"});
@@ -231,7 +231,7 @@ function drawSubs(){
   const ids = [...new Set(IDX.filter(r => r[0].startsWith(a + "-")).map(r => subOf(r[0])))];
   $("subs").replaceChildren(...ids.map(s => {
     const rows = IDX.filter(r => r[0].startsWith(s + "-")), d = rows.filter(r => S.done[r[0]]).length, n = SUBS[s] || [s, s];
-    return h("button", {class: "sub", type: "button", role: "tab", "aria-selected": s === cur ? "true" : "false", onclick: () => go(rows[0][0])},
+    return h("button", {class: "sub", type: "button", role: "tab", "aria-selected": s === cur ? "true" : "false", onclick: () => go(lastIn(S.lastS, s, rows))},
       h("span", {class: "code"}, s), h("span", {class: "name"}, n[1]), h("span", {class: "kn ko"}, n[0]), h("span", {class: "prog"}, d + " / " + rows.length));
   }));
   const on = $("subs").querySelector('[aria-selected="true"]'); if (on && on.scrollIntoView) on.scrollIntoView({block: "nearest", inline: "nearest"});
@@ -393,10 +393,13 @@ function render(){
   view.replaceChildren(...parts.flat().filter(Boolean));
 }
 function drawAll(){ drawStats(); drawGroups(); drawSubs(); drawControls(); render(); }
+/* RYU 2026-11-14: coming back to an area or sub-group reopens the lesson last opened there */
+function lastIn(m, k, rows){ const c = m && m[k]; return c && byCode.has(c) && c.startsWith(k + "-") ? c : rows[0][0]; }
 function go(code){ if (!byCode.has(code)) return; if (location.hash === "#" + code) route(); else location.hash = code; }
 async function route(){
   const name = decodeURIComponent(location.hash.replace(/^#/, ""));
   if (byCode.has(name)) S.code = name;
+  (S.lastA = S.lastA || {})[areaOf(S.code)] = S.code; (S.lastS = S.lastS || {})[subOf(S.code)] = S.code;
   if (P.nav) P.nav = false; else stopPlay();
   cardAt = 0; cardOpen = false; quiz = null; save(); drawAll();
   const a = areaOf(S.code);
