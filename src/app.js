@@ -233,7 +233,8 @@ function drawStats(){
   const n = x => Number(x).toLocaleString("en-US");
   $("stats").replaceChildren(h("span", null, h("b", null, n(IDX.length)), T.lessons), h("span", null, h("b", null, n(META.nWords)), T.words), h("span", null, h("b", null, n(META.nSents)), T.sents));
 }
-/* cards show only the lesson count after the Korean name (RYU 2026-11-15) */
+/* areas: lesson count after the Korean name; subs: "N ບົດ · N ຄຳ" on its own line (RYU 2026-11-15) */
+const cnt = rows => { const w = rows.reduce((t, r) => t + (r[5] || 0), 0); return rows.length + " " + T.lessons + (w ? " · " + w + " " + T.wordsShort : ""); };
 function drawGroups(){
   const cur = areaOf(S.code);
   $("app").setAttribute("data-g", cur);
@@ -250,7 +251,7 @@ function drawSubs(){
   $("subs").replaceChildren(...ids.map(s => {
     const rows = IDX.filter(r => r[0].startsWith(s + "-")), n = SUBS[s] || [s, s];
     return h("button", {class: "sub", type: "button", role: "tab", "aria-selected": s === cur ? "true" : "false", onclick: () => go(lastIn(S.lastS, s, rows))},
-      h("span", {class: "name"}, n[1]), h("span", {class: "kn ko"}, n[0] + " · " + rows.length));
+      h("span", {class: "name"}, n[1]), h("span", {class: "kn ko"}, n[0]), h("span", {class: "prog"}, cnt(rows)));
   }));
   const on = $("subs").querySelector('[aria-selected="true"]'); if (on && on.scrollIntoView) on.scrollIntoView({block: "nearest", inline: "nearest"});
 }
