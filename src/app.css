@@ -171,7 +171,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .dlline a{color:var(--accent);font-weight:600;text-decoration:none}
 .dlline a:hover{text-decoration:underline}
 .dlline .count{color:var(--muted);margin-left:6px}
-.foot{font-size:14px;color:var(--muted);margin:0}
+.foot{font-size:14px;color:var(--muted);margin:0;text-align:center}
 .ver{text-align:center;font-size:12px;color:var(--muted)}
 /* word-card buttons: ← | 🔊 1/13 | remembered | → on one line; on a phone "remembered" gets its own full-width line */
 .cardnav{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center}
