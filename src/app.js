@@ -257,8 +257,11 @@ const sec = (key, ...kids) => kids.flat().filter(Boolean).length ? h("section", 
 const note = pair => [h("p", {class: "note-lo"}, pair[1] || pair[0]), S.showKo && pair[1] ? h("p", {class: "note-ko ko"}, pair[0]) : null];
 /* ※ key words of a sentence: [[word, Lao-script reading, Lao meaning], …] */
 const gloss = g => g && g.length ? h("div", {class: "gl"}, "※ ", g.flatMap((x, j) => [j ? " · " : null, h("span", {class: "ko"}, x[0]), " ", h("span", {class: "p"}, x[1]), " (", h("span", {class: "gm"}, x[2]), ")"])) : null;
+/* base form of a conjugation row ("저 ຂ້ອຍ"), shown at the bottom like the ※ notes */
+const fromNote = f => { if (!f) return null; const m = f.match(/^([^\u0E80-\u0EFF]*?)\s*([\u0E80-\u0EFF].*)?$/);
+  return h("div", {class: "gl"}, "※ ", h("span", {class: "ko"}, m ? m[1] : f), m && m[2] ? [" (", h("span", {class: "gm"}, m[2]), ")"] : null); };
 const line = (ko, pr, lo, cls, from, g) => h("div", {class: "line " + (cls || ""), "data-say": ko, "data-lo": lo, "data-head": cls === "head" ? "1" : null}, spk(),
-  h("div", null, from ? h("div", {class: "from ko"}, from) : null, h("div", {class: "k ko"}, ko), pr ? h("div", {class: "p"}, pr) : null, h("div", {class: "m"}, lo), gloss(g)));
+  h("div", null, h("div", {class: "k ko"}, ko), pr ? h("div", {class: "p"}, pr) : null, h("div", {class: "m"}, lo), gloss(g), fromNote(from)));
 function renderLearn(b){
   const i = byCode.get(b.code), next = IDX[i + 1], isDone = !!S.done[b.code];
   const dl = b.dl || [];
