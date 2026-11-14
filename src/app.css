@@ -444,3 +444,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .controls .seg button{height:30px}
   .controls .bsel{height:32px}
 }
+/* Korean explanation under each tip: marked with ※ and right-aligned, like the ※ word notes (RYU 2026-11-14) */
+.note-ko{text-align:right;word-break:keep-all}
+.note-ko::before{content:"※ "}
