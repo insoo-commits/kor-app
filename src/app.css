@@ -483,3 +483,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .foot,.dlline,.ver{margin:0;line-height:1.55}
 .foot:empty{display:none}
 .foot+.foot,.foot+.dlline,.dlline+.ver,.foot+.ver{margin-top:-12px}
+/* top numbers: one small line, right-aligned like lao-app (RYU 2026-11-15, v1.18) */
+.top .stats{margin-left:auto;align-self:flex-end;gap:12px;font-size:12px;align-items:baseline;white-space:nowrap;padding:4px 10px}
+.top .stats span{display:inline-flex;align-items:baseline;gap:4px}
+.top .stats b{display:inline;font-size:14px}
