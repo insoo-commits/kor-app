@@ -233,15 +233,14 @@ function drawStats(){
   const n = x => Number(x).toLocaleString("en-US");
   $("stats").replaceChildren(h("span", null, h("b", null, n(IDX.length)), T.lessons), h("span", null, h("b", null, n(META.nWords)), T.words), h("span", null, h("b", null, n(META.nSents)), T.sents));
 }
-/* lesson and word counts instead of done/total (RYU 2026-11-15) */
-const cnt = rows => { const w = rows.reduce((t, r) => t + (r[5] || 0), 0); return rows.length + " " + T.lessons + (w ? " · " + w + " " + T.wordsShort : ""); };
+/* cards show only the lesson count after the Korean name (RYU 2026-11-15) */
 function drawGroups(){
   const cur = areaOf(S.code);
   $("app").setAttribute("data-g", cur);
   $("groups").replaceChildren(...AREAS.map(a => {
     const rows = IDX.filter(r => r[0].startsWith(a[0] + "-"));
     return h("button", {class: "group", type: "button", "data-g": a[0], "aria-pressed": a[0] === cur ? "true" : "false", onclick: () => go(lastIn(S.lastA, a[0], rows))},
-      h("span", {class: "gn"}, h("i"), a[2]), h("small", {class: "ko"}, a[1] + " · " + cnt(rows)));
+      h("span", {class: "gn"}, h("i"), a[2]), h("small", {class: "ko"}, a[1] + " · " + rows.length));
   }));
   const on = $("groups").querySelector('[aria-pressed="true"]'); if (on && on.scrollIntoView) on.scrollIntoView({block: "nearest", inline: "nearest"});
 }
@@ -251,7 +250,7 @@ function drawSubs(){
   $("subs").replaceChildren(...ids.map(s => {
     const rows = IDX.filter(r => r[0].startsWith(s + "-")), n = SUBS[s] || [s, s];
     return h("button", {class: "sub", type: "button", role: "tab", "aria-selected": s === cur ? "true" : "false", onclick: () => go(lastIn(S.lastS, s, rows))},
-      h("span", {class: "name"}, n[1]), h("span", {class: "kn ko"}, n[0]), h("span", {class: "prog"}, cnt(rows)));
+      h("span", {class: "name"}, n[1]), h("span", {class: "kn ko"}, n[0] + " · " + rows.length));
   }));
   const on = $("subs").querySelector('[aria-selected="true"]'); if (on && on.scrollIntoView) on.scrollIntoView({block: "nearest", inline: "nearest"});
 }
