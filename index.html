@@ -402,6 +402,22 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* the word-repeat button now sits flush with the right edge, so the lesson and section buttons drop their
    9px inset and all repeat buttons end on the same right edge again (RYU 2026-11-14) */
 .wrep.hrep,.wrep.tbtn:last-child{margin-right:0}
+
+/* compact word block (RYU 2026-11-14): less space between the word line and its examples, between the example
+   cards and inside each card, so one word and its sentences read as one block; the gap between words stays larger */
+.sec .word>.line.head{padding:2px 0 8px 14px}
+.sec .word .exs{gap:6px;margin-top:8px}
+.sec .word .exs .line.ex{padding:10px 12px;border-radius:14px;row-gap:0}
+.sec .word .exs .line.ex .k{line-height:1.45}
+.sec .word .exs .line.ex .p,.sec .word .exs .line.ex .m{line-height:1.5}
+.sec .word .exs .line.ex .gl{margin-top:4px;padding-top:4px}
+.sec .word .exs .line.ex>.spk{margin-top:-2px}
+.sec .word+.word{margin-top:20px}
+@media (max-width:759px){
+  .sec .word>.line.head{padding:2px 0 6px 12px}
+  .sec .word .exs .line.ex{padding:8px 10px}
+  .sec .word .exs{margin-top:6px}
+}
 </style></head>
 <body>
 <div class="wrap" id="app" data-g="K1">
@@ -463,6 +479,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-14%20v0.80"></script>
-<script src="app.js?v=2026-11-14%20v0.80"></script>
+<script src="audio/index.js?v=2026-11-14%20v0.81"></script>
+<script src="app.js?v=2026-11-14%20v0.81"></script>
 </body></html>
