@@ -521,12 +521,12 @@ function dlState(){
   const msg = $("dlMsg"), d = S.dlDone;
   if (!d){ msg.textContent = ""; msg.className = "count"; return; }
   const fresh = d.n === allKeys().length;
-  msg.textContent = fresh ? "✓ ດາວໂຫຼດແລ້ວ " + d.at : "↻ ມີສຽງໃໝ່ · ດາວໂຫຼດອີກຄັ້ງ";
+  msg.textContent = fresh ? "✓ " + d.at : "↻ ມີສຽງໃໝ່";
   msg.className = "count " + (fresh ? "dlok" : "dlnew");
 }
 dlState();
 window.addEventListener("hashchange", route);
-$("ver").textContent = META.ver;
+$("ver").textContent = META.ver + " · ສ້າງດ້ວຍ Claude AI · Claude AI로 제작";
 route();
 if ("serviceWorker" in navigator && window.KO_SW) navigator.serviceWorker.register("sw.js").catch(() => {});
 })();
