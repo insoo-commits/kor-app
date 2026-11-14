@@ -35,9 +35,10 @@ function h(tag, attrs, ...kids){
 
 /* ---------- saved state (this device only) ---------- */
 const LS = "kolearn-v1";
-let S = {code: IDX[0][0], mode: "learn", rate: "0.8", rep: "1", hidePr: false, hideLo: false, showKo: true, onlyNew: false, known: {}, done: {}};
+let S = {code: IDX[0][0], mode: "learn", rate: "1", rep: "2", hidePr: false, hideLo: false, showKo: true, onlyNew: false, known: {}, done: {}};
 try { const v = JSON.parse(localStorage.getItem(LS) || "null"); if (v && typeof v === "object") S = Object.assign(S, v); } catch (e) {}
 if (!S.koDef){ S.showKo = true; S.koDef = 1; }   // RYU 2026-11-14: Korean notes shown by default
+if (!S.playDef){ S.rate = "1"; S.rep = "2"; S.playDef = 1; }   // RYU 2026-11-14: start at speed 1.0, 2 times
 if (!byCode.has(S.code)) S.code = IDX[0][0];
 function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
 
