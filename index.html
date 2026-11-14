@@ -532,6 +532,10 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .group{border-top-color:var(--muted);border-bottom-color:var(--muted)}
 .group[aria-pressed="true"]{background:var(--accent);border-left-color:var(--accent);border-right-color:var(--accent);border-top-color:var(--muted);border-bottom-color:var(--muted);color:var(--sheet)}
 .group[aria-pressed="true"] small{color:var(--sheet);opacity:.85}
+/* area cards back to their own colour lines (top and bottom); sub cards get a left colour line that follows the rounded corners (RYU 2026-11-15, v1.31) */
+.group,.group[aria-pressed="true"]{border-top-color:var(--accent);border-bottom-color:var(--accent)}
+.sub,.sub[aria-selected="true"]{border-left:3px solid var(--accent);border-bottom:1px solid var(--line);padding-bottom:5px;padding-left:10px}
+.sub[aria-selected="true"]{background:var(--accent-soft);border-color:var(--accent);border-left-color:var(--accent)}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -677,6 +681,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-15%20v1.30"></script>
-<script src="app.js?v=2026-11-15%20v1.30"></script>
+<script src="audio/index.js?v=2026-11-15%20v1.31"></script>
+<script src="app.js?v=2026-11-15%20v1.31"></script>
 </body></html>
