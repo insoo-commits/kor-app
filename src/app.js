@@ -154,7 +154,7 @@ async function playBundle(chain){
     const q = queue();
     if (!q.length && !chain) return stopPlay();
     for (let i = 0; i < q.length; i++){
-      const label = chain ? "🔁 " + S.code + " · " + (i + 1) + "/" + q.length : "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round;
+      const label = chain ? "🔁 " + IDX[byCode.get(S.code)][1] + " · " + (i + 1) + "/" + q.length : "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round;
       if (!(await sayItem(tok, q[i], label))) return;
     }
     if (chain){
@@ -249,14 +249,14 @@ function drawSubs(){
   $("subs").replaceChildren(...ids.map(s => {
     const rows = IDX.filter(r => r[0].startsWith(s + "-")), d = rows.filter(r => S.done[r[0]]).length, n = SUBS[s] || [s, s];
     return h("button", {class: "sub", type: "button", role: "tab", "aria-selected": s === cur ? "true" : "false", onclick: () => go(lastIn(S.lastS, s, rows))},
-      h("span", {class: "code"}, s), h("span", {class: "name"}, n[1]), h("span", {class: "kn ko"}, n[0]), h("span", {class: "prog"}, d + " / " + rows.length));
+      h("span", {class: "name"}, n[1]), h("span", {class: "kn ko"}, n[0]), h("span", {class: "prog"}, d + " / " + rows.length));
   }));
   const on = $("subs").querySelector('[aria-selected="true"]'); if (on && on.scrollIntoView) on.scrollIntoView({block: "nearest", inline: "nearest"});
 }
 function drawControls(){
   const s = subOf(S.code), rows = IDX.filter(r => r[0].startsWith(s + "-"));
   /* lesson picker: own list instead of the phone's native one, so each lesson stays on one line inside the box (RYU 2026-11-14) */
-  const lab = r => [h("span", {class: "ddk"}, (S.done[r[0]] ? "✓ " : "") + r[0].slice(5) + " · " + r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : ""];
+  const lab = r => [h("span", {class: "ddk"}, (S.done[r[0]] ? "✓ " : "") + r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : ""];
   const curRow = rows.find(r => r[0] === S.code) || rows[0];
   $("bselBtn").replaceChildren(...lab(curRow));
   $("bselList").replaceChildren(...rows.map(r => h("button", {type: "button", class: "ddi", role: "option", "aria-selected": r[0] === S.code ? "true" : "false", onclick: () => { ddClose(); go(r[0]); }}, ...lab(r))));
@@ -266,7 +266,8 @@ function drawControls(){
 function drawBand(b){
   const r = IDX[byCode.get(S.code)];
   $("band").replaceChildren(
-    h("div", null, h("div", {class: "code"}, r[0]), h("h2", {class: "ko"}, r[1]), r[4] ? h("div", {class: "tlo"}, r[4]) : null,
+    h("div", null, h("div", {class: "ttl"}, h("h2", {class: "ko"}, r[1]), r[4] ? h("div", {class: "tlo"}, r[4]) : null),   // codes stay internal, not shown (RYU 2026-11-14)
+
       b && b.i && b.i[1] ? h("p", null, b.i[1]) : null, b && b.i && S.showKo ? h("p", {class: "sub-ko ko"}, b.i[0]) : null),
     h("div", {class: "tags"}, h("span", {class: "tag"}, T.level + " " + r[2]), h("span", {class: "tag ko"}, r[3]), S.done[r[0]] ? h("span", {class: "tag"}, "✓ " + T.done) : null));
 }
@@ -414,7 +415,7 @@ function renderSearch(){
   const pending = AREAS.some(a => !cache.has(a[0]));
   if (!hits.length) return [h("p", {class: "empty"}, pending ? T.searching : T.noHit)];
   return [h("div", null, hits.slice(0, 80).map(x => h("button", {class: "hit", type: "button", onclick: () => { $("q").value = ""; query = ""; go(x.code); }},
-    h("span", {class: "k ko"}, x.ko), h("span", {class: "where"}, x.code), h("span", null, x.lo || (SUBS[subOf(x.code)] || ["", ""])[1]))))];
+    h("span", {class: "k ko"}, x.ko), h("span", {class: "where"}, (IDX[byCode.get(x.code)] || [])[1] || ""), h("span", null, x.lo || (SUBS[subOf(x.code)] || ["", ""])[1]))))];
 }
 
 /* ---------- render and routing ---------- */

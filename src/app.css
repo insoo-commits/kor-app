@@ -428,3 +428,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .qa .qq~.a,.qa .qq~button{margin-left:34px}
 @media (min-width:760px){.qa .qq~.a,.qa .qq~button{margin-left:0}}
 @media (max-width:759px){.qa .qq{gap:10px}.qa .qq>.exn{width:20px;height:20px;font-size:11px}.qa .qq~.a,.qa .qq~button{margin-left:30px}}
+/* lesson title: Korean title with its Lao title right after it on the same line (wraps only when too long) (RYU 2026-11-14) */
+.band .ttl{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:14px;row-gap:2px}
+.band .ttl .tlo{margin-top:0}
