@@ -489,16 +489,29 @@ async function zipAll(ev){
       for (const b of lists[ai]){ const dir = top.folder(safeName(b.code + " " + b.t)); clipsOf(b).forEach((c, i) => jobs.push({dir, name: String(i + 1).padStart(3, "0") + " " + safeName(c.t) + ".mp3", k: c.k})); } });
     await fetchPool(jobs, 6, j => fetch("audio/" + j.k + ".mp3").then(r => r.ok ? r.arrayBuffer() : null).then(buf => { if (buf) j.dir.file(j.name, buf); }), d => { msg.textContent = d + " / " + jobs.length; });
     msg.textContent = "zip…";
-    const blob = await zip.generateAsync({type: "blob", compression: "STORE"});
+    /* sent as a plain binary file, not application/zip: iPhone Safari then only saves it to Downloads
+       (Files app) and does not jump to another app to open the zip (RYU 2026-11-14) */
+    const blob = new Blob([await zip.generateAsync({type: "arraybuffer", compression: "STORE"})], {type: "application/octet-stream"});
     const url = URL.createObjectURL(blob), link = document.createElement("a");
     link.href = url; link.download = "KOR-Lang-mp3.zip"; document.body.appendChild(link); link.click(); link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 60000);
-    msg.textContent = "✓";
+    S.dlDone = {n: allKeys().length, at: new Date().toISOString().slice(0, 10)}; save();
+    dlState();
   } catch (e) { msg.textContent = "✗"; }
   dlBusy = false;
 }
 $("dlAll").addEventListener("click", zipAll);
 if (!allKeys().length) $("dlbox").hidden = true;
+/* after the link: whether this device already has the zip (RYU 2026-11-14). The mark is kept per device; when
+   the app gains clips after that download, it asks for a new download instead */
+function dlState(){
+  const msg = $("dlMsg"), d = S.dlDone;
+  if (!d){ msg.textContent = ""; msg.className = "count"; return; }
+  const fresh = d.n === allKeys().length;
+  msg.textContent = fresh ? "✓ ດາວໂຫຼດແລ້ວ " + d.at : "↻ ມີສຽງໃໝ່ · ດາວໂຫຼດອີກຄັ້ງ";
+  msg.className = "count " + (fresh ? "dlok" : "dlnew");
+}
+dlState();
 window.addEventListener("hashchange", route);
 $("ver").textContent = META.ver;
 route();
