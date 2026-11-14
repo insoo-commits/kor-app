@@ -37,7 +37,7 @@ function h(tag, attrs, ...kids){
 const LS = "kolearn-v1";
 let S = {code: IDX[0][0], mode: "learn", rate: "1", rep: "2", hidePr: false, hideLo: false, showKo: true, onlyNew: false, known: {}, done: {}};
 try { const v = JSON.parse(localStorage.getItem(LS) || "null"); if (v && typeof v === "object") S = Object.assign(S, v); } catch (e) {}
-if (!S.koDef){ S.showKo = true; S.koDef = 1; }   // RYU 2026-11-14: Korean notes shown by default
+S.showKo = true;   // Korean notes always shown; the checkbox was removed (RYU 2026-11-14)   // RYU 2026-11-14: Korean notes shown by default
 if (!S.playDef){ S.rate = "1"; S.rep = "2"; S.playDef = 1; }   // RYU 2026-11-14: start at speed 1.0, 2 times
 if (!byCode.has(S.code)) S.code = IDX[0][0];
 function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
@@ -267,9 +267,7 @@ function drawBand(b){
   const r = IDX[byCode.get(S.code)];
   $("band").replaceChildren(
     h("div", null, h("div", {class: "ttl"}, h("h2", {class: "ko"}, r[1]), r[4] ? h("div", {class: "tlo"}, r[4]) : null),   // codes stay internal, not shown (RYU 2026-11-14)
-
-      b && b.i && b.i[1] ? h("p", null, b.i[1]) : null, b && b.i && S.showKo ? h("p", {class: "sub-ko ko"}, b.i[0]) : null),
-    h("div", {class: "tags"}, h("span", {class: "tag"}, T.level + " " + r[2]), h("span", {class: "tag ko"}, r[3]), S.done[r[0]] ? h("span", {class: "tag"}, "✓ " + T.done) : null));
+      b && b.i ? h("p", {class: "intro"}, b.i[1] || "", b.i[1] ? " " : "", h("span", {class: "sub-ko ko"}, b.i[0])) : null));   // Lao then Korean in one run, always shown; level/type tags not shown (RYU 2026-11-14)
 }
 
 /* ---------- lesson view ---------- */
@@ -294,7 +292,6 @@ function renderLearn(b){
     h("div", {class: "rowbtns"},
       h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.hidePr, onchange: ev => { S.hidePr = ev.target.checked; save(); render(); }}), T.hidePr),
       h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.hideLo, onchange: ev => { S.hideLo = ev.target.checked; save(); render(); }}), T.hideLo),
-      h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.showKo, onchange: ev => { S.showKo = ev.target.checked; save(); render(); }}), T.showKo),
       h("div", {class: "rowbtns", style: "margin-left:auto;justify-content:flex-end"},
         h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll),
         h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(false)}, ico("rep"), T.repBundle))),
