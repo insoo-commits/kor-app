@@ -541,4 +541,4 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* sub tabs: lines centred too (RYU 2026-11-15, v1.37) */
 .sub{align-items:center;text-align:center}
 /* chosen lesson in the picker list: a check in its own colour (RYU 2026-11-15, v1.39) */
-.ddck{flex:none;align-self:center;color:#FFD84D;font-weight:700;margin-right:2px}
+.ddck{flex:none;align-self:center;color:var(--accent);font-weight:700;margin-right:2px}
