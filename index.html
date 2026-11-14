@@ -374,6 +374,18 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .sec .word>.line.head>.spk{display:none}
 .sec .word>.line.head,.sec .word>.line.head{grid-template-columns:minmax(0,1fr) auto}
 .sec .word>.line.head>.wrep{grid-column:2}
+
+/* every speaker button on the right (RYU 2026-11-14): dialogue, conjugation and example rows, letter cards */
+.line{grid-template-columns:minmax(0,1fr) 38px}
+.line>.spk{grid-column:2;grid-row:1}
+.line>div{grid-column:1;grid-row:1}
+.letter{grid-template-columns:minmax(0,1fr) auto}
+.letter>.spk{grid-column:2;grid-row:1}
+.letter>.lt{grid-column:1;grid-row:1}
+@media (max-width:759px){ .line{grid-template-columns:minmax(0,1fr) 34px} }
+/* the word-repeat button sits at the top of the word line, level with the word (RYU 2026-11-14) */
+.sec .word>.line.head{align-items:start}
+.sec .word>.line.head>.wrep{align-self:start;margin-top:2px}
 </style></head>
 <body>
 <div class="wrap" id="app" data-g="K1">
@@ -435,6 +447,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-14%20v0.77"></script>
-<script src="app.js?v=2026-11-14%20v0.77"></script>
+<script src="audio/index.js?v=2026-11-14%20v0.78"></script>
+<script src="app.js?v=2026-11-14%20v0.78"></script>
 </body></html>
