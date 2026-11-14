@@ -350,6 +350,30 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .sec .word .exs .line.ex{grid-template-columns:34px minmax(0,1fr);padding:10px 12px 12px;row-gap:4px}
   .exn{grid-column:1 / -1;font-size:12px;padding-top:0}
 }
+
+/* word group, round 2 (RYU 2026-11-14): smaller headword so long expressions fit, no "ຕົວຢ່າງ N" line on phones,
+   and the speaker button on the right of the word and of each example card, as in lao-app */
+.sec .word>.line.head{grid-template-columns:minmax(0,1fr) 38px auto;column-gap:12px}
+.sec .word>.line.head>div{grid-column:1;grid-row:1}
+.sec .word>.line.head>.spk{grid-column:2;grid-row:1}
+.sec .word>.line.head>.wrep{grid-column:3;grid-row:1}
+.sec .word>.line.head .k{font-size:24px;word-break:keep-all}
+.sec .word .exs .line.ex{grid-template-columns:60px minmax(0,1fr) 38px}
+.sec .word .exs .line.ex>.exn{grid-column:1;grid-row:1}
+.sec .word .exs .line.ex>div:not(.exn){grid-column:2;grid-row:1}
+.sec .word .exs .line.ex>.spk{grid-column:3;grid-row:1;margin-top:-2px}
+@media (max-width:759px){
+  .sec .word>.line.head{grid-template-columns:minmax(0,1fr) 34px auto;column-gap:8px}
+  .sec .word>.line.head .k{font-size:20px}
+  .sec .word .exs .line.ex{grid-template-columns:minmax(0,1fr) 34px;padding:12px}
+  .sec .word .exs .line.ex>.exn{display:none}
+  .sec .word .exs .line.ex>div:not(.exn){grid-column:1}
+  .sec .word .exs .line.ex>.spk{grid-column:2}
+}
+/* the word line itself has no speaker button: the word is heard through "ຟັງຊ້ຳຄຳນີ້" on the right (RYU 2026-11-14) */
+.sec .word>.line.head>.spk{display:none}
+.sec .word>.line.head,.sec .word>.line.head{grid-template-columns:minmax(0,1fr) auto}
+.sec .word>.line.head>.wrep{grid-column:2}
 </style></head>
 <body>
 <div class="wrap" id="app" data-g="K1">
@@ -411,6 +435,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-14%20v0.76"></script>
-<script src="app.js?v=2026-11-14%20v0.76"></script>
+<script src="audio/index.js?v=2026-11-14%20v0.77"></script>
+<script src="app.js?v=2026-11-14%20v0.77"></script>
 </body></html>
