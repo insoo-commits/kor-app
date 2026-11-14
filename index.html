@@ -522,6 +522,12 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .group[aria-pressed="true"] small{color:var(--sheet);opacity:.75}
 /* chosen sub: area-colour line on the rounded bottom edge only, like the area cards (RYU 2026-11-15, v1.28) */
 .sub[aria-selected="true"]{border-color:var(--line);border-bottom:3px solid var(--accent);box-shadow:none;padding-bottom:3px}
+/* chosen area: softer reverse, light grey and dark grey instead of white and black (RYU 2026-11-15, v1.29) */
+:root{--rev-bg:#4A5250;--rev-ink:#E4E8E6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--rev-bg:#C9CFCD;--rev-ink:#2E3533}}
+:root[data-theme="dark"]{--rev-bg:#C9CFCD;--rev-ink:#2E3533}
+.group[aria-pressed="true"]{background:var(--rev-bg);border-left-color:var(--rev-bg);border-right-color:var(--rev-bg);color:var(--rev-ink)}
+.group[aria-pressed="true"] small{color:var(--rev-ink);opacity:.8}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -667,6 +673,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-15%20v1.28"></script>
-<script src="app.js?v=2026-11-15%20v1.28"></script>
+<script src="audio/index.js?v=2026-11-15%20v1.29"></script>
+<script src="app.js?v=2026-11-15%20v1.29"></script>
 </body></html>
