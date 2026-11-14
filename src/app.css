@@ -27,8 +27,12 @@
 [data-g="K7"]{--accent:var(--k7);--accent-soft:var(--k7-soft)} [data-g="K8"]{--accent:var(--k8);--accent-soft:var(--k8-soft)}
 [data-g="K9"]{--accent:var(--k9);--accent-soft:var(--k9-soft)}
 
-/* PC with a mouse: 115% (RYU asked for slightly smaller text on PC, 2026-11-14; was 125% like the Lao app) */
-@media (hover:hover) and (pointer:fine) and (min-width:900px){html{zoom:1.15}}
+/* wide screens: 115% from 900px (RYU asked for slightly smaller text on PC, was 125% like the Lao app); on bigger
+   screens or windows the page grows with the width so the text does not look tiny (RYU 2026-11-14, v0.88; any pointer) */
+@media (min-width:900px){html{zoom:1.15}}
+@media (min-width:1600px){html{zoom:1.3}}
+@media (min-width:1900px){html{zoom:1.45}}
+@media (min-width:2400px){html{zoom:1.7}}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--lao);font-size:17px;line-height:1.7}
 .ko{font-family:var(--ko);line-height:1.5}
@@ -447,3 +451,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* Korean explanation under each tip: marked with ※ and right-aligned, like the ※ word notes (RYU 2026-11-14) */
 .note-ko{text-align:right;word-break:keep-all}
 .note-ko::before{content:"※ "}
+/* ※ note line runs to the right edge of the card, under the speaker column (speaker 38px + 12px gap; phone 34 + 10) (RYU 2026-11-14) */
+.line .gl{margin-right:-50px}
+@media (max-width:759px){ .line .gl{margin-right:-44px} }
