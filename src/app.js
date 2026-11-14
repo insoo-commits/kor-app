@@ -312,7 +312,7 @@ function renderLearn(b){
     sec("tp", (b.tp || []).map(t => h("div", {class: "tip"}, note(t)))),
     sec("pr", (b.pr || []).length ? h("div", {class: "pairs"}, b.pr.map(p => h("div", {class: "pair"}, p.flatMap((x, j) => j ? [h("i", null, "↔"), x] : [x])))) : null),
     sec("dl", dl.length ? [
-      h("div", {class: "rows dlg"}, dl.map(d => h("div", {class: "line", "data-say": d[1], "data-lo": d[2]}, spk(), h("div", null, h("div", {class: "k ko"}, d[1]), h("div", {class: "m"}, d[2]), gloss(d[3])))))] : null),
+      h("div", {class: "rows dlg"}, dl.map(d => h("div", {class: "line", "data-say": d[1], "data-lo": d[2]}, spk(), h("div", null, h("div", {class: "k ko"}, d[1]), d[4] ? h("div", {class: "p"}, d[4]) : null, h("div", {class: "m"}, d[2]), gloss(d[3])))))] : null),   // d[4]: Lao-script reading, as in the example sentences (RYU 2026-11-14)
     sec("sm", b.sm && b.sm.length ? h("div", {class: "tip"}, note(b.sm)) : null),
     sec("qz", (b.qz || []).map(q => { const a = h("div", {class: "a", hidden: true}, q[1]);
       return h("div", {class: "qa"}, h("div", {class: "ko"}, q[0]), a, h("button", {class: "btn", type: "button", onclick: ev => { a.hidden = false; ev.currentTarget.remove(); }}, T.showAns)); })),
