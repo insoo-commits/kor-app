@@ -526,3 +526,8 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .group,.group[aria-pressed="true"]{border-top-color:var(--accent);border-bottom-color:var(--accent)}
 .sub,.sub[aria-selected="true"]{border-left:3px solid var(--accent);border-bottom:1px solid var(--line);padding-bottom:5px;padding-left:10px}
 .sub[aria-selected="true"]{background:var(--accent-soft);border-color:var(--accent);border-left-color:var(--accent)}
+/* sub-categories as tabs: no boxes, the chosen one gets an area-colour underline (RYU 2026-11-15, v1.32, option C) */
+.sub,.sub[aria-selected="true"]{border:0;border-radius:0;background:none;box-shadow:none;border-bottom:3px solid transparent;padding:4px 10px 6px}
+.sub[aria-selected="true"]{border-bottom-color:var(--accent)}
+.sub[aria-selected="true"] .name{color:var(--accent)}
+#subs{border-bottom:1px solid var(--line)}
