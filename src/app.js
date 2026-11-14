@@ -343,6 +343,7 @@ function renderCards(b){
 }
 
 /* ---------- quiz: four choices built from the bundle's own words ---------- */
+/* moving to the next question (or starting again) stops whatever the previous question was playing (RYU 2026-11-14) */
 let quiz = null;
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 function makeQuiz(b){
@@ -360,13 +361,13 @@ function renderQuiz(b){
   if (!quiz || quiz.code !== b.code) quiz = makeQuiz(b);
   if (!quiz.qs.length) return [h("p", {class: "empty"}, T.noQuiz)];
   if (quiz.at >= quiz.qs.length) return [h("p", {class: "quizp"}, T.score), h("div", {class: "score"}, quiz.right + " / " + quiz.qs.length),
-    h("div", {class: "rowbtns", style: "justify-content:center"}, h("button", {class: "btn primary", type: "button", onclick: () => { quiz = null; render(); }}, T.again))];
+    h("div", {class: "rowbtns", style: "justify-content:center"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz = null; render(); }}, T.again))];
   const q = quiz.qs[quiz.at];
   return [h("div", null, h("div", {class: "quizq" + (q.toLo ? " ko" : "")}, q.q), h("p", {class: "quizp"}, (q.toLo ? T.pick : T.pickKo) + " · " + (quiz.at + 1) + " / " + quiz.qs.length)),
     q.say ? h("div", {class: "rowbtns", style: "justify-content:center", "data-say": q.say}, spk()) : null,
     h("div", {class: "choices"}, q.opts.map(o => h("button", {class: "choice" + (q.toLo ? "" : " ko") + (q.picked != null ? (o === q.a ? " right" : o === q.picked ? " wrong" : "") : ""), type: "button", disabled: q.picked != null,
-      onclick: () => { q.picked = o; if (o === q.a) quiz.right++; render(); if (!q.toLo){ const tok = ++P.tok; say(tok, q.a); } }}, o))),
-    q.picked != null ? h("div", {class: "rowbtns", style: "justify-content:flex-end"}, h("button", {class: "btn primary", type: "button", onclick: () => { quiz.at++; render(); }}, T.nextCard)) : null];
+      onclick: () => { q.picked = o; if (o === q.a) quiz.right++; render(); if (!q.toLo){ stopPlay(); const tok = ++P.tok; say(tok, q.a); } }}, o))),
+    q.picked != null ? h("div", {class: "rowbtns", style: "justify-content:flex-end"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz.at++; render(); }}, T.nextCard)) : null];
 }
 
 /* ---------- search ---------- */
