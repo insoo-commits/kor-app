@@ -15,6 +15,7 @@ import argparse, asyncio, json, os, subprocess, sys, tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AUDIO = os.path.join(ROOT, "audio")
 VOICE = {"ko": "ko-KR-SunHiNeural", "lo": "lo-LA-KeomanyNeural"}
+BITRATE = {"ko": "24k", "lo": "16k"}   # Lao clips smaller (RYU 2026-11-16)
 VOWEL = dict(zip("ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ", "아애야얘어에여예오와왜외요우워웨위유으의이"))
 
 
@@ -45,7 +46,7 @@ async def make(clip, sem, proxy, failed):
                 if os.path.getsize(raw) < 200:
                     raise RuntimeError("empty audio")
                 tmp = out + ".part"
-                subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", raw, "-ac", "1", "-ar", "24000", "-b:a", "24k", "-f", "mp3", tmp], check=True)
+                subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", raw, "-ac", "1", "-ar", "24000", "-b:a", BITRATE[clip["lang"]], "-f", "mp3", tmp], check=True)
                 os.replace(tmp, out)
                 return
             except Exception as e:  # network hiccup or a text the voice cannot read

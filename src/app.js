@@ -464,7 +464,11 @@ $("view").addEventListener("click", ev => {
   /* a tap anywhere on a sentence or word box plays it on repeat; a second tap stops it */
   if (ev.target.closest("button, a, input, select, label")) return;
   const sel = window.getSelection && String(window.getSelection()); if (sel) return;
-  const el = ev.target.closest(".line[data-say]"); if (el) playSingle(el);
+  const el = ev.target.closest(".line[data-say]"); if (!el) return;
+  /* the word's own head line: same as its word-repeat button (word, then its sentences) (RYU 2026-11-16) */
+  const word = el.dataset.head === "1" && el.closest(".word");
+  if (word){ playWord(word); return; }
+  playSingle(el);
 });
 let qTimer = 0;
 $("q").addEventListener("input", ev => {
