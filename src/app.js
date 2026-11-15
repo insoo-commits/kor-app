@@ -118,13 +118,11 @@ async function say(tok, text, lao){
 async function sayItem(tok, it, label, noLo){
   const n = +S.rep || 1;
   mark(it.el);
-  if (it.head){
-    showPlayer(label + " · " + it.ko);
-    if (!(await say(tok, it.ko))) return false; await gap(300);
-    if (!noLo && it.lo && (loVoice || hasClip("lo", it.lo))){ if (!(await say(tok, it.lo, true))) return false; await gap(300); }
-    if (!(await say(tok, it.ko))) return false;
-    for (let k = 1; k < n; k++){ await gap(350); if (!(await say(tok, it.ko))) return false; }
-  } else for (let k = 0; k < n; k++){
+  /* words and sentences alike: Korean, Lao once, then Korean as many times as the count box says (RYU 2026-11-16) */
+  showPlayer(label + " · " + it.ko);
+  if (!(await say(tok, it.ko))) return false; await gap(300);
+  if (!noLo && it.lo && (loVoice || hasClip("lo", it.lo))){ if (!(await say(tok, it.lo, true))) return false; await gap(300); }
+  for (let k = 0; k < n; k++){
     showPlayer(label + " · " + (k + 1) + "/" + n + " · " + it.ko);
     if (!(await say(tok, it.ko))) return false; await gap(350);
   }
@@ -139,7 +137,7 @@ async function playSingle(el){
   const tok = ++P.tok; P.mode = "single"; P.paused = false;
   mark(el);
   const ko = el.dataset.say, lo = el.dataset.lo || "";
-  const withLo = el.dataset.head === "1" && lo && (loVoice || hasClip("lo", lo));   // a headword: Korean, Lao, then Korean over and over
+  const withLo = lo && (loVoice || hasClip("lo", lo));   // word or sentence: Korean, Lao once, then Korean over and over (RYU 2026-11-16)   // a headword: Korean, Lao, then Korean over and over
   for (let k = 1; tok === P.tok; k++){
     showPlayer("🔊 ∞ · " + k + " · " + ko);
     if (!(await say(tok, ko))) return;
