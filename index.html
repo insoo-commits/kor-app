@@ -556,6 +556,10 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .sec .word>.line.head .m{font-size:16px}
   .gl{font-size:13.5px}
 }
+/* repeat buttons in lao-app form: flat pill, thin accent border, accent text and icon, no 3D; filled while playing (RYU 2026-11-15, v1.44) */
+.wrep,.wrep:hover{background:var(--sheet);box-shadow:none;transform:none;border:1px solid var(--accent);color:var(--accent);font-weight:600;font-size:12.5px;height:30px;padding:0 11px 0 9px;gap:5px;display:inline-flex;align-items:center}
+.wrep:hover{background:var(--accent-soft)}
+.wrep:active,.word.playing .wrep,.sec:has(.letters.playing) .hrep,.sec:has(.rows.playing) .hrep,.sec.playing>h3 .hrep{transform:none;box-shadow:none;background:var(--accent);border-color:var(--accent);color:var(--sheet)}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -636,6 +640,7 @@ html.tab .band #bsel .bsel{font-size:24px}
 html.tab .sub .name{font-size:17.4px}
 html.tab .sub .kn,html.tab .sub .prog{font-size:14.4px}
 @media (min-width:760px){html.tab .sec .word .exs .line.ex .m,html.tab .dlg .line .m,html.tab .line .m{font-size:18px}html.tab .sec .word>.line.head .m{font-size:19.2px}html.tab .gl{font-size:16.2px}}
+html.tab .wrep,html.tab .wrep:hover{font-size:15px}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -702,6 +707,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-15%20v1.43"></script>
-<script src="app.js?v=2026-11-15%20v1.43"></script>
+<script src="audio/index.js?v=2026-11-15%20v1.44"></script>
+<script src="app.js?v=2026-11-15%20v1.44"></script>
 </body></html>

@@ -546,3 +546,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .sec .word>.line.head .m{font-size:16px}
   .gl{font-size:13.5px}
 }
+/* repeat buttons in lao-app form: flat pill, thin accent border, accent text and icon, no 3D; filled while playing (RYU 2026-11-15, v1.44) */
+.wrep,.wrep:hover{background:var(--sheet);box-shadow:none;transform:none;border:1px solid var(--accent);color:var(--accent);font-weight:600;font-size:12.5px;height:30px;padding:0 11px 0 9px;gap:5px;display:inline-flex;align-items:center}
+.wrep:hover{background:var(--accent-soft)}
+.wrep:active,.word.playing .wrep,.sec:has(.letters.playing) .hrep,.sec:has(.rows.playing) .hrep,.sec.playing>h3 .hrep{transform:none;box-shadow:none;background:var(--accent);border-color:var(--accent);color:var(--sheet)}
