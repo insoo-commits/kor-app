@@ -568,6 +568,12 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .controls .ctl .bsel{font-size:14px;height:28px;padding:0 4px}
 }
 @media (min-width:561px) and (max-width:639px){ .controls{padding:10px 12px;gap:4px} .controls .seg button{padding:0 7px} .ctl{gap:3px} }
+/* player bar like lao-app: full width along the bottom edge, smaller text and buttons (RYU 2026-11-16, v1.53) */
+.player{position:fixed;left:0;right:0;bottom:0;z-index:20;justify-content:center;align-self:auto;max-width:none;border-radius:0;gap:8px;font-size:12px;
+  padding:7px max(16px,env(safe-area-inset-right,0px)) calc(7px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.player .t{margin-right:4px}
+.player button{height:26px;padding:0 11px;font-size:11.5px;line-height:1}
+#pstop{background:transparent;color:var(--bg);border:1px solid currentColor}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -650,6 +656,8 @@ html.tab .sub .kn,html.tab .sub .prog{font-size:14.4px}
 @media (min-width:760px){html.tab .sec .word .exs .line.ex .m,html.tab .dlg .line .m,html.tab .line .m{font-size:18px}html.tab .sec .word>.line.head .m{font-size:19.2px}html.tab .gl{font-size:16.2px}}
 html.tab .wrep,html.tab .wrep:hover{font-size:15px}
 @media (min-width:561px){html.tab .controls .seg button{font-size:16.8px}html.tab .ctl{font-size:15px}html.tab .controls .ctl .bsel{font-size:16.8px}}
+html.tab .player{font-size:14.4px}
+html.tab .player button{font-size:13.8px}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -716,6 +724,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-16%20v1.52"></script>
-<script src="app.js?v=2026-11-16%20v1.52"></script>
+<script src="audio/index.js?v=2026-11-16%20v1.53"></script>
+<script src="app.js?v=2026-11-16%20v1.53"></script>
 </body></html>
