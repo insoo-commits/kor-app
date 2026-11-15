@@ -550,10 +550,11 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .wrep,.wrep:hover{background:var(--sheet);box-shadow:none;transform:none;border:1px solid var(--accent);color:var(--accent);font-weight:600;font-size:12.5px;height:30px;padding:0 11px 0 9px;gap:5px;display:inline-flex;align-items:center}
 .wrep:hover{background:var(--accent-soft)}
 .wrep:active,.word.playing .wrep,.sec:has(.letters.playing) .hrep,.sec:has(.rows.playing) .hrep,.sec.playing>h3 .hrep{transform:none;box-shadow:none;background:var(--accent);border-color:var(--accent);color:var(--sheet)}
-/* control row smaller so tabs, count and speed fit on one line (RYU 2026-11-15, v1.45) */
-@media (min-width:760px){
+/* control row smaller so tabs, count and speed fit on one line (RYU 2026-11-15, v1.45; from 561px up since v1.47, so a narrower window does not get bigger text) */
+@media (min-width:561px){
   .controls{gap:6px;padding:10px 20px;justify-content:center}  /* centred when there is room (v1.46) */
   .controls .seg button{font-size:14px;height:28px;padding:0 10px}
   .ctl{font-size:12.5px;gap:4px}
   .controls .ctl .bsel{font-size:14px;height:28px;padding:0 4px}
 }
+@media (min-width:561px) and (max-width:639px){ .controls{padding:10px 12px;gap:4px} .controls .seg button{padding:0 7px} .ctl{gap:3px} }
