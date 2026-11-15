@@ -540,3 +540,9 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .sub{align-items:center;text-align:center}
 /* chosen lesson in the picker list: a check in its own colour (RYU 2026-11-15, v1.39) */
 .ddck{flex:none;align-self:center;color:var(--accent);font-weight:700;margin-right:2px}
+/* PC/tablet sizes matched to lao-app proportions: example meaning and notes a step smaller (RYU 2026-11-15, v1.43) */
+@media (min-width:760px){
+  .sec .word .exs .line.ex .m,.dlg .line .m,.line .m{font-size:15px}
+  .sec .word>.line.head .m{font-size:16px}
+  .gl{font-size:13.5px}
+}

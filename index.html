@@ -550,6 +550,12 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .sub{align-items:center;text-align:center}
 /* chosen lesson in the picker list: a check in its own colour (RYU 2026-11-15, v1.39) */
 .ddck{flex:none;align-self:center;color:var(--accent);font-weight:700;margin-right:2px}
+/* PC/tablet sizes matched to lao-app proportions: example meaning and notes a step smaller (RYU 2026-11-15, v1.43) */
+@media (min-width:760px){
+  .sec .word .exs .line.ex .m,.dlg .line .m,.line .m{font-size:15px}
+  .sec .word>.line.head .m{font-size:16px}
+  .gl{font-size:13.5px}
+}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -629,6 +635,7 @@ html.tab .band #bsel .bsel{font-size:24px}
 @media (max-width:759px){html.tab .band #bsel .bsel{font-size:21.6px}}
 html.tab .sub .name{font-size:17.4px}
 html.tab .sub .kn,html.tab .sub .prog{font-size:14.4px}
+@media (min-width:760px){html.tab .sec .word .exs .line.ex .m,html.tab .dlg .line .m,html.tab .line .m{font-size:18px}html.tab .sec .word>.line.head .m{font-size:19.2px}html.tab .gl{font-size:16.2px}}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -695,6 +702,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-15%20v1.42"></script>
-<script src="app.js?v=2026-11-15%20v1.42"></script>
+<script src="audio/index.js?v=2026-11-15%20v1.43"></script>
+<script src="app.js?v=2026-11-15%20v1.43"></script>
 </body></html>
