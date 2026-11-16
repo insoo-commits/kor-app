@@ -572,3 +572,5 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .player[hidden]{display:none}
 .player .t{grid-column:1;text-align:right;margin-right:4px}
 #ppause{grid-column:2} #pstop{grid-column:3}
+.player button{display:inline-flex;align-items:center;gap:5px}
+.player button .ico svg{width:11px;height:11px}
