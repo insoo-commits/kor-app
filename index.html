@@ -584,6 +584,9 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 #ppause{grid-column:2} #pstop{grid-column:3}
 .player button{display:inline-flex;align-items:center;gap:5px}
 .player button .ico svg{width:11px;height:11px}
+/* player: info left-aligned and given all the room it can take, buttons pushed to the right edge (RYU 2026-11-16, v1.57) */
+.player{grid-template-columns:minmax(0,1fr) auto auto}
+.player .t{text-align:left;margin-right:6px}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -734,6 +737,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-16%20v1.56"></script>
-<script src="app.js?v=2026-11-16%20v1.56"></script>
+<script src="audio/index.js?v=2026-11-16%20v1.57"></script>
+<script src="app.js?v=2026-11-16%20v1.57"></script>
 </body></html>
