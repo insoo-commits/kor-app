@@ -77,7 +77,8 @@ function speakOne(text, lao){
   return new Promise(res => {
     const t = lao ? cleanLo(text) : cleanKo(text);
     if (!t) return res();
-    let fin = false; const end = () => { if (!fin){ fin = true; res(); } };
+    let fin = false; const end = () => { if (!fin){ fin = true; if (CUR_END === end) CUR_END = null; res(); } };
+    CUR_END = end;   // quiet() ends the piece at once, so a pause does not leave it hanging until the safety timer (RYU 2026-11-16 resume bug)
     const tts = () => {
       if (!synth || (lao && !loVoice)) return end();
       const u = new SpeechSynthesisUtterance(t);
@@ -96,7 +97,8 @@ function speakOne(text, lao){
     } catch (e) { tts(); }
   });
 }
-function quiet(){ if (synth) try { synth.cancel(); } catch (e) {} if (AEL) try { AEL.onended = AEL.onerror = null; AEL.pause(); } catch (e) {} }
+let CUR_END = null;
+function quiet(){ if (synth) try { synth.cancel(); } catch (e) {} if (AEL) try { AEL.onended = AEL.onerror = null; AEL.pause(); } catch (e) {} const f = CUR_END; CUR_END = null; if (f) f(); }
 const gap = ms => new Promise(r => setTimeout(r, ms));
 function mark(el){
   document.querySelectorAll(".now").forEach(x => x.classList.remove("now"));
