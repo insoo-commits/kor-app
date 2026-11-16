@@ -595,6 +595,12 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .player button .bt{display:none}
   .player button .ico svg{width:12px;height:12px}
 }
+/* phone: one line with "…", slimmer bar sitting lower (RYU 2026-11-16, v1.59) */
+@media (max-width:560px){
+  .player .t{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .player{padding-top:5px;padding-bottom:calc(4px + env(safe-area-inset-bottom,0px) * .45);border-radius:14px 14px 0 0}
+  .player button{width:26px;height:26px}
+}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -745,6 +751,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-16%20v1.58"></script>
-<script src="app.js?v=2026-11-16%20v1.58"></script>
+<script src="audio/index.js?v=2026-11-16%20v1.59"></script>
+<script src="app.js?v=2026-11-16%20v1.59"></script>
 </body></html>

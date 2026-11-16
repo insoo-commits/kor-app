@@ -155,7 +155,7 @@ async function playBundle(chain){
     const q = queue();
     if (!q.length && !chain) return stopPlay();
     for (let i = 0; i < q.length; i++){
-      const label = chain ? "🔁 " + IDX[byCode.get(S.code)][1] + " · " + (i + 1) + "/" + q.length : "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round;
+      const label = chain ? "🔁 " + (i + 1) + "/" + q.length : "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round;
       if (!(await sayItem(tok, q[i], label))) return;
     }
     if (chain){
