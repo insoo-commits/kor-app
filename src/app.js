@@ -126,12 +126,14 @@ async function sayItem(tok, it, label, noLo){
   mark(it.el);
   /* words and sentences alike: Korean, Lao once, then Korean as many times as the count box says (RYU 2026-11-16) */
   showPlayer(label + " · " + it.ko);
-  if (!(await say(tok, it.ko))) return false; await gap(300);
-  if (!noLo && it.lo && (loVoice || hasClip("lo", it.lo))){ if (!(await say(tok, it.lo, true))) return false; await gap(300); }
+  let st = 0; const face = () => { if (it.card) flipCard(it.card, st++ % 2 === 1); };   // word cards: odd plays Korean side, even plays Lao side (RYU 2026-11-16)
+  face(); if (!(await say(tok, it.ko))) return false; await gap(300);
+  if (!noLo && it.lo && (loVoice || hasClip("lo", it.lo))){ face(); if (!(await say(tok, it.lo, true))) return false; await gap(300); }
   for (let k = 0; k < n; k++){
     showPlayer(label + " · " + (k + 1) + "/" + n + " · " + it.ko);
-    if (!(await say(tok, it.ko))) return false; await gap(350);
+    face(); if (!(await say(tok, it.ko))) return false; await gap(350);
   }
+  if (it.card) flipCard(it.card, false);
   await gap(250);
   return tok === P.tok;
 }
@@ -157,18 +159,15 @@ async function playBundle(chain){
   /* in the word-card tab the same two buttons go card by card, showing each card with its meaning (RYU 2026-11-16, v1.67) */
   const cards = S.mode === "cards";
   for (;;){
-    const cb = cards ? bundle(S.code) : null;
-    const q = cards ? (cb ? items(cb) : []) : queue();
+    const q = cards ? [...document.querySelectorAll("#view .wcard")].map(c => ({el: c, card: c, ko: c.dataset.say, lo: c.dataset.lo || ""})) : queue();
     if (!q.length && !chain) return stopPlay();
     for (let i = 0; i < q.length; i++){
       const label = chain ? "🔁 " + (i + 1) + "/" + q.length : "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round;
-      let it = q[i];
-      if (cards){ cardAt = i; cardOpen = true; render(); it = {el: document.querySelector(".cardnav .mid[data-say]"), ko: q[i].say || q[i].ko, lo: q[i].lo}; }
-      if (!(await sayItem(tok, it, label))) return;
+      if (!(await sayItem(tok, q[i], label))) return;
     }
     if (chain){
       const next = IDX[(byCode.get(S.code) + 1) % IDX.length][0];
-      P.nav = true; S.code = next; S.mode = cards ? "cards" : "learn"; cardAt = 0; cardOpen = false;
+      P.nav = true; S.code = next; S.mode = cards ? "cards" : "learn";
       try { await loadArea(areaOf(next)); } catch (e) { P.nav = false; return stopPlay(); }
       if (tok !== P.tok){ P.nav = false; return; }
       if (location.hash === "#" + next){ P.nav = false; save(); drawAll(); } else { location.hash = next; await gap(60); }
@@ -227,7 +226,7 @@ async function playSents(box){
 function stopPlay(){
   P.tok++; P.mode = ""; P.paused = false; if (P.box){ P.box.classList.remove("playing"); P.box = null; }
   quiet();
-  mark(null); showPlayer("");
+  mark(null); showPlayer(""); document.querySelectorAll(".wcard.back").forEach(c => c.classList.remove("back"));
 }
 function togglePause(){
   if (!P.mode) return;
@@ -358,25 +357,35 @@ function items(b){
   (b.e || []).forEach((e, j) => out.push({id: b.code + "~e" + j, ko: e[0], pr: e[1], lo: e[2]}));
   return out.filter(x => x.ko && x.lo);
 }
-let cardAt = 0, cardOpen = false;
+/* word study like lao-app (RYU 2026-11-16, v1.69): every card of the lesson at once; Korean side = word and reading,
+   Lao side = meaning and one example. Tap a card to repeat it (tap again to stop); the bar buttons go card by card. */
+function flipCard(c, back){ c.classList.toggle("back", !!back); }
+function cardItems(b){
+  const ws = (b.l || []).map(l => ({ko: l[0], pr: l[2] && l[2] !== l[0] ? l[2] : "", lo: l[1], say: l[2] || l[0]}))
+    .concat((b.w || []).concat(b.f || []).map(w => ({ko: w[0], pr: w[1], lo: w[2], ex: (w[3] || [])[0]})));
+  return (ws.length ? ws : items(b)).filter(x => x.ko && x.lo);
+}
+async function playCard(c){
+  if (P.mode === "single" && c.classList.contains("now")) return stopPlay();
+  stopPlay();
+  const tok = ++P.tok; P.mode = "single"; P.paused = false;
+  mark(c);
+  const ko = c.dataset.say, lo = c.dataset.lo || "", withLo = lo && (loVoice || hasClip("lo", lo));
+  for (let k = 1; tok === P.tok; k++){
+    showPlayer("🔊 ∞ · " + k + " · " + ko);
+    flipCard(c, false); if (!(await say(tok, ko))) return; await gap(300);
+    if (withLo && k === 1){ flipCard(c, true); if (!(await say(tok, lo, true))) return; await gap(300); }
+    else { flipCard(c, true); await gap(1200); if (tok !== P.tok) return; }
+    await gap(200);
+  }
+}
 function renderCards(b){
-  const all = items(b), list = S.onlyNew ? all.filter(x => !S.known[x.id]) : all;
-  if (!all.length) return [h("p", {class: "empty"}, T.noCards)];
-  if (!list.length) return [h("p", {class: "empty"}, T.allKnown)];
-  if (cardAt >= list.length) cardAt = 0;
-  const it = list[cardAt], known = !!S.known[it.id];
-  const move = d => { const playing = P.mode === "single" && !P.paused;   // keep playing: the new card starts right away
-    cardAt = (cardAt + d + list.length) % list.length; cardOpen = false; render();
-    if (playing){ const el = document.querySelector(".cardnav .mid[data-say]"); if (el) playSingle(el); } };
-  return [
-    h("button", {class: "card" + (known ? " known" : ""), type: "button", onclick: () => { cardOpen = !cardOpen; render(); }},
-      h("div", null, h("div", {class: "k ko"}, it.ko), it.pr && !S.hidePr ? h("div", {class: "p"}, it.pr) : null,
-        cardOpen ? h("div", {class: "m"}, it.lo) : h("div", {class: "hint"}, T.flip))),
-    h("div", {class: "cardnav"},
-      h("button", {class: "btn prev", type: "button", onclick: () => move(-1)}, T.prev),
-      h("div", {class: "mid", "data-say": it.say || it.ko}, spk(), h("span", {class: "count"}, (cardAt + 1) + " / " + list.length)),
-        h("button", {class: "btn knownbtn" + (known ? " good" : ""), type: "button", onclick: () => { if (known) delete S.known[it.id]; else S.known[it.id] = 1; save(); drawStats(); if (!known && S.onlyNew){ cardOpen = false; render(); } else render(); }}, (known ? "✓ " : "") + T.known),
-      h("button", {class: "btn primary next", type: "button", onclick: () => move(1)}, T.nextCard))];
+  const list = cardItems(b);
+  if (!list.length) return [h("p", {class: "empty"}, T.noCards)];
+  return [h("div", {class: "wcards"}, list.map(it => h("div", {class: "wcard", role: "button", tabindex: "0", "data-say": it.say || it.ko, "data-lo": it.lo, onclick: ev => playCard(ev.currentTarget)},
+    h("span", {class: "spk", "aria-hidden": "true"}, ico("spk")),
+    h("div", {class: "fr"}, h("div", {class: "k ko" + (it.ko.length > 6 ? " long" : "")}, it.ko), it.pr ? h("div", {class: "p"}, it.pr) : null),
+    h("div", {class: "bk"}, h("div", {class: "m"}, it.lo), it.ex ? h("div", {class: "ex"}, h("div", {class: "ko"}, it.ex[0]), h("div", {class: "exm"}, it.ex[2])) : null))))];
 }
 
 /* ---------- quiz: four choices built from the bundle's own words ---------- */
@@ -448,14 +457,14 @@ async function route(){
   if (byCode.has(name)) S.code = name;
   (S.lastA = S.lastA || {})[areaOf(S.code)] = S.code; (S.lastS = S.lastS || {})[subOf(S.code)] = S.code;
   if (P.nav) P.nav = false; else stopPlay();
-  cardAt = 0; cardOpen = false; quiz = null; save(); drawAll();
+  quiz = null; save(); drawAll();
   const a = areaOf(S.code);
   if (!cache.has(a)){
     try { await loadArea(a); } catch (e) { if (areaOf(S.code) === a) $("view").replaceChildren(h("p", {class: "empty"}, T.loadFail)); return; }
     if (areaOf(S.code) === a) render();
   }
 }
-document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => { S.mode = b.dataset.mode; stopPlay(); cardAt = 0; cardOpen = false; save(); drawControls(); render(); }));
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => { S.mode = b.dataset.mode; stopPlay(); save(); drawControls(); render(); }));
 function ddClose(){ $("bselList").hidden = true; $("bselBtn").setAttribute("aria-expanded", "false"); }
 $("bselBtn").addEventListener("click", () => {
   const l = $("bselList"), open = l.hidden;
