@@ -106,7 +106,7 @@ function showPlayer(text){
   $("player").hidden = !P.mode;
   const t = text || "", m = t.match(/^(🔊|🔁)\s*/);
   $("pt").replaceChildren(...(m ? [ico(m[1] === "🔊" ? "spk" : "rep"), t.slice(m[0].length)] : [t]));
-  $("ppause").replaceChildren(ico(P.paused ? "play" : "pause"), P.paused ? T.resume : T.pause);   // same kind of mark on all three (RYU 2026-11-16)
+  $("ppause").replaceChildren(ico(P.paused ? "play" : "pause"), h("span", {class: "bt"}, P.paused ? T.resume : T.pause));   // same kind of mark on all three (RYU 2026-11-16)
 }
 async function hold(tok){ while (P.paused && tok === P.tok) await gap(150); return tok === P.tok; }
 /* says one piece; if paused in the middle, says it again after resuming */
@@ -225,7 +225,7 @@ function togglePause(){
   if (!P.mode) return;
   P.paused = !P.paused;
   if (P.paused) quiet();
-  $("ppause").replaceChildren(ico(P.paused ? "play" : "pause"), P.paused ? T.resume : T.pause);   // same kind of mark on all three (RYU 2026-11-16)
+  $("ppause").replaceChildren(ico(P.paused ? "play" : "pause"), h("span", {class: "bt"}, P.paused ? T.resume : T.pause));   // same kind of mark on all three (RYU 2026-11-16)
 }
 const spk = () => h("button", {class: "spk", type: "button", "aria-label": "ຟັງ", onclick: ev => { const el = ev.currentTarget.closest("[data-say]"); if (el) playSingle(el); }}, ico("spk"));
 

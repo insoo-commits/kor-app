@@ -587,6 +587,14 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* player: info left-aligned and given all the room it can take, buttons pushed to the right edge (RYU 2026-11-16, v1.57) */
 .player{grid-template-columns:minmax(0,1fr) auto auto}
 .player .t{text-align:left;margin-right:6px}
+/* phone: player info may take two lines, buttons show only their marks, so the info is not cut (RYU 2026-11-16, v1.58) */
+@media (max-width:560px){
+  .player{padding-left:12px;padding-right:12px;gap:6px}
+  .player .t{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
+  .player button{width:30px;height:30px;padding:0;justify-content:center}
+  .player button .bt{display:none}
+  .player button .ico svg{width:12px;height:12px}
+}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -730,13 +738,13 @@ html.tab .ddi{font-size:17px}
     </div>
     <div class="body" id="view"><p class="empty">ກຳລັງໂຫຼດ…</p></div>
   </section>
-  <div class="player" id="player" hidden><span class="t ko" id="pt"></span><button id="ppause" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5.5" y="4.5" width="4.5" height="15" rx="1"/><rect x="14" y="4.5" width="4.5" height="15" rx="1"/></svg></span>ຢຸດຊົ່ວຄາວ</button><button id="pstop" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5.5" y="5.5" width="13" height="13" rx="1.5"/></svg></span>ຍົກເລີກ</button></div>
+  <div class="player" id="player" hidden><span class="t ko" id="pt"></span><button id="ppause" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5.5" y="4.5" width="4.5" height="15" rx="1"/><rect x="14" y="4.5" width="4.5" height="15" rx="1"/></svg></span><span class="bt">ຢຸດຊົ່ວຄາວ</span></button><button id="pstop" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5.5" y="5.5" width="13" height="13" rx="1.5"/></svg></span><span class="bt">ຍົກເລີກ</span></button></div>
   <p class="foot" id="voiceNote"></p>
   <p class="foot"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></span>ຟັງສຽງ · <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>ຟັງຊ້ຳ (1–5 ເທື່ອ) ຈົນກວ່າຈະກົດອີກເທື່ອ. ບັນທຶກການຮຽນໄວ້ໃນອຸປະກອນນີ້ເທົ່ານັ້ນ.</p>
   <p class="dlline" id="dlbox"><a href="#" id="dlAll">⤓ ດາວໂຫຼດສຽງ mp3 · <span class="ko">음성 내려받기</span></a> <span class="count" id="dlMsg"></span></p>
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-16%20v1.57"></script>
-<script src="app.js?v=2026-11-16%20v1.57"></script>
+<script src="audio/index.js?v=2026-11-16%20v1.58"></script>
+<script src="app.js?v=2026-11-16%20v1.58"></script>
 </body></html>
