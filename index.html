@@ -577,6 +577,11 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* player bar only as wide as the app column, not the whole window (RYU 2026-11-16, v1.54) */
 .player{left:50%;right:auto;transform:translateX(-50%);width:min(calc(100% - 32px),968px);box-sizing:border-box;border-radius:12px 12px 0 0;padding-left:16px;padding-right:16px}
 @media (max-width:560px){ .player{width:100%;border-radius:0} }
+/* player: info fills the left half and ends at the centre, buttons start at the centre, so nothing jumps while it plays (RYU 2026-11-16, v1.55) */
+.player{display:grid;grid-template-columns:minmax(0,1fr) auto auto minmax(0,1fr);border-radius:20px 20px 0 0}
+.player[hidden]{display:none}
+.player .t{grid-column:1;text-align:right;margin-right:4px}
+#ppause{grid-column:2} #pstop{grid-column:3}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -727,6 +732,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-16%20v1.54"></script>
-<script src="app.js?v=2026-11-16%20v1.54"></script>
+<script src="audio/index.js?v=2026-11-16%20v1.55"></script>
+<script src="app.js?v=2026-11-16%20v1.55"></script>
 </body></html>
