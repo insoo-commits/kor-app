@@ -43,6 +43,7 @@ try { const v = JSON.parse(localStorage.getItem(LS) || "null"); if (v && typeof 
 S.showKo = true;   // Korean notes always shown; the checkbox was removed (RYU 2026-11-14)   // RYU 2026-11-14: Korean notes shown by default
 if (!S.playDef){ S.rate = "1"; S.rep = "2"; S.playDef = 1; }   // RYU 2026-11-14: start at speed 1.0, 2 times
 if (!byCode.has(S.code)) S.code = IDX[0][0];
+S.hidePr = false;   // the hide-reading box was removed (v1.64), so a saved "hide" must not stick
 function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
 
 /* ---------- data ---------- */
@@ -299,10 +300,10 @@ function renderLearn(b){
   const i = byCode.get(b.code), next = IDX[i + 1], isDone = !!S.done[b.code];
   const dl = b.dl || [];
   return [
-    h("div", {class: "rowbtns"},
-      h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.hidePr, onchange: ev => { S.hidePr = ev.target.checked; save(); render(); }}), T.hidePr),
+    h("div", {class: "rowbtns toprow"},
+      /* hide-reading box removed, the two repeat buttons centred (RYU 2026-11-16, v1.64) */
       h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.hideLo, onchange: ev => { S.hideLo = ev.target.checked; save(); render(); }}), T.hideLo),
-      h("div", {class: "rowbtns", style: "margin-left:auto;justify-content:flex-end"},
+      h("div", {class: "rowbtns"},
         h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll),
         h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(false)}, ico("rep"), T.repBundle))),
     sec("m", (b.m || []).map(m => h("div", {class: "tip"}, note(m)))),
@@ -361,8 +362,7 @@ function items(b){
 let cardAt = 0, cardOpen = false;
 function renderCards(b){
   const all = items(b), list = S.onlyNew ? all.filter(x => !S.known[x.id]) : all;
-  const filter = h("div", {class: "rowbtns"}, h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.onlyNew, onchange: ev => { S.onlyNew = ev.target.checked; cardAt = 0; cardOpen = false; save(); render(); }}), T.onlyNew),
-    h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.hidePr, onchange: ev => { S.hidePr = ev.target.checked; save(); render(); }}), T.hidePr));
+  const filter = h("div", {class: "rowbtns"}, h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.onlyNew, onchange: ev => { S.onlyNew = ev.target.checked; cardAt = 0; cardOpen = false; save(); render(); }}), T.onlyNew));
   if (!all.length) return [h("p", {class: "empty"}, T.noCards)];
   if (!list.length) return [filter, h("p", {class: "empty"}, T.allKnown)];
   if (cardAt >= list.length) cardAt = 0;
