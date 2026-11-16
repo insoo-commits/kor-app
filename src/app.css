@@ -607,3 +607,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .qa .a,.qa>button{justify-self:end;text-align:right}
 @media (min-width:760px){ .qa{grid-template-columns:minmax(0,1fr) fit-content(50%)} }
 .rowbtns.toprow{display:flex;justify-content:center}
+/* repeat buttons in the control bar (v1.67) */
+.controls .ctlrep{gap:8px;justify-content:center}
+.controls .ctlrep[hidden]{display:none}
+@media (max-width:560px){ .controls .ctlrep{grid-column:1 / -1} }

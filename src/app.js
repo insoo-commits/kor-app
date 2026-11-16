@@ -43,7 +43,7 @@ try { const v = JSON.parse(localStorage.getItem(LS) || "null"); if (v && typeof 
 S.showKo = true;   // Korean notes always shown; the checkbox was removed (RYU 2026-11-14)   // RYU 2026-11-14: Korean notes shown by default
 if (!S.playDef){ S.rate = "1"; S.rep = "2"; S.playDef = 1; }   // RYU 2026-11-14: start at speed 1.0, 2 times
 if (!byCode.has(S.code)) S.code = IDX[0][0];
-S.hidePr = false; S.hideLo = false;   // both boxes removed (v1.64, v1.66); the hide-reading box was removed (v1.64), so a saved "hide" must not stick
+S.hidePr = false; S.hideLo = false; S.onlyNew = false;   // both boxes removed (v1.64, v1.66); the hide-reading box was removed (v1.64), so a saved "hide" must not stick
 function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
 
 /* ---------- data ---------- */
@@ -154,16 +154,21 @@ async function playSingle(el){
 async function playBundle(chain){
   stopPlay();
   const tok = ++P.tok; P.mode = chain ? "chain" : "bundle"; P.paused = false; P.round = 1;
+  /* in the word-card tab the same two buttons go card by card, showing each card with its meaning (RYU 2026-11-16, v1.67) */
+  const cards = S.mode === "cards";
   for (;;){
-    const q = queue();
+    const cb = cards ? bundle(S.code) : null;
+    const q = cards ? (cb ? items(cb) : []) : queue();
     if (!q.length && !chain) return stopPlay();
     for (let i = 0; i < q.length; i++){
       const label = chain ? "🔁 " + (i + 1) + "/" + q.length : "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round;
-      if (!(await sayItem(tok, q[i], label))) return;
+      let it = q[i];
+      if (cards){ cardAt = i; cardOpen = true; render(); it = {el: document.querySelector(".cardnav .mid[data-say]"), ko: q[i].say || q[i].ko, lo: q[i].lo}; }
+      if (!(await sayItem(tok, it, label))) return;
     }
     if (chain){
       const next = IDX[(byCode.get(S.code) + 1) % IDX.length][0];
-      P.nav = true; S.code = next; S.mode = "learn";
+      P.nav = true; S.code = next; S.mode = cards ? "cards" : "learn"; cardAt = 0; cardOpen = false;
       try { await loadArea(areaOf(next)); } catch (e) { P.nav = false; return stopPlay(); }
       if (tok !== P.tok){ P.nav = false; return; }
       if (location.hash === "#" + next){ P.nav = false; save(); drawAll(); } else { location.hash = next; await gap(60); }
@@ -300,11 +305,6 @@ function renderLearn(b){
   const i = byCode.get(b.code), next = IDX[i + 1], isDone = !!S.done[b.code];
   const dl = b.dl || [];
   return [
-    h("div", {class: "rowbtns toprow"},
-      /* both hide boxes removed, the two repeat buttons centred (RYU 2026-11-16, v1.64-v1.66) */
-      h("div", {class: "rowbtns"},
-        h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll),
-        h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(false)}, ico("rep"), T.repBundle))),
     sec("m", (b.m || []).map(m => h("div", {class: "tip"}, note(m)))),
     sec("l",
       !(b.l || []).length ? null : h("div", {class: "letters"}, (b.l || []).map(l => h("button", {class: "letter", type: "button", "data-say": l[2] || l[0], onclick: ev => playSingle(ev.currentTarget)},
@@ -361,15 +361,14 @@ function items(b){
 let cardAt = 0, cardOpen = false;
 function renderCards(b){
   const all = items(b), list = S.onlyNew ? all.filter(x => !S.known[x.id]) : all;
-  const filter = h("div", {class: "rowbtns"}, h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.onlyNew, onchange: ev => { S.onlyNew = ev.target.checked; cardAt = 0; cardOpen = false; save(); render(); }}), T.onlyNew));
   if (!all.length) return [h("p", {class: "empty"}, T.noCards)];
-  if (!list.length) return [filter, h("p", {class: "empty"}, T.allKnown)];
+  if (!list.length) return [h("p", {class: "empty"}, T.allKnown)];
   if (cardAt >= list.length) cardAt = 0;
   const it = list[cardAt], known = !!S.known[it.id];
   const move = d => { const playing = P.mode === "single" && !P.paused;   // keep playing: the new card starts right away
     cardAt = (cardAt + d + list.length) % list.length; cardOpen = false; render();
     if (playing){ const el = document.querySelector(".cardnav .mid[data-say]"); if (el) playSingle(el); } };
-  return [filter,
+  return [
     h("button", {class: "card" + (known ? " known" : ""), type: "button", onclick: () => { cardOpen = !cardOpen; render(); }},
       h("div", null, h("div", {class: "k ko"}, it.ko), it.pr && !S.hidePr ? h("div", {class: "p"}, it.pr) : null,
         cardOpen ? h("div", {class: "m"}, it.lo) : h("div", {class: "hint"}, T.flip))),
@@ -432,6 +431,11 @@ function render(){
   const b = bundle(S.code);
   drawBand(b);
   if (!b){ view.replaceChildren(h("p", {class: "empty"}, T.loading)); return; }
+  /* the two repeat buttons sit in the control bar above its bottom line, learn tab only (RYU 2026-11-16, v1.67) */
+  $("ctlrep").replaceChildren(...(S.mode !== "quiz" ? [
+    h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll),
+    h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(false)}, ico("rep"), T.repBundle)] : []));
+  $("ctlrep").hidden = S.mode === "quiz";   // learn and word-card tabs (v1.67)
   const parts = S.mode === "cards" ? renderCards(b) : S.mode === "quiz" ? renderQuiz(b) : renderLearn(b);
   view.replaceChildren(...parts.flat().filter(Boolean));
 }

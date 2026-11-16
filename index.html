@@ -617,6 +617,10 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .qa .a,.qa>button{justify-self:end;text-align:right}
 @media (min-width:760px){ .qa{grid-template-columns:minmax(0,1fr) fit-content(50%)} }
 .rowbtns.toprow{display:flex;justify-content:center}
+/* repeat buttons in the control bar (v1.67) */
+.controls .ctlrep{gap:8px;justify-content:center}
+.controls .ctlrep[hidden]{display:none}
+@media (max-width:560px){ .controls .ctlrep{grid-column:1 / -1} }
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -759,6 +763,7 @@ html.tab .ddi{font-size:17px}
       <div id="bsel" class="dd"><button id="bselBtn" class="bsel ddb" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="ເລືອກບົດ"></button><div id="bselList" class="ddl" role="listbox" hidden></div></div>
       <label class="ctl"><span>ຈຳນວນເທື່ອ <span class="ko">횟수</span></span><select id="repSel" class="bsel"><option value="1">1 ເທື່ອ</option><option value="2">2 ເທື່ອ</option><option value="3">3 ເທື່ອ</option><option value="4">4 ເທື່ອ</option><option value="5">5 ເທື່ອ</option></select></label>
       <label class="ctl"><span>ຄວາມໄວ <span class="ko">속도</span></span><select id="rateSel" class="bsel"><option value="0.8">×0.8</option><option value="1">×1.0</option><option value="1.2">×1.2</option><option value="1.5">×1.5</option><option value="2">×2.0</option></select></label>
+      <div class="rowbtns ctlrep" id="ctlrep"></div>
     </div>
     <div class="body" id="view"><p class="empty">ກຳລັງໂຫຼດ…</p></div>
   </section>
@@ -769,6 +774,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-16%20v1.66"></script>
-<script src="app.js?v=2026-11-16%20v1.66"></script>
+<script src="audio/index.js?v=2026-11-16%20v1.67"></script>
+<script src="app.js?v=2026-11-16%20v1.67"></script>
 </body></html>
