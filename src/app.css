@@ -651,3 +651,5 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .ddi{font-size:15px;padding:4px 10px;line-height:1.35}
 @media (max-width:560px){ .ddn .ddn-ab{display:none} .ddi{font-size:14.5px} }
 .wcard .hn{word-break:keep-all}
+/* phones: picker text starts at the left edge so long names are cut less (RYU 2026-11-16, v1.73) */
+@media (max-width:560px){ .ddb{justify-content:flex-start;padding-left:10px;padding-right:26px;gap:5px} .ddi{justify-content:flex-start;padding-left:8px;padding-right:6px} }
