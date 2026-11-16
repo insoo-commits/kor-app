@@ -657,3 +657,5 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .dlnote{max-width:560px;margin:4px auto 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--sheet);font-size:13px;line-height:1.55;color:var(--muted);text-align:left}
 .dlnote .ko{font-size:12.5px}
 .dlnote{word-break:keep-all}
+/* phones only: progress / done mark on its own line under the save link (RYU 2026-11-16, v1.78) */
+@media (max-width:560px){ #dlbox #dlMsg{display:block;margin-top:2px} #dlbox #dlMsg:empty{display:none} }
