@@ -520,46 +520,32 @@ const allKeys = () => Object.keys(window.AUDIO_INDEX || {});
 const fetchPool = async (items, n, work, tick) => { let i = 0, done = 0;
   await Promise.all(Array.from({length: n}, async () => { while (i < items.length){ const it = items[i++]; try { await work(it); } catch (e) {} tick(++done); } })); };
 let dlBusy = false;
-function clipsOf(b){
-  const out = [], seen = new Set();
-  const add = (lang, raw) => { const t = lang === "lo" ? cleanLo(raw) : cleanKo(raw); if (!t) return; const k = clipKey(lang, t); if (!CLIPS[k] || seen.has(k)) return; seen.add(k); out.push({k, t}); };
-  (b.l || []).forEach(l => add("ko", l[2] || l[0]));
-  [].concat(b.w || [], b.f || []).forEach(w => { add("ko", w[0]); add("lo", w[2]); (w[3] || []).forEach(e => add("ko", e[0])); });
-  (b.c || []).forEach(c => add("ko", c[1])); (b.e || []).forEach(e => add("ko", e[0])); (b.dl || []).forEach(d => add("ko", d[1]));
-  return out;
-}
-const safeName = t => t.replace(/[\\/:*?"<>|]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 60);
-let zipLib = null;
-const loadZip = () => zipLib || (zipLib = new Promise((res, rej) => { const s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"; s.onload = () => res(window.JSZip); s.onerror = () => { zipLib = null; rej(new Error("zip")); }; document.head.appendChild(s); }));
-async function zipAll(ev){
+/* RYU 2026-11-16 (v1.77): no zip file any more (phones then ask which app should open it). The button saves every clip
+   inside the app, in the same IndexedDB store the service worker answers from ("ko-audio" / "c"), so the app plays offline. */
+let _adb;
+const ADB = () => _adb || (_adb = new Promise((res, rej) => { const r = indexedDB.open("ko-audio", 1); r.onupgradeneeded = () => r.result.createObjectStore("c"); r.onsuccess = () => res(r.result); r.onerror = () => { _adb = null; rej(r.error); }; }));
+const aHas = (db, k) => new Promise(res => { const q = db.transaction("c").objectStore("c").count(k); q.onsuccess = () => res(q.result > 0); q.onerror = () => res(false); });
+const aPut = (db, k, v) => new Promise(res => { const tx = db.transaction("c", "readwrite"); tx.objectStore("c").put(v, k); tx.oncomplete = () => res(true); tx.onerror = tx.onabort = () => res(false); });
+async function saveAll(ev){
   ev.preventDefault(); if (dlBusy) return; dlBusy = true; const msg = $("dlMsg");
   try {
-    const [JSZip, lists] = await Promise.all([loadZip(), Promise.all(AREAS.map(a => loadArea(a[0])))]);
-    const zip = new JSZip(), jobs = [];
-    AREAS.forEach((a, ai) => { const top = zip.folder(safeName(a[0] + " " + a[2]));
-      for (const b of lists[ai]){ const dir = top.folder(safeName(b.code + " " + b.t)); clipsOf(b).forEach((c, i) => jobs.push({dir, name: String(i + 1).padStart(3, "0") + " " + safeName(c.t) + ".mp3", k: c.k})); } });
-    await fetchPool(jobs, 6, j => fetch("audio/" + j.k + ".mp3").then(r => r.ok ? r.arrayBuffer() : null).then(buf => { if (buf) j.dir.file(j.name, buf); }), d => { msg.textContent = d + " / " + jobs.length; });
-    msg.textContent = "zip…";
-    /* sent as a plain binary file, not application/zip: iPhone Safari then only saves it to Downloads
-       (Files app) and does not jump to another app to open the zip (RYU 2026-11-14) */
-    const blob = new Blob([await zip.generateAsync({type: "arraybuffer", compression: "STORE"})], {type: "application/octet-stream"});
-    const url = URL.createObjectURL(blob), link = document.createElement("a");
-    link.href = url; link.download = "KOR-Lang-mp3.zip"; document.body.appendChild(link); link.click(); link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 60000);
-    S.dlDone = {n: allKeys().length, at: new Date().toISOString().slice(0, 10)}; save();
-    dlState();
-    /* phones may then pop up "open with…": that is only the phone offering to open the saved zip, nothing went wrong.
-       Say so under the link, in Lao and Korean (RYU 2026-11-16, v1.76) */
-    $("dlNote").hidden = false;
-  } catch (e) { msg.textContent = "✗"; }
+    try { if (navigator.storage && navigator.storage.persist) await navigator.storage.persist(); } catch (e) {}
+    const db = await ADB(), keys = allKeys(); let bad = 0;
+    await fetchPool(keys, 6, async k => { if (await aHas(db, k)) return;
+      const r = await fetch("audio/" + k + ".mp3"); if (!r.ok){ bad++; return; } if (!(await aPut(db, k, await r.arrayBuffer()))) bad++; },
+      d => { msg.textContent = Math.floor(d / keys.length * 100) + "% (" + d + " / " + keys.length + ")"; });
+    if (bad) throw new Error("missing " + bad);
+    S.offline = {n: keys.length, at: new Date().toISOString().slice(0, 10)}; save();
+    dlState(); $("dlNote").hidden = false;
+  } catch (e) { msg.textContent = "✗ ລອງໃໝ່ · 다시 눌러 주세요"; }
   dlBusy = false;
 }
-$("dlAll").addEventListener("click", zipAll);
+$("dlAll").addEventListener("click", saveAll);
 if (!allKeys().length) $("dlbox").hidden = true;
 /* after the link: whether this device already has the zip (RYU 2026-11-14). The mark is kept per device; when
    the app gains clips after that download, it asks for a new download instead */
 function dlState(){
-  const msg = $("dlMsg"), d = S.dlDone;
+  const msg = $("dlMsg"), d = S.offline;   // the zip-era mark (dlDone) is not used: the clips must be in the app itself
   if (!d){ msg.textContent = ""; msg.className = "count"; return; }
   const fresh = d.n === allKeys().length;
   msg.textContent = fresh ? "✓ " + d.at : "↻ ມີສຽງໃໝ່";
