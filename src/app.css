@@ -591,3 +591,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .player{padding-top:5px;padding-bottom:calc(4px + env(safe-area-inset-bottom,0px) * .45);border-radius:14px 14px 0 0}
   .player button{width:26px;height:26px}
 }
+/* player buttons end on the same right line as the repeat buttons above (RYU 2026-11-16, v1.60) */
+.player{padding-left:21px;padding-right:21px}
+@media (max-width:560px){ .player{padding-left:29px;padding-right:29px} }
