@@ -108,7 +108,9 @@ function mark(el){
 function showPlayer(text){
   $("player").hidden = !P.mode;
   const t = text || "", m = t.match(/^(🔊|🔁)\s*/);
-  $("pt").replaceChildren(...(m ? [ico(m[1] === "🔊" ? "spk" : "rep"), t.slice(m[0].length)] : [t]));
+  /* lesson number right after the speaker mark (RYU 2026-11-16, v1.74) */
+  const on = t && byCode.has(S.code) ? "[" + ordParts(S.code).join("") + "] " : "";
+  $("pt").replaceChildren(...(m ? [ico(m[1] === "🔊" ? "spk" : "rep"), on + t.slice(m[0].length)] : [on + t]));
   $("ppause").replaceChildren(ico(P.paused ? "play" : "pause"), h("span", {class: "bt"}, P.paused ? T.resume : T.pause));   // same kind of mark on all three (RYU 2026-11-16)
 }
 async function hold(tok){ while (P.paused && tok === P.tok) await gap(150); return tok === P.tok; }
@@ -263,15 +265,19 @@ function drawSubs(){
   }));
   const on = $("subs").querySelector('[aria-selected="true"]'); if (on && on.scrollIntoView) on.scrollIntoView({block: "nearest", inline: "nearest"});
 }
+/* lesson order number in app order: ["7-01-", "02"] for [7-01-02] */
+function ordParts(code){
+  const a = areaOf(code), sb = subOf(code), subsA = [...new Set(IDX.filter(r => r[0].startsWith(a + "-")).map(r => subOf(r[0])))];
+  const rows = IDX.filter(r => r[0].startsWith(sb + "-")), pad = n => String(n).padStart(2, "0");
+  return [(AREAS.findIndex(x => x[0] === a) + 1) + "-" + pad(subsA.indexOf(sb) + 1) + "-", pad(rows.findIndex(r => r[0] === code) + 1)];
+}
 function drawControls(){
   const s = subOf(S.code), rows = IDX.filter(r => r[0].startsWith(s + "-"));
   /* lesson picker: own list instead of the phone's native one, so each lesson stays on one line inside the box (RYU 2026-11-14) */
   const lab = (r, btn) => [h("span", {class: "ddk"}, (!btn && S.done[r[0]] ? "✓ " : "") + r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : ""];
   const curRow = rows.find(r => r[0] === S.code) || rows[0];
   /* order number [area-sub-lesson] in app order in front of the chosen lesson (RYU 2026-11-16, v1.70) */
-  const a = areaOf(curRow[0]), subsA = [...new Set(IDX.filter(r => r[0].startsWith(a + "-")).map(r => subOf(r[0])))];
-  const pad = n => String(n).padStart(2, "0");
-  const ord = (AREAS.findIndex(x => x[0] === a) + 1) + "-" + pad(subsA.indexOf(s) + 1) + "-", last = pad(rows.indexOf(curRow) + 1);
+  const [ord, last] = ordParts(curRow[0]);
   /* PC and tablet: [7-01-01]; phone: only the lesson number [01], so the name is not cut (RYU 2026-11-16, v1.72) */
   $("bselBtn").replaceChildren(h("span", {class: "ddn ko"}, "[", h("span", {class: "ddn-ab"}, ord), last + "]"), ...lab(curRow, true));   // check mark dropped (RYU 2026-11-16, v1.71)   // check in front of the chosen lesson on the main screen, not in the list (RYU 2026-11-15)
   $("bselList").replaceChildren(...rows.map(r => h("button", {type: "button", class: "ddi", role: "option", "aria-selected": r[0] === S.code ? "true" : "false", onclick: () => { ddClose(); go(r[0]); }}, ...lab(r))));
