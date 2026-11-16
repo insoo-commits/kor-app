@@ -43,7 +43,7 @@ try { const v = JSON.parse(localStorage.getItem(LS) || "null"); if (v && typeof 
 S.showKo = true;   // Korean notes always shown; the checkbox was removed (RYU 2026-11-14)   // RYU 2026-11-14: Korean notes shown by default
 if (!S.playDef){ S.rate = "1"; S.rep = "2"; S.playDef = 1; }   // RYU 2026-11-14: start at speed 1.0, 2 times
 if (!byCode.has(S.code)) S.code = IDX[0][0];
-S.hidePr = false;   // the hide-reading box was removed (v1.64), so a saved "hide" must not stick
+S.hidePr = false; S.hideLo = false;   // both boxes removed (v1.64, v1.66); the hide-reading box was removed (v1.64), so a saved "hide" must not stick
 function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
 
 /* ---------- data ---------- */
@@ -301,8 +301,7 @@ function renderLearn(b){
   const dl = b.dl || [];
   return [
     h("div", {class: "rowbtns toprow"},
-      /* hide-reading box removed, the two repeat buttons centred (RYU 2026-11-16, v1.64) */
-      h("label", {class: "check"}, h("input", {type: "checkbox", checked: S.hideLo, onchange: ev => { S.hideLo = ev.target.checked; save(); render(); }}), T.hideLo),
+      /* both hide boxes removed, the two repeat buttons centred (RYU 2026-11-16, v1.64-v1.66) */
       h("div", {class: "rowbtns"},
         h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll),
         h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(false)}, ico("rep"), T.repBundle))),

@@ -606,3 +606,4 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .qa{background-image:none!important}
 .qa .a,.qa>button{justify-self:end;text-align:right}
 @media (min-width:760px){ .qa{grid-template-columns:minmax(0,1fr) fit-content(50%)} }
+.rowbtns.toprow{display:flex;justify-content:center}
