@@ -641,6 +641,20 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .wcard .k,.wcard .ex .ko{word-break:keep-all}
 .wcard .k.long{font-size:21px}
 @media (max-width:560px){ .wcard .k.long{font-size:18px} .wcard{padding-right:34px} .wcard .spk{transform:scale(.85);transform-origin:top right} }
+/* word cards v1.70: same size and same height for every word, very long words smaller; four lines on the back */
+.wcard{align-content:start;min-height:150px;padding-top:16px}
+.wcard .k{font-size:24px;line-height:32px;height:32px;white-space:nowrap;overflow:hidden;word-break:keep-all}
+.wcard .k.long{font-size:20px}
+.wcard .k.xl{font-size:16px}
+.wcard .hn{font-size:14px;color:var(--muted);margin-top:6px;line-height:1.45}
+.wcard .bk .p{color:var(--accent);font-size:15px;line-height:32px;height:32px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wcard .bk .m{font-size:17px;font-weight:600;margin-top:2px;line-height:1.4}
+.wcard .exk{margin-top:8px;font-size:14px;line-height:1.45;word-break:keep-all}
+.wcard .exm{font-size:14px;line-height:1.45;color:var(--muted)}
+@media (max-width:560px){ .wcard{min-height:150px;padding:12px 34px 12px 12px} .wcard .k{font-size:20px;line-height:28px;height:28px} .wcard .k.long{font-size:17px} .wcard .k.xl{font-size:14px} .wcard .bk .p{line-height:28px;height:28px;font-size:14px} .wcard .bk .m{font-size:15px} .wcard .exk,.wcard .exm,.wcard .hn{font-size:13px} }
+/* lesson picker: order number in front, smaller list with tighter rows (v1.70) */
+.ddn{flex:none;color:var(--muted);font-weight:500;font-size:.8em;margin-right:4px;align-self:center}
+.ddi{font-size:13.5px;padding:3px 10px;line-height:1.3}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -734,6 +748,16 @@ html.tab .wcard .ex{font-size:16.8px}
 @media (max-width:560px){html.tab .wcard .k{font-size:26.4px}html.tab .wcard .m{font-size:19.2px}html.tab .wcard .ex{font-size:15.6px}}
 html.tab .wcard .k.long{font-size:25.2px}
 @media (max-width:560px){html.tab .wcard .k.long{font-size:21.6px}}
+html.tab .wcard .k{font-size:28.8px}
+html.tab .wcard .k.long{font-size:24px}
+html.tab .wcard .k.xl{font-size:19.2px}
+html.tab .wcard .hn{font-size:16.8px}
+html.tab .wcard .bk .p{font-size:18px}
+html.tab .wcard .bk .m{font-size:20.4px}
+html.tab .wcard .exk{font-size:16.8px}
+html.tab .wcard .exm{font-size:16.8px}
+@media (max-width:560px){html.tab .wcard .k{font-size:24px}html.tab .wcard .k.long{font-size:20.4px}html.tab .wcard .k.xl{font-size:16.8px}html.tab .wcard .bk .p{font-size:16.8px}html.tab .wcard .bk .m{font-size:18px}html.tab .wcard .exk,html.tab .wcard .exm,html.tab .wcard .hn{font-size:15.6px}}
+html.tab .ddi{font-size:16.2px}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -801,6 +825,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-16%20v1.69"></script>
-<script src="app.js?v=2026-11-16%20v1.69"></script>
+<script src="audio/index.js?v=2026-11-16%20v1.70"></script>
+<script src="app.js?v=2026-11-16%20v1.70"></script>
 </body></html>

@@ -268,7 +268,11 @@ function drawControls(){
   /* lesson picker: own list instead of the phone's native one, so each lesson stays on one line inside the box (RYU 2026-11-14) */
   const lab = (r, btn) => [h("span", {class: "ddk"}, (!btn && S.done[r[0]] ? "✓ " : "") + r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : ""];
   const curRow = rows.find(r => r[0] === S.code) || rows[0];
-  $("bselBtn").replaceChildren(h("span", {class: "ddck", "aria-hidden": "true"}, "✔"), ...lab(curRow, true));   // check in front of the chosen lesson on the main screen, not in the list (RYU 2026-11-15)
+  /* order number [area-sub-lesson] in app order in front of the chosen lesson (RYU 2026-11-16, v1.70) */
+  const a = areaOf(curRow[0]), subsA = [...new Set(IDX.filter(r => r[0].startsWith(a + "-")).map(r => subOf(r[0])))];
+  const pad = n => String(n).padStart(2, "0");
+  const ord = "[" + (AREAS.findIndex(x => x[0] === a) + 1) + "-" + pad(subsA.indexOf(s) + 1) + "-" + pad(rows.indexOf(curRow) + 1) + "]";
+  $("bselBtn").replaceChildren(h("span", {class: "ddck", "aria-hidden": "true"}, "✔"), h("span", {class: "ddn"}, ord), ...lab(curRow, true));   // check in front of the chosen lesson on the main screen, not in the list (RYU 2026-11-15)
   $("bselList").replaceChildren(...rows.map(r => h("button", {type: "button", class: "ddi", role: "option", "aria-selected": r[0] === S.code ? "true" : "false", onclick: () => { ddClose(); go(r[0]); }}, ...lab(r))));
   document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === S.mode ? "true" : "false"));
   $("repSel").value = S.rep; $("rateSel").value = S.rate;
@@ -362,7 +366,7 @@ function items(b){
 function flipCard(c, back){ c.classList.toggle("back", !!back); }
 function cardItems(b){
   const ws = (b.l || []).map(l => ({ko: l[0], pr: l[2] && l[2] !== l[0] ? l[2] : "", lo: l[1], say: l[2] || l[0]}))
-    .concat((b.w || []).concat(b.f || []).map(w => ({ko: w[0], pr: w[1], lo: w[2], ex: (w[3] || [])[0]})));
+    .concat((b.w || []).concat(b.f || []).map(w => ({ko: w[0], pr: w[1], lo: w[2], ex: (w[3] || [])[0], hn: w[4] || ""})));
   return (ws.length ? ws : items(b)).filter(x => x.ko && x.lo);
 }
 async function playCard(c){
@@ -384,8 +388,10 @@ function renderCards(b){
   if (!list.length) return [h("p", {class: "empty"}, T.noCards)];
   return [h("div", {class: "wcards"}, list.map(it => h("div", {class: "wcard", role: "button", tabindex: "0", "data-say": it.say || it.ko, "data-lo": it.lo, onclick: ev => playCard(ev.currentTarget)},
     h("span", {class: "spk", "aria-hidden": "true"}, ico("spk")),
-    h("div", {class: "fr"}, h("div", {class: "k ko" + (it.ko.length > 6 ? " long" : "")}, it.ko), it.pr ? h("div", {class: "p"}, it.pr) : null),
-    h("div", {class: "bk"}, h("div", {class: "m"}, it.lo), it.ex ? h("div", {class: "ex"}, h("div", {class: "ko"}, it.ex[0]), h("div", {class: "exm"}, it.ex[2])) : null))))];
+    /* front: Korean word, short note; back: Lao-script reading, Lao meaning, Korean example, its Lao meaning (RYU 2026-11-16, v1.70) */
+    h("div", {class: "fr"}, h("div", {class: "k ko" + (it.ko.length > 9 ? " xl" : it.ko.length > 6 ? " long" : "")}, it.ko), h("div", {class: "hn ko"}, it.hn || "")),
+    h("div", {class: "bk"}, h("div", {class: "p"}, it.pr || ""), h("div", {class: "m"}, it.lo),
+      it.ex ? [h("div", {class: "exk ko"}, it.ex[0]), h("div", {class: "exm"}, it.ex[2])] : null))))];
 }
 
 /* ---------- quiz: four choices built from the bundle's own words ---------- */
@@ -447,7 +453,12 @@ function render(){
   $("ctlrep").hidden = S.mode === "quiz";   // learn and word-card tabs (v1.67)
   const parts = S.mode === "cards" ? renderCards(b) : S.mode === "quiz" ? renderQuiz(b) : renderLearn(b);
   view.replaceChildren(...parts.flat().filter(Boolean));
+  if (S.mode === "cards") fitWords();
 }
+/* word cards: a word that does not fit its line is shrunk until it does, so every word stays on one line at the same height */
+function fitWords(){ document.querySelectorAll(".wcard .k").forEach(k => { let fs = parseFloat(getComputedStyle(k).fontSize);
+  while (k.scrollWidth > k.clientWidth + 1 && fs > 11){ fs -= 1; k.style.fontSize = fs + "px"; } }); }
+addEventListener("resize", () => { if (S.mode === "cards"){ document.querySelectorAll(".wcard .k").forEach(k => k.style.fontSize = ""); fitWords(); } });
 function drawAll(){ drawStats(); drawGroups(); drawSubs(); drawControls(); render(); }
 /* RYU 2026-11-14: coming back to an area or sub-group reopens the lesson last opened there */
 function lastIn(m, k, rows){ const c = m && m[k]; return c && byCode.has(c) && c.startsWith(k + "-") ? c : rows[0][0]; }
