@@ -647,3 +647,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .ddi{font-size:13.5px;padding:3px 10px;line-height:1.3}
 /* order number in the Korean font, same weight and colour as the lesson name (RYU 2026-11-16, v1.71) */
 .ddn{align-self:baseline;font-family:var(--ko);font-size:1em;font-weight:600;color:var(--ink);margin-right:6px;font-variant-numeric:tabular-nums;letter-spacing:0}
+/* v1.72: list text a little bigger again; phone shows only the last part of the order number */
+.ddi{font-size:15px;padding:4px 10px;line-height:1.35}
+@media (max-width:560px){ .ddn .ddn-ab{display:none} .ddi{font-size:14.5px} }
+.wcard .hn{word-break:keep-all}
