@@ -316,10 +316,7 @@ function renderLearn(b){
   const dl = b.dl || [];
   return [
     sec("m", (b.m || []).map(m => h("div", {class: "tip"}, note(m)))),
-    sec("l",
-      !(b.l || []).length ? null : h("div", {class: "letters"}, (b.l || []).map(l => h("button", {class: "letter", type: "button", "data-say": l[2] || l[0], onclick: ev => playSingle(ev.currentTarget)},
-      h("span", {class: "spk", "aria-hidden": "true"}, ico("spk")),
-      h("span", {class: "lt"}, h("b", {class: "ko" + ([...l[0]].length > 4 ? " long" : [...l[0]].length > 2 ? " mid" : "")}, l[0]), h("span", {class: "llo"}, l[1]), l[2] ? h("span", {class: "lsay ko"}, l[2]) : null))))),
+    /* letters (ຕົວອັກສອນ) section dropped from the sentence tab: the letters are studied in the word tab (RYU 2026-11-16, v1.75) */
     b.x && b.x.length > 1 ? sec("x", h("div", {class: "tablewrap"}, h("table", null,
       h("thead", null, h("tr", null, b.x[0].map(c => h("th", {class: "ko"}, c)))),
       h("tbody", null, b.x.slice(1).map(r => h("tr", null, r.map(c => h("td", null, c)))))))) : null,
@@ -372,7 +369,7 @@ function items(b){
    Lao side = meaning and one example. Tap a card to repeat it (tap again to stop); the bar buttons go card by card. */
 function flipCard(c, back){ c.classList.toggle("back", !!back); }
 function cardItems(b){
-  const ws = (b.l || []).map(l => ({ko: l[0], pr: l[2] && l[2] !== l[0] ? l[2] : "", lo: l[1], say: l[2] || l[0]}))
+  const ws = (b.l || []).map(l => ({ko: l[0], pr: "", hn: l[2] && l[2] !== l[0] ? l[2] : "", lo: l[1], say: l[2] || l[0]}))   // letters: sample syllables on the front, Lao letter on the back
     .concat((b.w || []).concat(b.f || []).map(w => ({ko: w[0], pr: w[1], lo: w[2], ex: (w[3] || [])[0], hn: w[4] || ""})));
   return (ws.length ? ws : items(b)).filter(x => x.ko && x.lo);
 }
