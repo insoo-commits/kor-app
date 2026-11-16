@@ -653,3 +653,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .wcard .hn{word-break:keep-all}
 /* phones: picker text starts at the left edge so long names are cut less (RYU 2026-11-16, v1.73) */
 @media (max-width:560px){ .ddb{justify-content:flex-start;padding-left:10px;padding-right:26px;gap:5px} .ddi{justify-content:flex-start;padding-left:8px;padding-right:6px} }
+/* note after the mp3 zip download (v1.76) */
+.dlnote{max-width:560px;margin:4px auto 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--sheet);font-size:13px;line-height:1.55;color:var(--muted);text-align:left}
+.dlnote .ko{font-size:12.5px}
+.dlnote{word-break:keep-all}

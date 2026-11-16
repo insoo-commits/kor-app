@@ -548,6 +548,9 @@ async function zipAll(ev){
     setTimeout(() => URL.revokeObjectURL(url), 60000);
     S.dlDone = {n: allKeys().length, at: new Date().toISOString().slice(0, 10)}; save();
     dlState();
+    /* phones may then pop up "open with…": that is only the phone offering to open the saved zip, nothing went wrong.
+       Say so under the link, in Lao and Korean (RYU 2026-11-16, v1.76) */
+    $("dlNote").hidden = false;
   } catch (e) { msg.textContent = "✗"; }
   dlBusy = false;
 }
