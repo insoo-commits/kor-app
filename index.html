@@ -604,6 +604,10 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* player buttons end on the same right line as the repeat buttons above (RYU 2026-11-16, v1.60) */
 .player{padding-left:21px;padding-right:21px}
 @media (max-width:560px){ .player{padding-left:29px;padding-right:29px} }
+/* tips box under the intro (RYU 2026-11-16, like lao-app) */
+.band .tipbox{margin-top:10px;background:var(--sheet);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:4px 10px 10px 4px;padding:10px 14px;display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.55}
+.band .tipbox p{margin:0;color:var(--ink);padding-left:1em;text-indent:-1em}
+@media (max-width:560px){ .band .tipbox{font-size:14px;padding:8px 11px} }
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -688,6 +692,8 @@ html.tab .wrep,html.tab .wrep:hover{font-size:15px}
 @media (min-width:561px){html.tab .controls .seg button{font-size:16.8px}html.tab .ctl{font-size:15px}html.tab .controls .ctl .bsel{font-size:16.8px}}
 html.tab .player{font-size:14.4px}
 html.tab .player button{font-size:13.8px}
+html.tab .band .tipbox{font-size:18px}
+@media (max-width:560px){html.tab .band .tipbox{font-size:16.8px}}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -754,6 +760,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-16%20v1.62"></script>
-<script src="app.js?v=2026-11-16%20v1.62"></script>
+<script src="audio/index.js?v=2026-11-16%20v1.63"></script>
+<script src="app.js?v=2026-11-16%20v1.63"></script>
 </body></html>
