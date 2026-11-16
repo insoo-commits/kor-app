@@ -15,7 +15,7 @@ import argparse, asyncio, json, os, subprocess, sys, tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AUDIO = os.path.join(ROOT, "audio")
 VOICE = {"ko": "ko-KR-SunHiNeural", "lo": "lo-LA-KeomanyNeural"}
-BITRATE = {"ko": "24k", "lo": "16k"}   # Lao clips smaller (RYU 2026-11-16)
+BITRATE = {"ko": "16k", "lo": "16k"}   # both 16k (RYU 2026-11-16; 8k sounded bad)
 VOWEL = dict(zip("ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ", "아애야얘어에여예오와왜외요우워웨위유으의이"))
 
 
