@@ -272,7 +272,7 @@ function drawControls(){
   const a = areaOf(curRow[0]), subsA = [...new Set(IDX.filter(r => r[0].startsWith(a + "-")).map(r => subOf(r[0])))];
   const pad = n => String(n).padStart(2, "0");
   const ord = "[" + (AREAS.findIndex(x => x[0] === a) + 1) + "-" + pad(subsA.indexOf(s) + 1) + "-" + pad(rows.indexOf(curRow) + 1) + "]";
-  $("bselBtn").replaceChildren(h("span", {class: "ddck", "aria-hidden": "true"}, "✔"), h("span", {class: "ddn"}, ord), ...lab(curRow, true));   // check in front of the chosen lesson on the main screen, not in the list (RYU 2026-11-15)
+  $("bselBtn").replaceChildren(h("span", {class: "ddn ko"}, ord), ...lab(curRow, true));   // check mark dropped (RYU 2026-11-16, v1.71)   // check in front of the chosen lesson on the main screen, not in the list (RYU 2026-11-15)
   $("bselList").replaceChildren(...rows.map(r => h("button", {type: "button", class: "ddi", role: "option", "aria-selected": r[0] === S.code ? "true" : "false", onclick: () => { ddClose(); go(r[0]); }}, ...lab(r))));
   document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === S.mode ? "true" : "false"));
   $("repSel").value = S.rep; $("rateSel").value = S.rate;
