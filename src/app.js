@@ -343,8 +343,8 @@ function renderLearn(b){
     b.x && b.x.length > 1 ? sec("x", h("div", {class: "tablewrap"}, h("table", null,
       h("thead", null, h("tr", null, b.x[0].map(c => h("th", {class: "ko"}, c)))),
       h("tbody", null, b.x.slice(1).map(r => h("tr", null, r.map(c => h("td", null, c)))))))) : null,
-    sec("w", (b.w || []).map(wordBox)),
-    sec("f", (b.f || []).map(wordBox)),
+    /* expression lessons show their expressions first, so 1-01-01 opens with 안녕하세요? (RYU 2026-11-18, v1.85) */
+    ...(b.type === "표현" ? [sec("f", (b.f || []).map(wordBox)), sec("w", (b.w || []).map(wordBox))] : [sec("w", (b.w || []).map(wordBox)), sec("f", (b.f || []).map(wordBox))]),
     sec("c", (b.c || []).length ? h("div", {class: "rows grid2"}, b.c.map(c => line(c[1], c[2], c[3], "", c[4] ? null : c[0], c[4]))) : null),
     sec("e", (b.e || []).length ? h("div", {class: "rows grid2"}, b.e.map(e => line(e[0], e[1], e[2], "", null, e[3]))) : null),
     sec("pr", (b.pr || []).length ? h("div", {class: "pairs"}, b.pr.map(p => h("div", {class: "pair"}, p.flatMap((x, j) => j ? [h("i", null, "↔"), x] : [x])))) : null),
@@ -397,7 +397,7 @@ function items(b){
 function flipCard(c, back){ if (c) c.classList.toggle("back", !!back); }
 function cardItems(b){
   const ws = (b.l || []).map(l => ({ko: l[0], pr: "", hn: l[2] && l[2] !== l[0] ? l[2] : "", lo: l[1], say: l[2] || l[0]}))   // letters: sample syllables on the front, Lao letter on the back
-    .concat((b.w || []).concat(b.f || []).map(w => ({ko: w[0], pr: w[1], lo: w[2], ex: (w[3] || [])[0], hn: w[4] || ""})));
+    .concat((b.type === "표현" ? (b.f || []).concat(b.w || []) : (b.w || []).concat(b.f || [])).map(w => ({ko: w[0], pr: w[1], lo: w[2], ex: (w[3] || [])[0], hn: w[4] || ""})));
   return (ws.length ? ws : items(b)).filter(x => x.ko && x.lo);
 }
 async function playCard(c){
