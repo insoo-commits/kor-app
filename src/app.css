@@ -703,3 +703,8 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* lesson title box a bit smaller and flatter (RYU 2026-11-18, v1.95) */
 .band #bsel .bsel{height:36px;font-size:17px}
 @media (max-width:759px){ .band #bsel .bsel{height:34px;font-size:16px} }
+/* lesson title text centred vertically in its box; count and speed boxes get the same pale background (RYU 2026-11-18, v1.96) */
+.band #bsel .bsel{align-items:center;padding-top:0;padding-bottom:0;line-height:1.2}
+.band #bsel .bsel>*{line-height:1.2;align-self:center}
+.controls .bsel,.ctl select{background-color:var(--rev);border-color:var(--accent);color:var(--ink)}
+.ctl select option{background:var(--sheet);color:var(--ink)}
