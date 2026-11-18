@@ -709,7 +709,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .controls .bsel,.ctl select{background-color:var(--rev);border-color:var(--accent);color:var(--ink)}
 .ctl select option{background:var(--sheet);color:var(--ink)}
 /* lesson title box like RYU's sample (2026-11-19, v1.97): rounder ends, one bold dark line "[1-02-03] 외모 (ຮູບຮ່າງໜ້າຕາ)", filled ▼ on the right */
-.band #bsel .bsel{border-radius:16px;font-weight:700;gap:0;border-width:1.5px}
+.band #bsel .bsel{border-radius:16px 16px 0 0;font-weight:700;gap:0;border-width:1.5px}
 .band #bsel .bsel .ddn,.band #bsel .bsel .ddo{color:var(--ink);opacity:1;font-weight:700;font-size:1em;margin-right:0}
 .band #bsel .bsel .ddn{margin-right:.3em}
 .band #bsel .bsel .ddo{margin-left:.3em}
