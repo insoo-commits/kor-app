@@ -62,6 +62,7 @@ const bundle = code => (cache.get(areaOf(code)) || []).find(b => b.code === code
 const synth = window.speechSynthesis || null;
 let koVoice = null, loVoice = null;
 const P = {tok: 0, mode: "", paused: false, round: 1, nav: false};
+function markMode(){ const c = document.getElementById("ctlrep"); if (c) c.dataset.on = P.mode; }   // bar repeat button shown in reverse while it plays (v1.94)
 function pickVoice(){
   if (!synth) return;
   const all = synth.getVoices(), vs = all.filter(v => /^ko/i.test(v.lang));
@@ -162,7 +163,7 @@ const queue = () => [...document.querySelectorAll("#view [data-say]")].filter(el
 async function playSingle(el){
   if (P.mode === "single" && el.classList.contains("now")) return stopPlay();
   stopPlay();
-  const tok = ++P.tok; P.mode = "single"; P.paused = false;
+  const tok = ++P.tok; P.mode = "single"; markMode(); P.paused = false;
   mark(el);
   const ko = el.dataset.say, lo = el.dataset.lo || "";
   const withLo = lo && (loVoice || hasClip("lo", lo));   // word or sentence: Korean, Lao once, then Korean over and over (RYU 2026-11-16)   // a headword: Korean, Lao, then Korean over and over
@@ -175,7 +176,7 @@ async function playSingle(el){
 }
 async function playBundle(chain){
   stopPlay();
-  const tok = ++P.tok; P.mode = chain ? "chain" : "bundle"; P.paused = false; P.round = 1;
+  const tok = ++P.tok; P.mode = chain ? "chain" : "bundle"; markMode(); P.paused = false; P.round = 1;
   /* in the word-card tab the same two buttons go card by card, showing each card with its meaning (RYU 2026-11-16, v1.67) */
   const cards = S.mode === "cards";
   for (;;){
@@ -205,7 +206,7 @@ async function playBundle(chain){
 async function playWord(box){
   if (P.mode === "word" && P.box === box) return stopPlay();
   stopPlay();
-  const tok = ++P.tok; P.mode = "word"; P.box = box; P.paused = false; P.round = 1;
+  const tok = ++P.tok; P.mode = "word"; markMode(); P.box = box; P.paused = false; P.round = 1;
   box.classList.add("playing");
   for (;;){
     const q = [...box.querySelectorAll("[data-say]")].map(el => ({el, ko: el.dataset.say, lo: el.dataset.lo || "", head: el.dataset.head === "1"}));
@@ -218,7 +219,7 @@ async function playWord(box){
 async function playDialogue(box){
   if (P.mode === "dialog") return stopPlay();
   stopPlay();
-  const tok = ++P.tok; P.mode = "dialog"; P.paused = false; P.round = 1;
+  const tok = ++P.tok; P.mode = "dialog"; markMode(); P.paused = false; P.round = 1;
   for (;;){
     const q = [...box.querySelectorAll("[data-say]")];
     if (!q.length) return stopPlay();
@@ -236,7 +237,7 @@ async function playDialogue(box){
 async function playSents(box){
   if (P.mode === "sents" && P.box === box) return stopPlay();
   stopPlay();
-  const tok = ++P.tok; P.mode = "sents"; P.box = box; P.paused = false; P.round = 1;
+  const tok = ++P.tok; P.mode = "sents"; markMode(); P.box = box; P.paused = false; P.round = 1;
   box.classList.add("playing");
   for (;;){
     const q = [...box.querySelectorAll("[data-say]")].map(el => ({el, ko: el.dataset.say, lo: el.dataset.lo || "", head: el.dataset.head === "1"}));
@@ -248,7 +249,7 @@ async function playSents(box){
   }
 }
 function stopPlay(){
-  P.tok++; P.skip = 0; P.mode = ""; P.paused = false; if (P.box){ P.box.classList.remove("playing"); P.box = null; }
+  P.tok++; P.skip = 0; P.mode = ""; markMode(); P.paused = false; if (P.box){ P.box.classList.remove("playing"); P.box = null; }
   quiet();
   mark(null); showPlayer(""); document.querySelectorAll(".wcard.back").forEach(c => c.classList.remove("back"));
 }
@@ -403,7 +404,7 @@ function cardItems(b){
 async function playCard(c){
   if (P.mode === "single" && c.classList.contains("now")) return stopPlay();
   stopPlay();
-  const tok = ++P.tok; P.mode = "single"; P.paused = false;
+  const tok = ++P.tok; P.mode = "single"; markMode(); P.paused = false;
   mark(c);
   const ko = c.dataset.say, lo = c.dataset.lo || "", withLo = lo && (loVoice || hasClip("lo", lo));
   for (let k = 1; tok === P.tok; k++){
