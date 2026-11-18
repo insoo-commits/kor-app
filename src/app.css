@@ -672,6 +672,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .quizq .blank{display:inline-block;min-width:2.6em;margin:0 3px;border-bottom:2px solid var(--accent);color:var(--accent);text-align:center;font-weight:700}
 
 /* related lessons (v1.80) */
-.relrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;width:100%;text-align:left;background:var(--card,#fff);border:1px solid var(--line,#ddd);border-radius:10px;padding:9px 12px;margin:0 0 6px;cursor:pointer;font:inherit;color:inherit}
-.relrow:hover{border-color:var(--accent,#c33)}
-.relrow .ddo{opacity:.75;font-size:.92em}
+.relrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;width:100%;text-align:left;background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:0 0 6px;cursor:pointer;font:inherit;color:var(--ink)}
+.relrow:hover{border-color:var(--accent)}
+.relrow .ddo{color:var(--muted);font-size:.92em}
