@@ -718,6 +718,12 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .band #bsel .bsel>*{line-height:1.2;align-self:center}
 .controls .bsel,.ctl select{background-color:var(--rev);border-color:var(--accent);color:var(--ink)}
 .ctl select option{background:var(--sheet);color:var(--ink)}
+/* lesson title box like RYU's sample (2026-11-19, v1.97): rounder ends, one bold dark line "[1-02-03] 외모 (ຮູບຮ່າງໜ້າຕາ)", filled ▼ on the right */
+.band #bsel .bsel{border-radius:16px;font-weight:700;gap:0;border-width:1.5px}
+.band #bsel .bsel .ddn,.band #bsel .bsel .ddo{color:var(--ink);opacity:1;font-weight:700;font-size:1em;margin-right:0}
+.band #bsel .bsel .ddn{margin-right:.3em}
+.band #bsel .bsel .ddo{margin-left:.3em}
+.band #bsel .bsel::after{border:0;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--ink);transform:translateY(-50%);right:14px}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -899,6 +905,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-18%20v1.96"></script>
-<script src="app.js?v=2026-11-18%20v1.96"></script>
+<script src="audio/index.js?v=2026-11-19%20v1.97"></script>
+<script src="app.js?v=2026-11-19%20v1.97"></script>
 </body></html>
