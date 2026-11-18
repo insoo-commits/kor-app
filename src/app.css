@@ -659,3 +659,19 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .dlnote{word-break:keep-all}
 /* phones only: progress / done mark on its own line under the save link (RYU 2026-11-16, v1.78) */
 @media (max-width:560px){ #dlbox #dlMsg{display:block;margin-top:2px} #dlbox #dlMsg:empty{display:none} }
+/* v1.80: review answer can be hidden again */
+.qa .a[hidden]{display:none}
+.qa .qr{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;justify-self:end;min-width:0}
+.qa .qr .a{text-align:right}
+@media (max-width:759px){ .qa .qr{margin-left:30px} }
+/* v1.80 quiz kinds: listen and pick, fill the blank */
+.quizq.listen{display:flex;justify-content:center}
+.quizq.listen .btn{font-size:18px;padding:10px 22px;display:inline-flex;align-items:center;gap:6px}
+.quizq.qblank .ko{font-size:clamp(20px,4.5vw,26px);line-height:1.5;word-break:keep-all}
+.quizq.qblank .qlo{font-size:16px;color:var(--muted);margin-top:4px}
+.quizq .blank{display:inline-block;min-width:2.6em;margin:0 3px;border-bottom:2px solid var(--accent);color:var(--accent);text-align:center;font-weight:700}
+
+/* related lessons (v1.80) */
+.relrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;width:100%;text-align:left;background:var(--card,#fff);border:1px solid var(--line,#ddd);border-radius:10px;padding:9px 12px;margin:0 0 6px;cursor:pointer;font:inherit;color:inherit}
+.relrow:hover{border-color:var(--accent,#c33)}
+.relrow .ddo{opacity:.75;font-size:.92em}

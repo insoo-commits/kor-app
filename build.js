@@ -7,14 +7,14 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-16 v1.79";
+const VER = "2026-11-18 v1.80";
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
 fs.mkdirSync(path.join(root, "preview"), {recursive: true});
 
 // Lao names of the bundle titles (src/titles-lo.txt: "code | Lao"), shown in brackets in the lesson list
 const tlo = new Map(fs.readFileSync(path.join(root, "src/titles-lo.txt"), "utf8").split("\n").filter(l => l.trim() && !l.startsWith("#")).map(l => l.split(" | ").map(x => x.trim())));
-const idx = [];
+const idx = [], ALL = [];
 // totals shown at the top (RYU 2026-11-15): lessons, distinct words (w+f headwords), distinct Korean sentences
 const wordSet = new Set(), sentSet = new Set();
 for (const [a] of M.areas){
@@ -28,8 +28,28 @@ for (const [a] of M.areas){
     if (!M.subs[b.code.slice(0, 4)]) throw new Error("no sub-group name for " + b.code);
   }
   fs.writeFileSync(path.join(root, "data", a + ".json"), JSON.stringify(list));
+  ALL.push(...list);
 }
-const meta = "window.KO_META=" + JSON.stringify({areas: M.areas, subs: M.subs, idx, ver: VER, nWords: wordSet.size, nSents: sentSet.size}) + ";";
+/* related lessons (like lao-app's 관련 묶음, RYU 2026-11-18): lessons that share this lesson's words, rarer words count more;
+   a word that is a headword there counts double. Up to 5, best first. */
+const REL = {};
+{
+  const heads = b => [...new Set([].concat(b.w || [], b.f || []).map(w => w[0].replace(/\(.*?\)|[①-⑩]/g, "").trim()).filter(w => w.length >= 2))];
+  const H = new Map(ALL.map(b => [b.code, new Set(heads(b))]));
+  const TX = new Map(ALL.map(b => [b.code, JSON.stringify([[].concat(b.w || [], b.f || []).map(w => [w[0], (w[3] || []).map(e => e[0])]), b.dl && b.dl.map(d => d[1]), b.e && b.e.map(e => e[0])])]));
+  const N = ALL.length, DF = new Map();
+  const df = w => { if (!DF.has(w)){ let n = 0; for (const t of TX.values()) if (t.includes(w)) n++; DF.set(w, n); } return DF.get(w); };
+  const idf = w => { const d = df(w); return d > 40 ? 0 : Math.log(N / d); };
+  for (const b of ALL){
+    if (b.code.startsWith("K1-")) continue;   // letters and sounds: shared words there are only samples
+    const A = H.get(b.code), TA = TX.get(b.code), sc = {};
+    A.forEach(w => { const f = idf(w); if (!f) return; for (const [k, t] of TX){ if (k === b.code || k.startsWith("K1-") || !t.includes(w)) continue; sc[k] = (sc[k] || 0) + f * (H.get(k).has(w) ? 2 : 1); } });
+    for (const [k, hs] of H){ if (k === b.code || k.startsWith("K1-")) continue; hs.forEach(w => { if (A.has(w) || !TA.includes(w)) return; const f = idf(w); if (f) sc[k] = (sc[k] || 0) + f * 0.7; }); }
+    const top = Object.keys(sc).filter(k => sc[k] >= 3).sort((x, y) => sc[y] - sc[x]).slice(0, 5);
+    if (top.length) REL[b.code] = top;
+  }
+}
+const meta = "window.KO_META=" + JSON.stringify({areas: M.areas, subs: M.subs, idx, rel: REL, ver: VER, nWords: wordSet.size, nSents: sentSet.size}) + ";";
 // iPad / large touch screens (html.tab, set by the same check as the Lao app): text bigger, layout width unchanged.
 // Every px font-size in app.css gets an html.tab copy scaled by TAB_K, inside the same @media block (RYU 2026-11-14, v0.96).
 const TAB_K = 1.2;

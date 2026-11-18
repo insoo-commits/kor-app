@@ -6,11 +6,11 @@ const byCode = new Map(IDX.map((r, i) => [r[0], i]));
 const $ = id => document.getElementById(id);
 const areaOf = c => c.slice(0, 2), subOf = c => c.slice(0, 4);
 const T = {
-  sec: {m: "ວິທີສ້າງປະໂຫຍກ", l: "ຕົວອັກສອນ", x: "ຕາຕະລາງ", w: "ຄຳສັບ", f: "ສຳນວນທີ່ໃຊ້ເລື້ອຍໆ", c: "ການປ່ຽນຮູບຄຳ", e: "ປະໂຫຍກຕົວຢ່າງ", tp: "ຂໍ້ແນະນຳ", pr: "ຄຳຄູ່", dl: "ບົດສົນທະນາ", sm: "ສະຫຼຸບ", qz: "ຄຳຖາມທວນຄືນ"},
+  sec: {m: "ວິທີສ້າງປະໂຫຍກ", l: "ຕົວອັກສອນ", x: "ຕາຕະລາງ", w: "ຄຳສັບ", f: "ສຳນວນທີ່ໃຊ້ເລື້ອຍໆ", c: "ການປ່ຽນຮູບຄຳ", e: "ປະໂຫຍກຕົວຢ່າງ", tp: "ຂໍ້ແນະນຳ", pr: "ຄຳຄູ່", dl: "ບົດສົນທະນາ", sm: "ສະຫຼຸບ", rel: "ບົດທີ່ກ່ຽວຂ້ອງ", qz: "ຄຳຖາມທວນຄືນ"},
   level: "ລະດັບ", repBundle: "ຟັງບົດນີ້", repDlg: "ຊ້ຳບົດສົນທະນາ", repWord: "ຊ້ຳຄຳນີ້", repGroup: "ຊ້ຳກຸ່ມນີ້", example: "ຕົວຢ່າງ", repLetters: "ຟັງທຸກຕົວ", repAll: "ຟັງຕໍ່ເນື່ອງ", pause: "ຢຸດຊົ່ວຄາວ", resume: "ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
   hidePr: "ເຊື່ອງຄຳອ່ານ", showKo: "ສະແດງຄຳອະທິບາຍພາສາເກົາຫຼີ", known: "ຈື່ແລ້ວ", flip: "ແຕະເພື່ອເບິ່ງຄວາມໝາຍ", onlyNew: "ສະເພາະຄຳທີ່ຍັງບໍ່ຈື່",
-  showAns: "ເບິ່ງຄຳຕອບ", again: "ເຮັດອີກຄັ້ງ", score: "ຄະແນນ", noCards: "ບົດນີ້ບໍ່ມີບັດຄຳ.", allKnown: "ຈື່ໝົດທຸກຄຳແລ້ວ!", noQuiz: "ບົດນີ້ມີຄຳສັບບໍ່ພໍສຳລັບແບບທົດສອບ.",
-  pick: "ເລືອກຄວາມໝາຍທີ່ຖືກຕ້ອງ", pickKo: "ເລືອກຄຳພາສາເກົາຫຼີທີ່ຖືກຕ້ອງ", loading: "ກຳລັງໂຫຼດ…", loadFail: "ໂຫຼດບົດຮຽນບໍ່ໄດ້. ກະລຸນາເປີດໜ້ານີ້ຄືນໃໝ່.",
+  showAns: "ເບິ່ງຄຳຕອບ", hideAns: "ເຊື່ອງຄຳຕອບ", again: "ເຮັດອີກຄັ້ງ", score: "ຄະແນນ", noCards: "ບົດນີ້ບໍ່ມີບັດຄຳ.", allKnown: "ຈື່ໝົດທຸກຄຳແລ້ວ!", noQuiz: "ບົດນີ້ມີຄຳສັບບໍ່ພໍສຳລັບແບບທົດສອບ.",
+  pick: "ເລືອກຄວາມໝາຍທີ່ຖືກຕ້ອງ", pickKo: "ເລືອກຄຳພາສາເກົາຫຼີທີ່ຖືກຕ້ອງ", pickHeard: "ຟັງແລ້ວເລືອກຄຳທີ່ໄດ້ຍິນ", pickBlank: "ເລືອກຄຳທີ່ເຂົ້າໃນຊ່ອງຫວ່າງ", listenBtn: "ຟັງສຽງ", loading: "ກຳລັງໂຫຼດ…", loadFail: "ໂຫຼດບົດຮຽນບໍ່ໄດ້. ກະລຸນາເປີດໜ້ານີ້ຄືນໃໝ່.",
   noHit: "ບໍ່ພົບຜົນການຄົ້ນຫາ.", searching: "ກຳລັງຄົ້ນຫາ…", lessons: "ບົດ", words: "ຄຳສັບ", sents: "ປະໂຫຍກ", wordsShort: "ຄຳ",
   noVoice: "ອຸປະກອນນີ້ບໍ່ມີສຽງພາສາເກົາຫຼີ. ກະລຸນາຕິດຕັ້ງສຽງພາສາເກົາຫຼີໃນການຕັ້ງຄ່າ ຫຼື ໃຊ້ Chrome / Edge."
 };
@@ -112,6 +112,24 @@ function showPlayer(text){
   const on = t && byCode.has(S.code) ? "[" + ordParts(S.code).join("") + "] " : "";
   $("pt").replaceChildren(...(m ? [ico(m[1] === "🔊" ? "spk" : "rep"), on + t.slice(m[0].length)] : [on + t]));
   $("ppause").replaceChildren(ico(P.paused ? "play" : "pause"), h("span", {class: "bt"}, P.paused ? T.resume : T.pause));   // same kind of mark on all three (RYU 2026-11-16)
+  msSync(on + t.replace(/^(🔊|🔁)\s*/, ""));
+}
+/* phone lock screen / headset buttons: pause, resume, stop, next and previous line (like lao-app, RYU 2026-11-18, v1.80) */
+function msSync(title){
+  const ms = navigator.mediaSession; if (!ms) return;
+  try {
+    if (!P.mode){ ms.playbackState = "none"; ms.metadata = null; return; }
+    if (window.MediaMetadata) ms.metadata = new MediaMetadata({title: title || "KOR Lang", artist: "KOR Lang", album: (IDX[byCode.get(S.code)] || [])[1] || ""});
+    ms.playbackState = P.paused ? "paused" : "playing";
+    if (!msSync.done){ msSync.done = true;
+      ms.setActionHandler("pause", () => { if (P.mode && !P.paused) togglePause(); });
+      ms.setActionHandler("play", () => { if (P.mode && P.paused) togglePause(); });
+      try { ms.setActionHandler("stop", () => stopPlay()); } catch (e) {}
+      const jump = d => { if (P.mode !== "bundle" && P.mode !== "chain") return; P.skip = d; if (P.paused) togglePause(); quiet(); };
+      try { ms.setActionHandler("nexttrack", () => jump(1)); } catch (e) {}
+      try { ms.setActionHandler("previoustrack", () => jump(-1)); } catch (e) {}
+    }
+  } catch (e) {}
 }
 async function hold(tok){ while (P.paused && tok === P.tok) await gap(150); return tok === P.tok; }
 /* says one piece; if paused in the middle, says it again after resuming */
@@ -119,7 +137,7 @@ async function say(tok, text, lao){
   for (;;){
     if (!(await hold(tok))) return false;
     await speakOne(text, lao);
-    if (tok !== P.tok) return false;
+    if (tok !== P.tok || P.skip) return false;
     if (!P.paused) return true;
   }
 }
@@ -165,7 +183,11 @@ async function playBundle(chain){
     if (!q.length && !chain) return stopPlay();
     for (let i = 0; i < q.length; i++){
       const label = chain ? "🔁 " + (i + 1) + "/" + q.length : "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round;
-      if (!(await sayItem(tok, q[i], label))) return;
+      if (!(await sayItem(tok, q[i], label))){
+        /* lock-screen next / previous: jump within the lesson (v1.80) */
+        if (tok === P.tok && P.skip){ const d = P.skip; P.skip = 0; i = Math.max(-1, i + d - 1); if (cards) document.querySelectorAll(".wcard.back").forEach(c => c.classList.remove("back")); continue; }
+        return;
+      }
     }
     if (chain){
       const next = IDX[(byCode.get(S.code) + 1) % IDX.length][0];
@@ -226,7 +248,7 @@ async function playSents(box){
   }
 }
 function stopPlay(){
-  P.tok++; P.mode = ""; P.paused = false; if (P.box){ P.box.classList.remove("playing"); P.box = null; }
+  P.tok++; P.skip = 0; P.mode = ""; P.paused = false; if (P.box){ P.box.classList.remove("playing"); P.box = null; }
   quiet();
   mark(null); showPlayer(""); document.querySelectorAll(".wcard.back").forEach(c => c.classList.remove("back"));
 }
@@ -235,6 +257,7 @@ function togglePause(){
   P.paused = !P.paused;
   if (P.paused) quiet();
   $("ppause").replaceChildren(ico(P.paused ? "play" : "pause"), h("span", {class: "bt"}, P.paused ? T.resume : T.pause));   // same kind of mark on all three (RYU 2026-11-16)
+  try { if (navigator.mediaSession) navigator.mediaSession.playbackState = P.paused ? "paused" : "playing"; } catch (e) {}
 }
 const spk = () => h("button", {class: "spk", type: "button", "aria-label": "ຟັງ", onclick: ev => { const el = ev.currentTarget.closest("[data-say]"); if (el) playSingle(el); }}, ico("spk"));
 
@@ -329,7 +352,10 @@ function renderLearn(b){
       h("div", {class: "rows dlg"}, dl.map((d, n) => h("div", {class: "line", "data-say": d[1], "data-lo": d[2]}, h("div", {class: "exn", "aria-label": String(n + 1)}, String(n + 1)), spk(), h("div", null, h("div", {class: "k ko"}, d[1]), d[4] ? h("div", {class: "p"}, d[4]) : null, h("div", {class: "m"}, d[2]), gloss(d[3])))))] : null),   // d[4]: Lao-script reading, as in the example sentences (RYU 2026-11-14)
     sec("sm", b.sm && b.sm.length ? h("div", {class: "tip"}, note(b.sm)) : null),
     sec("qz", (b.qz || []).map((q, n) => { const a = h("div", {class: "a", hidden: true}, q[1]);
-      return h("div", {class: "qa"}, h("div", {class: "qq"}, h("div", {class: "exn", "aria-label": String(n + 1)}, String(n + 1)), h("div", {class: "ko"}, q[0])), a, h("button", {class: "btn", type: "button", onclick: ev => { a.hidden = false; ev.currentTarget.remove(); }}, T.showAns)); })),
+      return h("div", {class: "qa"}, h("div", {class: "qq"}, h("div", {class: "exn", "aria-label": String(n + 1)}, String(n + 1)), h("div", {class: "ko"}, q[0])), h("div", {class: "qr"}, a, h("button", {class: "btn", type: "button", onclick: ev => { a.hidden = !a.hidden; ev.currentTarget.textContent = a.hidden ? T.showAns : T.hideAns; }}, T.showAns))); })),   // tap again hides the answer (v1.80)
+    /* related lessons, like lao-app (RYU 2026-11-18, v1.80): lessons that use this lesson's words; tap to go there */
+    sec("rel", (META.rel && META.rel[b.code] || []).filter(k => byCode.has(k)).map(k => { const r = IDX[byCode.get(k)];
+      return h("button", {class: "relrow", type: "button", onclick: () => go(k)}, h("span", {class: "ddn ko"}, "[" + ordParts(k).join("") + "]"), h("span", {class: "ko"}, r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : null); })),
     h("div", {class: "rowbtns", style: "justify-content:space-between"},
       h("button", {class: "btn" + (isDone ? " good" : ""), type: "button", onclick: () => { if (isDone) delete S.done[b.code]; else S.done[b.code] = 1; save(); drawAll(); }}, isDone ? "✓ " + T.done : T.markDone),
       next ? h("button", {class: "btn primary", type: "button", onclick: () => go(next[0])}, T.next) : null)
@@ -352,7 +378,8 @@ function wordBox(w){ const ex = w[3] || [];
   head.append(h("button", {class: "wrep", type: "button", title: T.repWord, onclick: ev => { ev.stopPropagation(); playWord(ev.currentTarget.closest(".word")); }}, ico("rep"), T.repWord));
   const cards = ex.map((e, n) => { const c = line(e[0], e[1], e[2], "ex", null, e[3]), body = c.children[1], k = body.querySelector(".k");
     const parts = hlWord(e[0], w[0]); if (parts) k.replaceChildren(...parts);
-    c.prepend(h("div", {class: "exn", title: T.example + " " + (n + 1), "aria-label": T.example + " " + (n + 1)}, String(n + 1))); return c; });
+    c.prepend(h("div", {class: "exn", title: T.example + " " + (n + 1), "aria-label": T.example + " " + (n + 1)}, String(n + 1)));
+    return c; });
   return h("div", {class: "word" + (ex.length ? "" : " solo")}, head, ex.length ? h("div", {class: "exs"}, cards) : null); }
 
 /* ---------- cards ---------- */
@@ -367,7 +394,7 @@ function items(b){
 }
 /* word study like lao-app (RYU 2026-11-16, v1.69): every card of the lesson at once; Korean side = word and reading,
    Lao side = meaning and one example. Tap a card to repeat it (tap again to stop); the bar buttons go card by card. */
-function flipCard(c, back){ c.classList.toggle("back", !!back); }
+function flipCard(c, back){ if (c) c.classList.toggle("back", !!back); }
 function cardItems(b){
   const ws = (b.l || []).map(l => ({ko: l[0], pr: "", hn: l[2] && l[2] !== l[0] ? l[2] : "", lo: l[1], say: l[2] || l[0]}))   // letters: sample syllables on the front, Lao letter on the back
     .concat((b.w || []).concat(b.f || []).map(w => ({ko: w[0], pr: w[1], lo: w[2], ex: (w[3] || [])[0], hn: w[4] || ""})));
@@ -406,10 +433,17 @@ function makeQuiz(b){
   const own = items(b).filter(x => x.pr !== "" || x.ko.length > 1);
   const pool = (cache.get(areaOf(b.code)) || []).filter(o => subOf(o.code) === subOf(b.code) && o.code !== b.code).flatMap(items);
   if (own.length + pool.length < 4 || !own.length) return {code: b.code, qs: [], at: 0, right: 0};
+  /* four kinds in turn, like lao-app (RYU 2026-11-18, v1.80): meaning, Korean word, listen and pick, fill the blank in an example */
+  const exOf = new Map(); [].concat(b.w || [], b.f || []).forEach(w => { if ((w[3] || []).length) exOf.set(w[0], w[3]); });
+  const canHear = it => !!(window.speechSynthesis || hasClip("ko", it.ko));
   const qs = shuffle(own).slice(0, 10).map((it, n) => {
-    const toLo = n % 2 === 0, key = toLo ? "lo" : "ko", seen = new Set([it[key]]), wrong = [];
+    let kind = ["mean", "ko", "listen", "blank"][n % 4], blank = null;
+    if (kind === "listen" && !canHear(it)) kind = "ko";
+    if (kind === "blank"){ const e = shuffle(exOf.get(it.ko) || []).find(e => e[0].includes(it.ko));
+      if (e){ const at = e[0].indexOf(it.ko); blank = {pre: e[0].slice(0, at), post: e[0].slice(at + it.ko.length), lo: e[2], full: e[0]}; } else kind = "mean"; }
+    const toLo = kind === "mean", key = toLo ? "lo" : "ko", seen = new Set([it[key]]), wrong = [];
     for (const o of shuffle(own.concat(pool))){ if (wrong.length === 3) break; if (!seen.has(o[key])){ seen.add(o[key]); wrong.push(o[key]); } }
-    return {q: toLo ? it.ko : it.lo, say: toLo ? it.ko : "", toLo, a: it[key], opts: shuffle([it[key]].concat(wrong)), picked: null};
+    return {kind, q: kind === "mean" ? it.ko : kind === "ko" ? it.lo : "", blank, say: kind === "mean" || kind === "listen" ? it.ko : blank ? blank.full : "", toLo, a: it[key], opts: shuffle([it[key]].concat(wrong)), picked: null};
   });
   return {code: b.code, qs, at: 0, right: 0};
 }
@@ -419,11 +453,15 @@ function renderQuiz(b){
   if (quiz.at >= quiz.qs.length) return [h("p", {class: "quizp"}, T.score), h("div", {class: "score"}, quiz.right + " / " + quiz.qs.length),
     h("div", {class: "rowbtns", style: "justify-content:center"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz = null; render(); }}, T.again))];
   const q = quiz.qs[quiz.at];
-  return [h("div", null, h("div", {class: "quizq" + (q.toLo ? " ko" : "")}, q.q), h("p", {class: "quizp"}, (q.toLo ? T.pick : T.pickKo) + " · " + (quiz.at + 1) + " / " + quiz.qs.length)),
-    q.say ? h("div", {class: "rowbtns", style: "justify-content:center", "data-say": q.say}, spk()) : null,
+  const head = q.kind === "listen" ? h("div", {class: "quizq listen", "data-say": q.say}, h("button", {class: "btn primary", type: "button", onclick: ev => playSingle(ev.currentTarget.parentNode)}, ico("spk"), " " + T.listenBtn))
+    : q.kind === "blank" ? h("div", {class: "quizq qblank"}, h("div", {class: "ko"}, q.blank.pre, h("span", {class: "blank"}, "?"), q.blank.post), h("div", {class: "qlo"}, q.blank.lo))
+    : h("div", {class: "quizq" + (q.toLo ? " ko" : "")}, q.q);
+  const lab = {mean: T.pick, ko: T.pickKo, listen: T.pickHeard, blank: T.pickBlank}[q.kind];
+  return [h("div", null, head, h("p", {class: "quizp"}, lab + " · " + (quiz.at + 1) + " / " + quiz.qs.length)),
+    q.say && q.kind === "mean" || q.picked != null && q.say ? h("div", {class: "rowbtns", style: "justify-content:center", "data-say": q.say}, spk()) : null,
     h("div", {class: "choices"}, q.opts.map(o => h("button", {class: "choice" + (q.toLo ? "" : " ko") + (q.picked != null ? (o === q.a ? " right" : o === q.picked ? " wrong" : "") : ""), type: "button", disabled: q.picked != null,
-      onclick: () => { q.picked = o; if (o === q.a) quiz.right++; render(); if (!q.toLo){ stopPlay(); const tok = ++P.tok; say(tok, q.a); } }}, o))),
-    q.picked != null ? h("div", {class: "rowbtns", style: "justify-content:flex-end"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz.at++; render(); }}, T.nextCard)) : null];
+      onclick: () => { q.picked = o; if (o === q.a) quiz.right++; render(); if (!q.toLo){ stopPlay(); const tok = ++P.tok; say(tok, q.kind === "blank" ? q.blank.full : q.a); } }}, o))),
+    q.picked != null ? h("div", {class: "rowbtns", style: "justify-content:flex-end"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz.at++; render(); const nq = quiz.qs[quiz.at], el = document.querySelector(".quizq.listen"); if (nq && nq.kind === "listen" && el) playSingle(el); }}, T.nextCard)) : null];
 }
 
 /* ---------- search ---------- */
