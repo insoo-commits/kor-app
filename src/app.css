@@ -686,3 +686,10 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .band #bsel .bsel{background:var(--accent);border-color:var(--accent);color:var(--sheet)}
 .band #bsel .bsel .ddo,.band #bsel .bsel .ddn{color:var(--sheet);opacity:.85}
 .band #bsel .bsel::after{border-color:var(--sheet)}
+/* every control you pick from shown in reverse so it reads as a button: count and speed boxes, repeat buttons (RYU 2026-11-18, v1.93) */
+.controls .bsel,.ctl select{background:var(--accent);border-color:var(--accent);color:var(--sheet);font-weight:600}
+.ctl select option{background:var(--sheet);color:var(--ink)}
+.wrep,.wrep:hover{background:var(--accent);border-color:var(--accent);color:var(--sheet)}
+.wrep:hover{filter:brightness(1.08)}
+/* while playing, the repeat button turns warm yellow (the playing colour) so it differs from the resting reverse */
+.wrep:active,.word.playing .wrep,.sec:has(.letters.playing) .hrep,.sec:has(.rows.playing) .hrep,.sec.playing>h3 .hrep{background:var(--now-bar);border-color:var(--now-bar);color:#1A201F}
