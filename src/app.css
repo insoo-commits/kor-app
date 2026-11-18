@@ -682,3 +682,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .sub[aria-selected="true"]{background:var(--accent);border-bottom-color:var(--accent);border-radius:10px 10px 0 0;color:var(--sheet)}
 .sub[aria-selected="true"] .name,.sub[aria-selected="true"] .kn,.sub[aria-selected="true"] .prog,.sub[aria-selected="true"] .code{color:var(--sheet)}
 .sub[aria-selected="true"] .kn,.sub[aria-selected="true"] .prog{opacity:.85}
+/* open lesson title box ([01] ...) in reverse too, like the chosen sub tab (RYU 2026-11-18, v1.92) */
+.band #bsel .bsel{background:var(--accent);border-color:var(--accent);color:var(--sheet)}
+.band #bsel .bsel .ddo,.band #bsel .bsel .ddn{color:var(--sheet);opacity:.85}
+.band #bsel .bsel::after{border-color:var(--sheet)}
