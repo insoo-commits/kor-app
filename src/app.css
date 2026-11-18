@@ -675,3 +675,5 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .relrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;width:100%;text-align:left;background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:0 0 6px;cursor:pointer;font:inherit;color:var(--ink)}
 .relrow:hover{border-color:var(--accent)}
 .relrow .ddo{color:var(--muted);font-size:.92em}
+.wcard .fp{color:var(--accent);font-size:15px;line-height:1.35;margin-top:2px;overflow-wrap:anywhere}
+@media (max-width:560px){ .wcard .fp{font-size:13px} }
