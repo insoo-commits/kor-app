@@ -688,6 +688,10 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .relrow .ddo{color:var(--muted);font-size:.92em}
 .wcard .fp{color:var(--accent);font-size:15px;line-height:1.35;margin-top:2px;overflow-wrap:anywhere}
 @media (max-width:560px){ .wcard .fp{font-size:13px} }
+/* chosen sub tab shown in reverse: filled with the area colour, dark text, so it stands out (RYU 2026-11-18, v1.91) */
+.sub[aria-selected="true"]{background:var(--accent);border-bottom-color:var(--accent);border-radius:10px 10px 0 0;color:var(--sheet)}
+.sub[aria-selected="true"] .name,.sub[aria-selected="true"] .kn,.sub[aria-selected="true"] .prog,.sub[aria-selected="true"] .code{color:var(--sheet)}
+.sub[aria-selected="true"] .kn,.sub[aria-selected="true"] .prog{opacity:.85}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -867,6 +871,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-18%20v1.90"></script>
-<script src="app.js?v=2026-11-18%20v1.90"></script>
+<script src="audio/index.js?v=2026-11-18%20v1.91"></script>
+<script src="app.js?v=2026-11-18%20v1.91"></script>
 </body></html>
