@@ -240,9 +240,10 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
   .line .from{font-size:13.5px}
   .gl{font-size:13px}
   .gl .p{font-size:12.5px}
-  table{font-size:14px}
-  th{font-size:13.5px}
-  th,td{padding:8px 10px}
+  table{font-size:12.5px}
+  th{font-size:12px}
+  th,td{padding:7px 5px}
+  .tablewrap td,.tablewrap th{word-break:keep-all}   /* phone tables a step smaller, words not split (RYU 2026-11-18, v1.90) */
   td:first-child{white-space:nowrap}
   .pair{font-size:15px}
   .band .tlo{font-size:15px}
