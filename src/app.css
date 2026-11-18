@@ -700,3 +700,6 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* repeat buttons back to plain pills; only the one pressed or playing is shown in reverse */
 .wrep:active,.word.playing .wrep,.sec:has(.letters.playing) .hrep,.sec:has(.rows.playing) .hrep,.sec.playing>h3 .hrep,
 #ctlrep[data-on="chain"] .tbtn:first-child,#ctlrep[data-on="bundle"] .tbtn:last-child{background:var(--rev);border-color:var(--accent);color:var(--ink)}
+/* lesson title box a bit smaller and flatter (RYU 2026-11-18, v1.95) */
+.band #bsel .bsel{height:36px;font-size:17px}
+@media (max-width:759px){ .band #bsel .bsel{height:34px;font-size:16px} }
