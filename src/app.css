@@ -740,3 +740,4 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .pnrow{margin-top:16px}
 @media (max-width:560px){ .pn{padding:3px 10px} .relbox{padding:8px 12px 6px} }
 .relbox+.pnrow{margin-top:-10px}
+html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jump (RYU 2026-11-19, v2.07) */
