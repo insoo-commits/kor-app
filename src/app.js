@@ -299,13 +299,13 @@ function ordParts(code){
 function drawControls(){
   const s = subOf(S.code), rows = IDX.filter(r => r[0].startsWith(s + "-"));
   /* lesson picker: own list instead of the phone's native one, so each lesson stays on one line inside the box (RYU 2026-11-14) */
-  const lab = (r, btn) => [h("span", {class: "ddk"}, (!btn && S.done[r[0]] ? "✓ " : "") + r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : ""];
+  const lab = (r, btn) => [h("span", {class: "ddk"}, r[1])   /* no check mark in the list either (RYU 2026-11-19, v2.06) */, r[4] ? h("span", {class: "ddo"}, r[4]) : ""];
   const curRow = rows.find(r => r[0] === S.code) || rows[0];
   /* order number [area-sub-lesson] in app order in front of the chosen lesson (RYU 2026-11-16, v1.70) */
   const [ord, last] = ordParts(curRow[0]);
   /* PC and tablet: [7-01-01]; phone: only the lesson number [01], so the name is not cut (RYU 2026-11-16, v1.72) */
   $("bselBtn").replaceChildren(h("span", {class: "ddn ko"}, "[", h("span", {class: "ddn-ab"}, ord), last + "]"), ...lab(curRow, true));   // check mark dropped (RYU 2026-11-16, v1.71)   // check in front of the chosen lesson on the main screen, not in the list (RYU 2026-11-15)
-  $("bselList").replaceChildren(...rows.map(r => h("button", {type: "button", class: "ddi", role: "option", "aria-selected": r[0] === S.code ? "true" : "false", onclick: () => { ddClose(); go(r[0]); }}, ...lab(r))));
+  $("bselList").replaceChildren(...rows.map(r => h("button", {type: "button", class: "ddi", role: "option", "aria-selected": r[0] === S.code ? "true" : "false", onclick: () => { ddClose(); go(r[0]); }}, h("span", {class: "ddn ko"}, "[" + ordParts(r[0])[1] + "]"), ...lab(r))));   // [01] in front of each lesson in the list (RYU 2026-11-19, v2.06)
   document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === S.mode ? "true" : "false"));
   $("repSel").value = S.rep; $("rateSel").value = S.rate;
 }
