@@ -741,6 +741,15 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .pndone{font-size:13px;padding:6px 12px}
 @media (max-width:560px){ .pnrow{flex-wrap:wrap} .pndone{order:-1;width:100%} .pn{max-width:48%;padding:6px 10px} .pn b{font-size:13px} .pn small{font-size:11.5px} .relbox{padding:12px 12px 10px} .relbox .relrow{font-size:14.5px} }
 @media (max-width:560px){ .ord-ab{display:none} }
+/* tighter related list and flatter prev/next buttons (RYU 2026-11-19, v2.05) */
+.relbox{padding:10px 16px 8px}
+.relhd{margin-bottom:2px;line-height:1.3}
+.relbox .relrow{padding:1px 0;line-height:1.3;row-gap:0}
+.pn{padding:3px 16px;gap:0;line-height:1.15}
+.pn b,.pn small{line-height:1.15}
+.pnrow{margin-top:16px}
+@media (max-width:560px){ .pn{padding:3px 10px} .relbox{padding:8px 12px 6px} }
+.relbox+.pnrow{margin-top:-10px}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -928,6 +937,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-19%20v2.04"></script>
-<script src="app.js?v=2026-11-19%20v2.04"></script>
+<script src="audio/index.js?v=2026-11-19%20v2.05"></script>
+<script src="app.js?v=2026-11-19%20v2.05"></script>
 </body></html>
