@@ -176,6 +176,7 @@ async function playSingle(el){
   }
 }
 async function playBundle(chain){
+  if (P.mode === (chain ? "chain" : "bundle")) return stopPlay();   // same button again stops it (RYU 2026-11-19, v2.15)
   stopPlay();
   const tok = ++P.tok; P.mode = chain ? "chain" : "bundle"; markMode(); P.paused = false; P.round = 1;
   /* in the word-card tab the same two buttons go card by card, showing each card with its meaning (RYU 2026-11-16, v1.67) */
