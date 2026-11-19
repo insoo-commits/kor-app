@@ -752,3 +752,7 @@ html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jum
 @media (max-width:600px){.tablewrap th,.tablewrap td{padding-top:4px;padding-bottom:4px}}
 @media (max-width:560px){ .ddi{justify-content:center;padding-left:8px;padding-right:8px} }   /* phone lesson list centred again (RYU 2026-11-19, v2.10) */
 @media (max-width:560px){ .ddi{font-size:13.5px} }   /* phone lesson list a step smaller (RYU 2026-11-19, v2.11) */
+/* right-side repeat buttons: round left end, square right end; the two play buttons join in the middle (RYU 2026-11-19, v2.12) */
+.wrep,.wrep.hrep{border-radius:999px 0 0 999px}
+#ctlrep .wrep.tbtn:first-child{border-radius:999px 0 0 999px}
+#ctlrep .wrep.tbtn:last-child{border-radius:0 999px 999px 0}
