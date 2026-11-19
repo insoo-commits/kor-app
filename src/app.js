@@ -362,7 +362,6 @@ function renderLearn(b){
           return h("button", {class: "relrow", type: "button", onclick: () => go(k)}, h("span", {class: "rc ko"}, "[" + ordParts(k).join("") + "]"), h("span", {class: "ko"}, r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : null); })); })(),
     h("div", {class: "pnrow"},
       prev ? h("button", {class: "pn pv", type: "button", onclick: () => go(prev[0])}, h("b", null, "← ບົດກ່ອນ ", h("span", {class: "ko"}, "이전 묶음")), h("small", {class: "ko"}, "[" + ordParts(prev[0]).join("") + "] " + prev[1])) : h("span"),
-      h("button", {class: "btn pndone" + (isDone ? " good" : ""), type: "button", onclick: () => { if (isDone) delete S.done[b.code]; else S.done[b.code] = 1; save(); drawAll(); }}, isDone ? "✓ " + T.done : T.markDone),
       next ? h("button", {class: "pn nx", type: "button", onclick: () => go(next[0])}, h("b", null, "ບົດຕໍ່ໄປ ", h("span", {class: "ko"}, "다음 묶음"), " →"), h("small", {class: "ko"}, "[" + ordParts(next[0]).join("") + "] " + next[1])) : h("span"))
   ];
 }
