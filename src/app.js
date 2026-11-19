@@ -290,6 +290,7 @@ function drawSubs(){
   const on = $("subs").querySelector('[aria-selected="true"]'); if (on && on.scrollIntoView) on.scrollIntoView({block: "nearest", inline: "nearest"});
 }
 /* lesson order number in app order: ["7-01-", "02"] for [7-01-02] */
+const ordTag = code => { const [o, l] = ordParts(code); return ["[", h("span", {class: "ord-ab"}, o), l + "]"]; };   // phones show only [01] (RYU 2026-11-19, v2.04)
 function ordParts(code){
   const a = areaOf(code), sb = subOf(code), subsA = [...new Set(IDX.filter(r => r[0].startsWith(a + "-")).map(r => subOf(r[0])))];
   const rows = IDX.filter(r => r[0].startsWith(sb + "-")), pad = n => String(n).padStart(2, "0");
@@ -359,10 +360,10 @@ function renderLearn(b){
     (() => { const rel = (META.rel && META.rel[b.code] || []).filter(k => byCode.has(k)); if (!rel.length) return null;
       return h("div", {class: "relbox"}, h("div", {class: "relhd"}, T.sec.rel, h("span", {class: "ko"}, " 관련 묶음")),
         rel.map(k => { const r = IDX[byCode.get(k)];
-          return h("button", {class: "relrow", type: "button", onclick: () => go(k)}, h("span", {class: "rc ko"}, "[" + ordParts(k).join("") + "]"), h("span", {class: "ko"}, r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : null); })); })(),
+          return h("button", {class: "relrow", type: "button", onclick: () => go(k)}, h("span", {class: "rc ko"}, ...ordTag(k)), h("span", {class: "ko"}, r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : null); })); })(),
     h("div", {class: "pnrow"},
-      prev ? h("button", {class: "pn pv", type: "button", onclick: () => go(prev[0])}, h("b", null, "← ບົດກ່ອນ ", h("span", {class: "ko"}, "이전 묶음")), h("small", {class: "ko"}, "[" + ordParts(prev[0]).join("") + "] " + prev[1])) : h("span"),
-      next ? h("button", {class: "pn nx", type: "button", onclick: () => go(next[0])}, h("b", null, "ບົດຕໍ່ໄປ ", h("span", {class: "ko"}, "다음 묶음"), " →"), h("small", {class: "ko"}, "[" + ordParts(next[0]).join("") + "] " + next[1])) : h("span"))
+      prev ? h("button", {class: "pn pv", type: "button", onclick: () => go(prev[0])}, h("b", null, "← ບົດກ່ອນ ", h("span", {class: "ko"}, "이전 묶음")), h("small", {class: "ko"}, ...ordTag(prev[0]), " " + prev[1])) : h("span"),
+      next ? h("button", {class: "pn nx", type: "button", onclick: () => go(next[0])}, h("b", null, "ບົດຕໍ່ໄປ ", h("span", {class: "ko"}, "다음 묶음"), " →"), h("small", {class: "ko"}, ...ordTag(next[0]), " " + next[1])) : h("span"))
   ];
 }
 
