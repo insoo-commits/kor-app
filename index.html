@@ -766,6 +766,23 @@ html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jum
 .wrep,.wrep.hrep{border-radius:999px 0 0 999px}
 #ctlrep .wrep.tbtn:first-child{border-radius:999px 0 0 999px}
 #ctlrep .wrep.tbtn:last-child{border-radius:0 999px 999px 0}
+/* area and sub menus in the lao-app look: text tabs with an underline, then numbered pills, then one info line (RYU 2026-11-19, v2.13) */
+.groups{gap:18px!important;padding:0 4px!important;border-bottom:1px solid var(--line);scrollbar-width:none;margin-bottom:-4px}
+.groups::-webkit-scrollbar{display:none}
+.group{gap:0!important;border:none!important;border-radius:0!important;background:none!important;color:var(--muted)!important;padding:8px 0 9px!important;font-size:15px!important;font-weight:600!important;position:relative;box-shadow:none!important;line-height:1.3!important}
+.group i,.group small{display:none!important}
+.group .gn{padding-left:0!important}
+.group[aria-pressed="true"]{color:var(--ink)!important;background:none!important;border:none!important}
+.group[aria-pressed="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--accent)}
+.subs{gap:8px!important;padding:2px 0 4px!important}
+.sub{flex-direction:row!important;align-items:center!important;gap:5px!important;border:1.5px solid var(--accent)!important;border-radius:8px 999px 999px 8px!important;background:var(--sheet)!important;padding:3px 12px 4px!important;min-width:0!important;color:var(--ink)!important;line-height:1.35}
+.sub .code{font-family:inherit!important;font-size:12px!important;color:var(--accent)!important;letter-spacing:0!important;font-weight:700}
+.sub .name{font-size:14px!important;font-weight:600;color:var(--ink)!important}
+.sub .kn,.sub .prog{display:none!important}
+.sub[aria-selected="true"]{border:1.5px solid var(--accent)!important;border-left:5px solid var(--accent)!important;padding-left:10px!important;background:var(--rev)!important;border-radius:0 999px 999px 0!important}
+.sinfo{font-size:12px;color:var(--muted);padding:0 4px;margin-top:-6px}
+.sinfo b{font-weight:600;color:var(--accent)}
+.subs{border-bottom:0!important;box-shadow:none!important}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -886,6 +903,10 @@ html.tab .pn small{font-size:15px}
 html.tab .pndone{font-size:15.6px}
 @media (max-width:560px){html.tab .pn b{font-size:15.6px}html.tab .pn small{font-size:13.8px}html.tab .relbox .relrow{font-size:17.4px}}
 @media (max-width:560px){html.tab .ddi{font-size:16.2px}}
+html.tab .group{font-size:18px}
+html.tab .sub .code{font-size:14.4px}
+html.tab .sub .name{font-size:16.8px}
+html.tab .sinfo{font-size:14.4px}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -931,6 +952,7 @@ html.tab .ddi{font-size:17px}
   </label>
   <nav class="groups" id="groups" aria-label="ໝວດໃຫຍ່"></nav>
   <nav class="subs" id="subs" role="tablist" aria-label="ໝວດຍ່ອຍ"></nav>
+  <div class="sinfo" id="sinfo"></div>
   <section class="sheet" id="sheet">
     <div class="band" id="band"></div>
     <div class="controls" id="controls">
@@ -954,6 +976,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-19%20v2.12"></script>
-<script src="app.js?v=2026-11-19%20v2.12"></script>
+<script src="audio/index.js?v=2026-11-19%20v2.13"></script>
+<script src="app.js?v=2026-11-19%20v2.13"></script>
 </body></html>
