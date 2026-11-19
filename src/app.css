@@ -741,3 +741,9 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 @media (max-width:560px){ .pn{padding:3px 10px} .relbox{padding:8px 12px 6px} }
 .relbox+.pnrow{margin-top:-10px}
 html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jump (RYU 2026-11-19, v2.07) */
+/* lesson list: one space between [01] and the title; only the chosen lesson bold (RYU 2026-11-19, v2.08) */
+.ddi{gap:0}
+.ddi .ddn{margin-right:.28em;font-weight:400;font-size:1em}
+.ddi .ddo{margin-left:.28em}
+.ddi,.ddi .ddk,.ddi .ddo{font-weight:400}
+.ddi[aria-selected="true"],.ddi[aria-selected="true"] .ddn,.ddi[aria-selected="true"] .ddk,.ddi[aria-selected="true"] .ddo{font-weight:700}
