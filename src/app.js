@@ -145,14 +145,15 @@ async function say(tok, text, lao){
 async function sayItem(tok, it, label, noLo){
   const n = +S.rep || 1;
   mark(it.el);
-  /* words and sentences alike: Korean, Lao once, then Korean as many times as the count box says (RYU 2026-11-16) */
+  
   showPlayer(label + " · " + it.ko);
   let st = 0; const face = () => { if (it.card) flipCard(it.card, st++ % 2 === 1); };   // word cards: odd plays Korean side, even plays Lao side (RYU 2026-11-16)
-  face(); if (!(await say(tok, it.ko))) return false; await gap(300);
-  if (!noLo && it.lo && (loVoice || hasClip("lo", it.lo))){ face(); if (!(await say(tok, it.lo, true))) return false; await gap(300); }
+  /* Korean as many times as the count box says, with Lao once right after the first Korean (RYU 2026-11-19, v2.14) */
+  const withLo = !noLo && it.lo && (loVoice || hasClip("lo", it.lo));
   for (let k = 0; k < n; k++){
     showPlayer(label + " · " + (k + 1) + "/" + n + " · " + it.ko);
-    face(); if (!(await say(tok, it.ko))) return false; await gap(350);
+    face(); if (!(await say(tok, it.ko))) return false; await gap(k === 0 && withLo ? 300 : 350);
+    if (k === 0 && withLo){ face(); if (!(await say(tok, it.lo, true))) return false; await gap(300); }
   }
   if (it.card) flipCard(it.card, false);
   await gap(250);
