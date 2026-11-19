@@ -757,6 +757,9 @@ html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jum
 .ddi .ddo{margin-left:.28em}
 .ddi,.ddi .ddk,.ddi .ddo{font-weight:400}
 .ddi[aria-selected="true"],.ddi[aria-selected="true"] .ddn,.ddi[aria-selected="true"] .ddk,.ddi[aria-selected="true"] .ddo{font-weight:700}
+/* tables: tighter rows (RYU 2026-11-19, v2.09) */
+.tablewrap th,.tablewrap td{padding-top:5px;padding-bottom:5px;line-height:1.35}
+@media (max-width:600px){.tablewrap th,.tablewrap td{padding-top:4px;padding-bottom:4px}}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -944,6 +947,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-19%20v2.08"></script>
-<script src="app.js?v=2026-11-19%20v2.08"></script>
+<script src="audio/index.js?v=2026-11-19%20v2.09"></script>
+<script src="app.js?v=2026-11-19%20v2.09"></script>
 </body></html>
