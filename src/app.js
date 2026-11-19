@@ -336,7 +336,7 @@ const fromNote = f => { if (!f) return null; const m = f.match(/^([가-힣\s?!.~
 const line = (ko, pr, lo, cls, from, g) => h("div", {class: "line " + (cls || ""), "data-say": ko, "data-lo": lo, "data-head": cls === "head" ? "1" : null}, spk(),
   h("div", null, h("div", {class: "k ko"}, ko), pr ? h("div", {class: "p"}, pr) : null, h("div", {class: "m"}, lo), gloss(g), fromNote(from)));
 function renderLearn(b){
-  const i = byCode.get(b.code), next = IDX[i + 1], isDone = !!S.done[b.code];
+  const i = byCode.get(b.code), next = IDX[i + 1], prev = i > 0 ? IDX[i - 1] : null, isDone = !!S.done[b.code];
   const dl = b.dl || [];
   return [
     sec("m", (b.m || []).map(m => h("div", {class: "tip"}, note(m)))),
@@ -355,11 +355,15 @@ function renderLearn(b){
     sec("qz", (b.qz || []).map((q, n) => { const a = h("div", {class: "a", hidden: true}, q[1]);
       return h("div", {class: "qa"}, h("div", {class: "qq"}, h("div", {class: "exn", "aria-label": String(n + 1)}, String(n + 1)), h("div", {class: "ko"}, q[0])), h("div", {class: "qr"}, a, h("button", {class: "btn", type: "button", onclick: ev => { a.hidden = !a.hidden; ev.currentTarget.textContent = a.hidden ? T.showAns : T.hideAns; }}, T.showAns))); })),   // tap again hides the answer (v1.80)
     /* related lessons, like lao-app (RYU 2026-11-18, v1.80): lessons that use this lesson's words; tap to go there */
-    sec("rel", (META.rel && META.rel[b.code] || []).filter(k => byCode.has(k)).map(k => { const r = IDX[byCode.get(k)];
-      return h("button", {class: "relrow", type: "button", onclick: () => go(k)}, h("span", {class: "ddn ko"}, "[" + ordParts(k).join("") + "]"), h("span", {class: "ko"}, r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : null); })),
-    h("div", {class: "rowbtns", style: "justify-content:space-between"},
-      h("button", {class: "btn" + (isDone ? " good" : ""), type: "button", onclick: () => { if (isDone) delete S.done[b.code]; else S.done[b.code] = 1; save(); drawAll(); }}, isDone ? "✓ " + T.done : T.markDone),
-      next ? h("button", {class: "btn primary", type: "button", onclick: () => go(next[0])}, T.next) : null)
+    /* related lessons box and prev / next buttons, in the shape RYU showed (2026-11-19, v2.02) */
+    (() => { const rel = (META.rel && META.rel[b.code] || []).filter(k => byCode.has(k)); if (!rel.length) return null;
+      return h("div", {class: "relbox"}, h("div", {class: "relhd"}, T.sec.rel, h("span", {class: "ko"}, " 관련 묶음")),
+        rel.map(k => { const r = IDX[byCode.get(k)];
+          return h("button", {class: "relrow", type: "button", onclick: () => go(k)}, h("span", {class: "rc ko"}, "[" + ordParts(k).join("") + "]"), h("span", {class: "ko"}, r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : null); })); })(),
+    h("div", {class: "pnrow"},
+      prev ? h("button", {class: "pn pv", type: "button", onclick: () => go(prev[0])}, h("b", null, "← ບົດກ່ອນ ", h("span", {class: "ko"}, "이전 묶음")), h("small", {class: "ko"}, "[" + ordParts(prev[0]).join("") + "] " + prev[1])) : h("span"),
+      h("button", {class: "btn pndone" + (isDone ? " good" : ""), type: "button", onclick: () => { if (isDone) delete S.done[b.code]; else S.done[b.code] = 1; save(); drawAll(); }}, isDone ? "✓ " + T.done : T.markDone),
+      next ? h("button", {class: "pn nx", type: "button", onclick: () => go(next[0])}, h("b", null, "ບົດຕໍ່ໄປ ", h("span", {class: "ko"}, "다음 묶음"), " →"), h("small", {class: "ko"}, "[" + ordParts(next[0]).join("") + "] " + next[1])) : h("span"))
   ];
 }
 
