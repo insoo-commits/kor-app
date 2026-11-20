@@ -126,12 +126,14 @@ function msSync(title){
       ms.setActionHandler("pause", () => { if (P.mode && !P.paused) togglePause(); });
       ms.setActionHandler("play", () => { if (P.mode && P.paused) togglePause(); });
       try { ms.setActionHandler("stop", () => stopPlay()); } catch (e) {}
-      const jump = d => { if (P.mode !== "bundle" && P.mode !== "chain") return; P.skip = d; if (P.paused) togglePause(); quiet(); };
+      const jump = d => skipBy(d);
       try { ms.setActionHandler("nexttrack", () => jump(1)); } catch (e) {}
       try { ms.setActionHandler("previoustrack", () => jump(-1)); } catch (e) {}
     }
   } catch (e) {}
 }
+/* previous / next line during a repeat (lock screen, ← →); a single 🔊 loop has nothing to move to */
+function skipBy(d){ if (!P.mode || P.mode === "single") return; P.hold = false; P.skip = d; if (P.paused) togglePause(); quiet(); }
 async function hold(tok){ while (P.paused && tok === P.tok) await gap(150); return tok === P.tok; }
 /* says one piece; if paused in the middle, says it again after resuming */
 async function say(tok, text, lao){
@@ -150,8 +152,10 @@ async function sayItem(tok, it, label, noLo){
   let st = 0; const face = () => { if (it.card) flipCard(it.card, st++ % 2 === 1); };   // word cards: odd plays Korean side, even plays Lao side (RYU 2026-11-16)
   /* Korean as many times as the count box says, with Lao once right after the first Korean (RYU 2026-11-19, v2.14) */
   const withLo = !noLo && it.lo && (loVoice || hasClip("lo", it.lo));
-  for (let k = 0; k < n; k++){
-    showPlayer(label + " · " + (k + 1) + "/" + n + " · " + it.ko);
+  P.held = false;
+  for (let k = 0; k < n || P.hold; k++){
+    if (P.hold) P.held = true;
+    showPlayer(label + " · " + (P.hold ? "∞ " + (k + 1) : (k + 1) + "/" + n) + " · " + it.ko);   // Enter: this item over and over (∞) until Enter again (RYU 2026-11-20, v2.23)
     face(); if (!(await say(tok, it.ko))) return false; await gap(k === 0 && withLo ? 300 : 350);
     if (k === 0 && withLo){ face(); if (!(await say(tok, it.lo, true))) return false; await gap(300); }
   }
@@ -212,7 +216,9 @@ async function playWord(box){
   box.classList.add("playing");
   for (;;){
     const q = [...box.querySelectorAll("[data-say]")].map(el => ({el, ko: el.dataset.say, lo: el.dataset.lo || "", head: el.dataset.head === "1"}));
-    for (let i = 0; i < q.length; i++) if (!(await sayItem(tok, q[i], "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round, P.round > 1))){ box.classList.remove("playing"); return; }
+    for (let i = 0; i < q.length; i++) if (!(await sayItem(tok, q[i], "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round, P.round > 1))){
+      if (tok === P.tok && P.skip){ i = Math.max(-1, i + P.skip - 1); P.skip = 0; continue; }
+      box.classList.remove("playing"); return; }
     P.round++; await gap(400);
     if (tok !== P.tok){ box.classList.remove("playing"); return; }
   }
@@ -226,7 +232,8 @@ async function playDialogue(box){
     const q = [...box.querySelectorAll("[data-say]")];
     if (!q.length) return stopPlay();
     for (let i = 0; i < q.length; i++){
-      if (!(await sayItem(tok, {el: q[i], ko: q[i].dataset.say}, "🔊 " + (i + 1) + "/" + q.length + " · ↻" + P.round))) return;
+      if (!(await sayItem(tok, {el: q[i], ko: q[i].dataset.say}, "🔊 " + (i + 1) + "/" + q.length + " · ↻" + P.round))){
+        if (tok === P.tok && P.skip){ i = Math.max(-1, i + P.skip - 1); P.skip = 0; continue; } return; }
       await gap(350);
     }
     P.round++; await gap(900);
@@ -245,13 +252,14 @@ async function playSents(box){
     const q = [...box.querySelectorAll("[data-say]")].map(el => ({el, ko: el.dataset.say, lo: el.dataset.lo || "", head: el.dataset.head === "1"}));
     if (!q.length) return stopPlay();
     for (let i = 0; i < q.length; i++)
-      if (!(await sayItem(tok, q[i], "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round))) return;
+      if (!(await sayItem(tok, q[i], "🔁 " + (i + 1) + "/" + q.length + " · ↻" + P.round))){
+        if (tok === P.tok && P.skip){ i = Math.max(-1, i + P.skip - 1); P.skip = 0; continue; } return; }
     P.round++; await gap(600);
     if (tok !== P.tok) return;
   }
 }
 function stopPlay(){
-  P.tok++; P.skip = 0; P.mode = ""; markMode(); P.paused = false; if (P.box){ P.box.classList.remove("playing"); P.box = null; }
+  P.tok++; P.skip = 0; P.hold = false; P.mode = ""; markMode(); P.paused = false; if (P.box){ P.box.classList.remove("playing"); P.box = null; }
   quiet();
   mark(null); showPlayer(""); document.querySelectorAll(".wcard.back").forEach(c => c.classList.remove("back"));
 }
@@ -546,6 +554,48 @@ $("bselBtn").addEventListener("click", () => {
 });
 document.addEventListener("click", ev => { if (!ev.target.closest("#bsel")) ddClose(); });
 document.addEventListener("keydown", ev => { if (ev.key === "Escape") ddClose(); });
+/* ---------- keyboard (same keys as lao-app v2.74, RYU 2026-11-20, v2.23) ----------
+   Space pause / resume (idle: 묶음 재생) · C 연속 재생 · G 묶음 재생 (again = stop) · Esc stop · ← → previous / next line
+   , . previous / next lesson · Enter this line without end (∞) · 1-5 횟수 · - = 속도 · Q W E tabs · ? list of keys.
+   Keys go by e.code too, so they work with the Korean or Lao keyboard on; ↑ ↓ still scroll. */
+const KEYS = [["Space", "ຢຸດຊົ່ວຄາວ · ສືບຕໍ່ (ບໍ່ມີສຽງ: ຟັງບົດນີ້)", "일시정지 · 재개"], ["C", "ຟັງຕໍ່ເນື່ອງ", "연속 재생"], ["G", "ຟັງບົດນີ້", "묶음 재생"],
+  ["Esc", "ຍົກເລີກ", "정지"], ["← →", "ປະໂຫຍກກ່ອນ · ຕໍ່ໄປ", "이전 · 다음 문장"], [", .", "ບົດກ່ອນ · ບົດຕໍ່ໄປ", "이전 · 다음 묶음"],
+  ["Enter", "ຊ້ຳອັນນີ້ບໍ່ຢຸດ · ປິດ", "지금 문장 무한 반복"], ["1 ~ 5", "ຈຳນວນເທື່ອ", "반복 횟수"], ["-  =", "ຊ້າລົງ · ໄວຂຶ້ນ", "배속"],
+  ["Q W E", "ປະໂຫຍກ · ຄຳສັບ · ແບບທົດສອບ", "예문 · 단어 · 퀴즈"], ["?", "ເປີດ · ປິດ ລາຍການນີ້", "단축키 목록"]];
+function keyHelp(){
+  const box = h("div", {id: "kbhelp", onclick: () => box.remove()},
+    h("div", {class: "kbcard"}, h("b", null, "ປຸ່ມລັດແປ້ນພິມ ", h("span", {class: "ko"}, "키보드 단축키")),
+      h("table", null, KEYS.map(r => h("tr", null, h("td", null, h("kbd", null, r[0])), h("td", null, r[1], " ", h("span", {class: "ko m"}, r[2])))))));
+  document.body.appendChild(box);
+}
+const setSel = (id, i) => { const r = $(id); if (!r || i < 0 || i >= r.options.length || i === r.selectedIndex) return; r.selectedIndex = i; r.dispatchEvent(new Event("change", {bubbles: true})); };
+document.addEventListener("keydown", e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const t = e.target, tn = t && t.tagName;
+  if (tn === "INPUT" || tn === "TEXTAREA" || tn === "SELECT" || (t && t.isContentEditable)) return;
+  const hp = $("kbhelp"); if (hp){ hp.remove(); e.preventDefault(); return; }
+  const c = e.code, k = (e.key || "").toLowerCase();
+  const is = (code, ...ks) => c === code || ks.includes(k);
+  if (e.key === "?" || (c === "Slash" && e.shiftKey)){ e.preventDefault(); keyHelp(); return; }
+  if (query) return;
+  if (e.key === "Escape"){ if (P.mode){ e.preventDefault(); stopPlay(); } return; }
+  if (is("Comma", ",") || is("Period", ".")){
+    e.preventDefault(); const i = byCode.get(S.code), d = is("Period", ".") ? 1 : -1;
+    go(IDX[(i + d + IDX.length) % IDX.length][0]); window.scrollTo(0, 0); return; }
+  const ctl = !$("controls").hidden, rep = ctl && !$("ctlrep").hidden;
+  if (is("KeyQ", "q", "ㅂ") || is("KeyW", "w", "ㅈ") || is("KeyE", "e", "ㄷ")){
+    if (!ctl) return; e.preventDefault(); const b = $(is("KeyQ", "q", "ㅂ") ? "m-learn" : is("KeyW", "w", "ㅈ") ? "m-cards" : "m-quiz"); if (b) b.click(); return; }
+  if (is("KeyC", "c", "ㅊ")){ if (rep){ e.preventDefault(); playBundle(true); } return; }
+  if (is("KeyG", "g", "ㅎ")){ if (rep){ e.preventDefault(); playBundle(false); } return; }
+  if (/^Digit[1-5]$/.test(c) || /^[1-5]$/.test(e.key)){ if (ctl){ e.preventDefault(); setSel("repSel", +(e.key.match(/[1-5]/) || c.slice(-1))[0] - 1); } return; }
+  if (is("Minus", "-", "_") || is("Equal", "=", "+")){ if (ctl){ e.preventDefault(); const r = $("rateSel"); setSel("rateSel", r.selectedIndex + (is("Equal", "=", "+") ? 1 : -1)); } return; }
+  if (c === "Space" || e.key === " "){
+    if (P.mode){ e.preventDefault(); togglePause(); return; }
+    if (rep && tn !== "BUTTON" && tn !== "A"){ e.preventDefault(); playBundle(false); } return; }
+  if (!P.mode) return;
+  if (e.key === "Enter"){ e.preventDefault(); if (P.mode === "single") return; P.hold = !P.hold; if (P.paused) togglePause(); return; }
+  if (e.key === "ArrowRight" || e.key === "ArrowLeft"){ e.preventDefault(); skipBy(e.key === "ArrowRight" ? 1 : -1); }
+});
 $("repSel").addEventListener("change", ev => { S.rep = ev.target.value; save(); });
 $("rateSel").addEventListener("change", ev => { S.rate = ev.target.value; save(); if (AEL) try { AEL.playbackRate = +S.rate || 1; } catch (e) {} });
 $("pstop").addEventListener("click", stopPlay);

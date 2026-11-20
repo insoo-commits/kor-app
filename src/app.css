@@ -800,3 +800,11 @@ html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jum
   .info .facts th{width:28%}
 }
 #controls[hidden],#ctlrep[hidden]{display:none!important}
+/* keyboard shortcut list (? key), v2.23 */
+#kbhelp{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35)}
+#kbhelp .kbcard{background:var(--sheet);color:var(--ink);border-radius:16px;padding:18px 22px;max-width:92vw;max-height:88vh;overflow:auto;font-size:15px;line-height:1.7;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+#kbhelp b{font-size:17px}
+#kbhelp table{border-collapse:collapse;margin-top:8px;font-size:15px}
+#kbhelp td{border:0;padding:2px 16px 2px 0;text-align:left;vertical-align:top;line-height:1.6}
+#kbhelp kbd{font:600 14px var(--ko);white-space:nowrap}
+#kbhelp .m{color:var(--muted);font-size:13.5px}
