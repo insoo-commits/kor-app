@@ -193,7 +193,7 @@ async function playBundle(chain){
       }
     }
     if (chain){
-      const next = IDX[(byCode.get(S.code) + 1) % IDX.length][0];
+      let ni = byCode.get(S.code); do ni = (ni + 1) % IDX.length; while (IDX[ni][3] === "info"); const next = IDX[ni][0];   // info pages skipped
       P.nav = true; S.code = next; S.mode = cards ? "cards" : "learn";
       try { await loadArea(areaOf(next)); } catch (e) { P.nav = false; return stopPlay(); }
       if (tok !== P.tok){ P.nav = false; return; }
@@ -267,7 +267,7 @@ const spk = () => h("button", {class: "spk", type: "button", "aria-label": "ຟ�
 /* ---------- chrome ---------- */
 function drawStats(){
   const n = x => Number(x).toLocaleString("en-US");
-  $("stats").replaceChildren(h("span", null, h("b", null, n(IDX.length)), T.lessons), h("span", null, h("b", null, n(META.nWords)), T.words), h("span", null, h("b", null, n(META.nSents)), T.sents));
+  $("stats").replaceChildren(h("span", null, h("b", null, n(IDX.filter(r => r[3] !== "info").length)), T.lessons), h("span", null, h("b", null, n(META.nWords)), T.words), h("span", null, h("b", null, n(META.nSents)), T.sents));
 }
 /* areas: lesson count after the Korean name; subs: "N ບົດ · N ຄຳ" on its own line (RYU 2026-11-15) */
 const cnt = rows => { const w = rows.reduce((t, r) => t + (r[5] || 0), 0); return rows.length + " " + T.lessons + (w ? " · " + w + " " + T.wordsShort : ""); };
@@ -291,7 +291,7 @@ function drawSubs(){
   }));
   /* line under the sub tabs, like lao-app: [1-01] name · N묶음 N단어 N문장 */
   const sr = IDX.filter(r => r[0].startsWith(cur + "-")), ai = AREAS.findIndex(x => x[0] === a) + 1, sn = SUBS[cur] || [cur];
-  $("sinfo").replaceChildren(h("b", {class: "ko"}, "[" + ai + "-" + String(ids.indexOf(cur) + 1).padStart(2, "0") + "]"), h("span", {class: "ko"}, " " + sn[0] + " · " + sr.length + "묶음 " + sr.reduce((t, r) => t + (r[5] || 0), 0) + "단어 " + sr.reduce((t, r) => t + (r[6] || 0), 0) + "문장"));
+  $("sinfo").replaceChildren(h("b", {class: "ko"}, "[" + ai + "-" + String(ids.indexOf(cur) + 1).padStart(2, "0") + "]"), h("span", {class: "ko"}, " " + sn[0] + " · " + sr.length + "묶음" + (sr[0] && sr[0][3] === "info" ? "" : " " + sr.reduce((t, r) => t + (r[5] || 0), 0) + "단어 " + sr.reduce((t, r) => t + (r[6] || 0), 0) + "문장")));
   const on = $("subs").querySelector('[aria-selected="true"]'); if (on && on.scrollIntoView) on.scrollIntoView({block: "nearest", inline: "nearest"});
 }
 /* lesson order number in app order: ["7-01-", "02"] for [7-01-02] */
@@ -341,6 +341,13 @@ const fromNote = f => { if (!f) return null; const m = f.match(/^([가-힣\s?!.~
   return h("div", {class: "gl"}, "※ ", h("span", {class: "ko"}, m ? m[1] : f), m && m[2] ? [" (", h("span", {class: "gm"}, m[2]), ")"] : null); };
 const line = (ko, pr, lo, cls, from, g) => h("div", {class: "line " + (cls || ""), "data-say": ko, "data-lo": lo, "data-head": cls === "head" ? "1" : null}, spk(),
   h("div", null, h("div", {class: "k ko"}, ko), pr ? h("div", {class: "p"}, pr) : null, h("div", {class: "m"}, lo), gloss(g), fromNote(from)));
+/* previous / next lesson buttons at the bottom (RYU 2026-11-19, v2.02) */
+function pnRow(code){
+  const i = byCode.get(code), next = IDX[i + 1], prev = i > 0 ? IDX[i - 1] : null;
+  return h("div", {class: "pnrow"},
+    prev ? h("button", {class: "pn pv", type: "button", onclick: () => go(prev[0])}, h("b", null, "← ບົດກ່ອນ ", h("span", {class: "ko"}, "이전 묶음")), h("small", {class: "ko"}, ...ordTag(prev[0]), " " + prev[1])) : h("span"),
+    next ? h("button", {class: "pn nx", type: "button", onclick: () => go(next[0])}, h("b", null, "ບົດຕໍ່ໄປ ", h("span", {class: "ko"}, "다음 묶음"), " →"), h("small", {class: "ko"}, ...ordTag(next[0]), " " + next[1])) : h("span"));
+}
 function renderLearn(b){
   const i = byCode.get(b.code), next = IDX[i + 1], prev = i > 0 ? IDX[i - 1] : null, isDone = !!S.done[b.code];
   const dl = b.dl || [];
@@ -366,9 +373,7 @@ function renderLearn(b){
       return h("div", {class: "relbox"}, h("div", {class: "relhd"}, T.sec.rel, h("span", {class: "ko"}, " 관련 묶음")),
         rel.map(k => { const r = IDX[byCode.get(k)];
           return h("button", {class: "relrow", type: "button", onclick: () => go(k)}, h("span", {class: "rc ko"}, ...ordTag(k)), h("span", {class: "ko"}, r[1]), r[4] ? h("span", {class: "ddo"}, r[4]) : null); })); })(),
-    h("div", {class: "pnrow"},
-      prev ? h("button", {class: "pn pv", type: "button", onclick: () => go(prev[0])}, h("b", null, "← ບົດກ່ອນ ", h("span", {class: "ko"}, "이전 묶음")), h("small", {class: "ko"}, ...ordTag(prev[0]), " " + prev[1])) : h("span"),
-      next ? h("button", {class: "pn nx", type: "button", onclick: () => go(next[0])}, h("b", null, "ບົດຕໍ່ໄປ ", h("span", {class: "ko"}, "다음 묶음"), " →"), h("small", {class: "ko"}, ...ordTag(next[0]), " " + next[1])) : h("span"))
+    pnRow(b.code)
   ];
 }
 
@@ -498,6 +503,10 @@ function render(){
   const b = bundle(S.code);
   drawBand(b);
   if (!b){ view.replaceChildren(h("p", {class: "empty"}, T.loading)); return; }
+  /* 대한민국 pages: the page itself and the prev / next buttons; no play controls (RYU 2026-11-20, v2.19) */
+  if (b.info){ $("controls").hidden = true; $("ctlrep").hidden = true;
+    const art = h("article", {class: "info"}); art.innerHTML = b.info;
+    view.replaceChildren(art, pnRow(b.code)); return; }
   /* the two repeat buttons sit in the control bar above its bottom line, learn tab only (RYU 2026-11-16, v1.67) */
   $("ctlrep").replaceChildren(...(S.mode !== "quiz" ? [
     h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll),

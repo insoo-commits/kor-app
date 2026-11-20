@@ -1,5 +1,5 @@
-const SHELL="ko-shell-2026-11-19-v2.18";
-const FILES=["./","index.html","app.js","audio/index.js","manifest.webmanifest","icon.svg","data/K2.json","data/K1.json","data/K6.json","data/K7.json","data/K8.json","data/K9.json","data/K4.json","data/K3.json"];
+const SHELL="ko-shell-2026-11-20-v2.19";
+const FILES=["./","index.html","app.js","audio/index.js","manifest.webmanifest","icon.svg","data/K2.json","data/K1.json","data/K6.json","data/K7.json","data/K8.json","data/K9.json","data/K4.json","data/K3.json","data/KR.json"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(SHELL).then(c=>Promise.all(FILES.map(f=>fetch(new Request(f,{cache:"reload"})).then(r=>{if(r.ok)return c.put(f,r)}).catch(()=>{})))).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith("ko-shell-")&&k!==SHELL).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 /* Audio clips are kept in IndexedDB ("ko-audio" / store "c", key = clip name), not CacheStorage: with thousands of entries iPhone is slow to open CacheStorage (lesson from the Lao app). */

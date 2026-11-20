@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-19 v2.18";
+const VER = "2026-11-20 v2.19";
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
 fs.mkdirSync(path.join(root, "preview"), {recursive: true});
@@ -20,7 +20,7 @@ const wordSet = new Set(), sentSet = new Set();
 for (const [a] of M.areas){
   const list = JSON.parse(fs.readFileSync(path.join(bundles, a + ".json"), "utf8"));
   for (const b of list){
-    idx.push([b.code, b.t, b.lv, b.type, tlo.get(b.code) || "", (b.w || []).length + (b.f || []).length, [].concat(b.w || [], b.f || []).reduce((t, w) => t + ((w[3] || []).length), 0) + (b.dl || []).length + (b.e || []).length]);
+    idx.push([b.code, b.t, b.lv, b.info ? "info" : b.type, tlo.get(b.code) || "", (b.w || []).length + (b.f || []).length, [].concat(b.w || [], b.f || []).reduce((t, w) => t + ((w[3] || []).length), 0) + (b.dl || []).length + (b.e || []).length]);
     for (const k of ["w", "f"]) for (const w of b[k] || []){ wordSet.add(w[0]); for (const e of w[3] || []) sentSet.add(e[0]); }
     for (const d of b.dl || []) sentSet.add(d[1]);
     for (const k of ["c", "e", "x"]) for (const r of b[k] || []) if (typeof r[0] === "string") sentSet.add(r[0]);
@@ -35,13 +35,13 @@ for (const [a] of M.areas){
 const REL = {};
 {
   const heads = b => [...new Set([].concat(b.w || [], b.f || []).map(w => w[0].replace(/\(.*?\)|[①-⑩]/g, "").trim()).filter(w => w.length >= 2))];
-  const H = new Map(ALL.map(b => [b.code, new Set(heads(b))]));
-  const TX = new Map(ALL.map(b => [b.code, JSON.stringify([[].concat(b.w || [], b.f || []).map(w => [w[0], (w[3] || []).map(e => e[0])]), b.dl && b.dl.map(d => d[1]), b.e && b.e.map(e => e[0])])]));
-  const N = ALL.length, DF = new Map();
+  const H = new Map(ALL.filter(b => !b.info).map(b => [b.code, new Set(heads(b))]));
+  const TX = new Map(ALL.filter(b => !b.info).map(b => [b.code, JSON.stringify([[].concat(b.w || [], b.f || []).map(w => [w[0], (w[3] || []).map(e => e[0])]), b.dl && b.dl.map(d => d[1]), b.e && b.e.map(e => e[0])])]));
+  const N = TX.size, DF = new Map();
   const df = w => { if (!DF.has(w)){ let n = 0; for (const t of TX.values()) if (t.includes(w)) n++; DF.set(w, n); } return DF.get(w); };
   const idf = w => { const d = df(w); return d > 40 ? 0 : Math.log(N / d); };
   for (const b of ALL){
-    if (b.code.startsWith("K1-")) continue;   // letters and sounds: shared words there are only samples
+    if (b.code.startsWith("K1-") || b.info) continue;   // info pages (대한민국) get no related lessons   // letters and sounds: shared words there are only samples
     const A = H.get(b.code), TA = TX.get(b.code), sc = {};
     A.forEach(w => { const f = idf(w); if (!f) return; for (const [k, t] of TX){ if (k === b.code || k.startsWith("K1-") || !t.includes(w)) continue; sc[k] = (sc[k] || 0) + f * (H.get(k).has(w) ? 2 : 1); } });
     for (const [k, hs] of H){ if (k === b.code || k.startsWith("K1-")) continue; hs.forEach(w => { if (A.has(w) || !TA.includes(w)) return; const f = idf(w); if (f) sc[k] = (sc[k] || 0) + f * 0.7; }); }
