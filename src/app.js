@@ -446,7 +446,7 @@ function renderCards(b){
     h("div", {class: "fr"}, h("div", {class: "k ko" + (it.ko.length > 9 ? " xl" : it.ko.length > 6 ? " long" : "")}, it.ko), it.pr ? h("div", {class: "fp"}, it.pr) : null, h("div", {class: "hn ko"}, it.hn || "")),   // Lao-script reading on the front too (RYU 2026-11-18, v1.89)
     h("div", {class: "bk"}, h("div", {class: "p"}, it.pr || ""), h("div", {class: "m"}, it.lo),
       it.ex ? [h("div", {class: "exk ko"}, it.ex[0]), h("div", {class: "exm"}, it.ex[2])] : null)))),
-    pnRow(b.code)];   // prev / next lesson at the bottom, as on the sentence tab (RYU 2026-11-21, v2.26)
+    pnRow(b.code)];   // prev / next lesson at the bottom, as on the sentence tab (RYU 2026-11-21, v2.26; Space on the key line v2.27)
 }
 
 /* ---------- quiz: four choices built from the bundle's own words ---------- */
