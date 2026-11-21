@@ -640,6 +640,10 @@ document.addEventListener("keydown", e => {
   if (e.key === "Enter"){ e.preventDefault(); if (P.mode === "single") return; P.hold = !P.hold; if (P.paused) togglePause(); return; }
   if (e.key === "ArrowRight" || e.key === "ArrowLeft"){ e.preventDefault(); skipBy(e.key === "ArrowRight" ? 1 : -1); }
 });
+/* phones show short Korean option text (2회, x 1.0) so tabs, count and speed fit on one line (RYU 2026-11-22, v2.31) */
+  { const mq = matchMedia("(max-width:560px)"), lab = () => { for (const o of $("repSel").options) o.textContent = mq.matches ? o.value + "회" : o.value + " ເທື່ອ";
+      for (const o of $("rateSel").options) o.textContent = (mq.matches ? "x " : "×") + (+o.value).toFixed(1); };
+    lab(); try { mq.addEventListener("change", lab); } catch (e) {} }
 $("repSel").addEventListener("change", ev => { S.rep = ev.target.value; save(); });
 $("rateSel").addEventListener("change", ev => { S.rate = ev.target.value; save(); if (AEL) try { AEL.playbackRate = +S.rate || 1; } catch (e) {} });
 $("pstop").addEventListener("click", stopPlay);
