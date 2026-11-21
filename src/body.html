@@ -41,14 +41,15 @@
     <div class="band" id="band"></div>
     <div class="controls" id="controls">
       <div class="seg" role="group" aria-label="ວິທີຮຽນ">
-        <button id="m-learn" data-mode="learn" type="button">ປະໂຫຍກ</button>
-        <button id="m-cards" data-mode="cards" type="button">ຄຳສັບ</button>
-        <button id="m-quiz" data-mode="quiz" type="button">ແບບທົດສອບ</button>
+        <button id="m-learn" data-mode="learn" type="button">ປະໂຫຍກ<kbd class="kc">Q</kbd></button>
+        <button id="m-cards" data-mode="cards" type="button">ຄຳສັບ<kbd class="kc">W</kbd></button>
+        <button id="m-quiz" data-mode="quiz" type="button">ແບບທົດສອບ<kbd class="kc">E</kbd></button>
       </div>
       <div id="bsel" class="dd"><button id="bselBtn" class="bsel ddb" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="ເລືອກບົດ"></button><div id="bselList" class="ddl" role="listbox" hidden></div></div>
-      <label class="ctl"><span>ຈຳນວນເທື່ອ <span class="ko">횟수</span></span><select id="repSel" class="bsel"><option value="1">1 ເທື່ອ</option><option value="2">2 ເທື່ອ</option><option value="3">3 ເທື່ອ</option><option value="4">4 ເທື່ອ</option><option value="5">5 ເທື່ອ</option></select></label>
-      <label class="ctl"><span>ຄວາມໄວ <span class="ko">속도</span></span><select id="rateSel" class="bsel"><option value="0.8">×0.8</option><option value="1">×1.0</option><option value="1.2">×1.2</option><option value="1.5">×1.5</option><option value="2">×2.0</option></select></label>
+      <label class="ctl"><span>ຈຳນວນເທື່ອ <span class="ko">횟수</span><kbd class="kc">1~5</kbd></span><select id="repSel" class="bsel"><option value="1">1 ເທື່ອ</option><option value="2">2 ເທື່ອ</option><option value="3">3 ເທື່ອ</option><option value="4">4 ເທື່ອ</option><option value="5">5 ເທື່ອ</option></select></label>
+      <label class="ctl"><span>ຄວາມໄວ <span class="ko">속도</span><kbd class="kc">±</kbd></span><select id="rateSel" class="bsel"><option value="0.8">×0.8</option><option value="1">×1.0</option><option value="1.2">×1.2</option><option value="1.5">×1.5</option><option value="2">×2.0</option></select></label>
       <div class="rowbtns ctlrep" id="ctlrep"></div>
+      <div class="kbinfo" id="kbinfo"><span><kbd class="kc">Esc</kbd>ຍົກເລີກ <span class="ko">정지</span></span><span><kbd class="kc">Enter</kbd>ຊ້ຳບໍ່ຢຸດ <span class="ko">무한 반복</span></span><span><kbd class="kc">←</kbd>ປະໂຫຍກກ່ອນ</span><span><kbd class="kc">→</kbd>ປະໂຫຍກຕໍ່ໄປ</span><label><input type="checkbox" id="loChk" checked><kbd class="kc">K</kbd>ສຽງລາວ <span class="ko">라오스어 음성</span></label></div>
     </div>
     <div class="body" id="view"><p class="empty">ກຳລັງໂຫຼດ…</p></div>
   </section>

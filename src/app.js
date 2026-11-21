@@ -151,12 +151,12 @@ async function sayItem(tok, it, label, noLo){
   showPlayer(label + " · " + it.ko);
   let st = 0; const face = () => { if (it.card) flipCard(it.card, st++ % 2 === 1); };   // word cards: odd plays Korean side, even plays Lao side (RYU 2026-11-16)
   /* Korean as many times as the count box says, with Lao once right after the first Korean (RYU 2026-11-19, v2.14) */
-  const withLo = !noLo && it.lo && (loVoice || hasClip("lo", it.lo));
+  const withLo = !noLo && S.sayLo !== false && it.lo && (loVoice || hasClip("lo", it.lo));   // K turns the Lao voice off (v2.25)
   P.held = false;
   for (let k = 0; k < n || P.hold; k++){
     if (P.hold) P.held = true;
     showPlayer(label + " · " + (P.hold ? "∞ " + (k + 1) : (k + 1) + "/" + n) + " · " + it.ko);   // Enter: this item over and over (∞) until Enter again (RYU 2026-11-20, v2.23)
-    face(); if (!(await say(tok, it.ko))) return false; await gap(k === 0 && withLo ? 300 : 350);
+    face(); if (!(await say(tok, it.ko))) return false; await gap(k === 0 && withLo ? 300 : 250);   // the same line again: short pause (v2.25)
     if (k === 0 && withLo){ face(); if (!(await say(tok, it.lo, true))) return false; await gap(300); }
   }
   if (it.card) flipCard(it.card, false);
@@ -171,7 +171,7 @@ async function playSingle(el){
   const tok = ++P.tok; P.mode = "single"; markMode(); P.paused = false;
   mark(el);
   const ko = el.dataset.say, lo = el.dataset.lo || "";
-  const withLo = lo && (loVoice || hasClip("lo", lo));   // word or sentence: Korean, Lao once, then Korean over and over (RYU 2026-11-16)   // a headword: Korean, Lao, then Korean over and over
+  const withLo = S.sayLo !== false && lo && (loVoice || hasClip("lo", lo));   // word or sentence: Korean, Lao once, then Korean over and over (RYU 2026-11-16)   // a headword: Korean, Lao, then Korean over and over
   for (let k = 1; tok === P.tok; k++){
     showPlayer("🔊 ∞ · " + k + " · " + ko);
     if (!(await say(tok, ko))) return;
@@ -353,8 +353,8 @@ const line = (ko, pr, lo, cls, from, g) => h("div", {class: "line " + (cls || ""
 function pnRow(code){
   const i = byCode.get(code), next = IDX[i + 1], prev = i > 0 ? IDX[i - 1] : null;
   return h("div", {class: "pnrow"},
-    prev ? h("button", {class: "pn pv", type: "button", onclick: () => go(prev[0])}, h("b", null, "← ບົດກ່ອນ ", h("span", {class: "ko"}, "이전 묶음")), h("small", {class: "ko"}, ...ordTag(prev[0]), " " + prev[1])) : h("span"),
-    next ? h("button", {class: "pn nx", type: "button", onclick: () => go(next[0])}, h("b", null, "ບົດຕໍ່ໄປ ", h("span", {class: "ko"}, "다음 묶음"), " →"), h("small", {class: "ko"}, ...ordTag(next[0]), " " + next[1])) : h("span"));
+    prev ? h("button", {class: "pn pv", type: "button", onclick: () => go(prev[0])}, h("b", null, h("kbd", {class: "kc"}, "<"), "← ບົດກ່ອນ ", h("span", {class: "ko"}, "이전 묶음")), h("small", {class: "ko"}, ...ordTag(prev[0]), " " + prev[1])) : h("span"),
+    next ? h("button", {class: "pn nx", type: "button", onclick: () => go(next[0])}, h("b", null, "ບົດຕໍ່ໄປ ", h("span", {class: "ko"}, "다음 묶음"), " →", h("kbd", {class: "kc"}, ">")), h("small", {class: "ko"}, ...ordTag(next[0]), " " + next[1])) : h("span"));
 }
 function renderLearn(b){
   const i = byCode.get(b.code), next = IDX[i + 1], prev = i > 0 ? IDX[i - 1] : null, isDone = !!S.done[b.code];
@@ -517,8 +517,9 @@ function render(){
     view.replaceChildren(art, b.tq ? tqView(b) : "", pnRow(b.code)); return; }
   /* the two repeat buttons sit in the control bar above its bottom line, learn tab only (RYU 2026-11-16, v1.67) */
   $("ctlrep").replaceChildren(...(S.mode !== "quiz" ? [
-    h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll),
-    h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(false)}, ico("rep"), T.repBundle)] : []));
+    h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll, h("kbd", {class: "kc"}, "C")),
+    h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(false)}, ico("rep"), T.repBundle, h("kbd", {class: "kc"}, "G"))] : []));   // key badges, PC and pad only (v2.25)
+  $("kbinfo").hidden = S.mode === "quiz";
   $("ctlrep").hidden = S.mode === "quiz";   // learn and word-card tabs (v1.67)
   const parts = S.mode === "cards" ? renderCards(b) : S.mode === "quiz" ? renderQuiz(b) : renderLearn(b);
   view.replaceChildren(...parts.flat().filter(Boolean));
@@ -593,8 +594,8 @@ document.addEventListener("keydown", ev => { if (ev.key === "Escape") ddClose();
    , . previous / next lesson · Enter this line without end (∞) · 1-5 횟수 · - = 속도 · Q W E tabs · ? list of keys.
    Keys go by e.code too, so they work with the Korean or Lao keyboard on; ↑ ↓ still scroll. */
 const KEYS = [["Space", "ຢຸດຊົ່ວຄາວ · ສືບຕໍ່ (ບໍ່ມີສຽງ: ຟັງບົດນີ້)", "일시정지 · 재개"], ["C", "ຟັງຕໍ່ເນື່ອງ", "연속 재생"], ["G", "ຟັງບົດນີ້", "묶음 재생"],
-  ["Esc", "ຍົກເລີກ", "정지"], ["← →", "ປະໂຫຍກກ່ອນ · ຕໍ່ໄປ", "이전 · 다음 문장"], [", .", "ບົດກ່ອນ · ບົດຕໍ່ໄປ", "이전 · 다음 묶음"],
-  ["Enter", "ຊ້ຳອັນນີ້ບໍ່ຢຸດ · ປິດ", "지금 문장 무한 반복"], ["1 ~ 5", "ຈຳນວນເທື່ອ", "반복 횟수"], ["-  =", "ຊ້າລົງ · ໄວຂຶ້ນ", "배속"],
+  ["Esc", "ຍົກເລີກ", "정지"], ["← →", "ປະໂຫຍກກ່ອນ · ຕໍ່ໄປ", "이전 · 다음 문장"], ["< >  (, .)", "ບົດກ່ອນ · ບົດຕໍ່ໄປ", "이전 · 다음 묶음"],
+  ["Enter", "ຊ້ຳອັນນີ້ບໍ່ຢຸດ · ປິດ", "지금 문장 무한 반복"], ["K", "ເປີດ · ປິດ ສຽງລາວ", "라오스어 음성 켜기 · 끄기"], ["1 ~ 5", "ຈຳນວນເທື່ອ", "반복 횟수"], ["-  =", "ຊ້າລົງ · ໄວຂຶ້ນ", "배속"],
   ["Q W E", "ປະໂຫຍກ · ຄຳສັບ · ແບບທົດສອບ", "예문 · 단어 · 퀴즈"], ["?", "ເປີດ · ປິດ ລາຍການນີ້", "단축키 목록"]];
 function keyHelp(){
   const box = h("div", {id: "kbhelp", onclick: () => box.remove()},
@@ -602,6 +603,8 @@ function keyHelp(){
       h("table", null, KEYS.map(r => h("tr", null, h("td", null, h("kbd", null, r[0])), h("td", null, r[1], " ", h("span", {class: "ko m"}, r[2])))))));
   document.body.appendChild(box);
 }
+function setSayLo(v){ S.sayLo = !!v; save(); const c = $("loChk"); if (c) c.checked = S.sayLo; }
+{ const c = $("loChk"); if (c){ c.checked = S.sayLo !== false; c.addEventListener("change", () => { setSayLo(c.checked); try { c.blur(); } catch (e) {} }); } }
 const setSel = (id, i) => { const r = $(id); if (!r || i < 0 || i >= r.options.length || i === r.selectedIndex) return; r.selectedIndex = i; r.dispatchEvent(new Event("change", {bubbles: true})); };
 document.addEventListener("keydown", e => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -613,8 +616,9 @@ document.addEventListener("keydown", e => {
   if (e.key === "?" || (c === "Slash" && e.shiftKey)){ e.preventDefault(); keyHelp(); return; }
   if (query) return;
   if (e.key === "Escape"){ if (P.mode){ e.preventDefault(); stopPlay(); } return; }
-  if (is("Comma", ",") || is("Period", ".")){
-    e.preventDefault(); const i = byCode.get(S.code), d = is("Period", ".") ? 1 : -1;
+  if (is("KeyK", "k", "ㅏ")){ e.preventDefault(); setSayLo(S.sayLo === false); return; }
+  if (is("Comma", ",", "<") || is("Period", ".", ">")){
+    e.preventDefault(); const i = byCode.get(S.code), d = is("Period", ".", ">") ? 1 : -1;
     go(IDX[(i + d + IDX.length) % IDX.length][0]); window.scrollTo(0, 0); return; }
   const ctl = !$("controls").hidden, rep = ctl && !$("ctlrep").hidden;
   if (is("KeyQ", "q", "ㅂ") || is("KeyW", "w", "ㅈ") || is("KeyE", "e", "ㄷ")){

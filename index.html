@@ -858,6 +858,25 @@ html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jum
 .bars .bw span{font-size:13.5px;margin-top:6px;position:relative;top:24px}
 .bars .bn{font-size:12.5px;color:var(--muted);margin-top:30px;text-align:center}
 @media (max-width:600px){.tqo{grid-template-columns:1fr}.tqi{padding:12px}.tqd,.tqp{font-size:16px}.tqo .choice{font-size:15.5px}}
+/* key badges next to buttons and the key line under the play buttons, PC and pad only (like lao-app v2.75-2.77, v2.25) */
+.kc{display:none;font:600 10.5px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;align-items:center;justify-content:center;border:1px solid currentColor;border-bottom-width:2.5px;border-radius:5px;margin-left:6px;opacity:.72;vertical-align:1px;letter-spacing:0;white-space:nowrap}
+.pn.pv .kc{margin:0 6px 0 0}
+.kbinfo{display:none;flex:1 0 100%;width:100%;justify-content:center;flex-wrap:wrap;gap:4px 16px;font-size:11.5px;color:var(--muted);margin-top:2px}
+.kbinfo span,.kbinfo label{display:inline-flex;align-items:center;white-space:nowrap}
+.kbinfo span.ko{margin-left:4px}
+.kbinfo .kc{margin:0 5px 0 0;font-size:10px;height:16px;min-width:16px}
+.kbinfo label{cursor:pointer}
+.kbinfo input{margin:0 6px 0 0;width:15px;height:15px;accent-color:var(--accent);cursor:pointer}
+@media (hover:hover) and (pointer:fine){.kc{display:inline-flex}.kbinfo{display:flex}}
+html.tab .kc{display:inline-flex;min-width:21px;height:21px;border-radius:6px}
+html.tab .kbinfo{display:flex}
+html.tab .kbinfo input{width:18px;height:18px}
+html.tab .kbinfo .kc{height:19px;min-width:19px}
+.kbinfo[hidden]{display:none!important}
+/* flatter header (lao-app v2.77) */
+.top{padding:12px 20px 10px;min-height:124px}
+.eyebrow{line-height:1.4}
+.top h1{line-height:.98;margin-top:-.06em}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -1011,6 +1030,8 @@ html.tab .bars .bw b{font-size:16.2px}
 html.tab .bars .bw span{font-size:16.2px}
 html.tab .bars .bn{font-size:15px}
 @media (max-width:600px){html.tab .tqd,html.tab .tqp{font-size:19.2px}html.tab .tqo .choice{font-size:18.6px}}
+html.tab .kbinfo{font-size:13.8px}
+html.tab .kbinfo .kc{font-size:12px}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -1061,14 +1082,15 @@ html.tab .ddi{font-size:17px}
     <div class="band" id="band"></div>
     <div class="controls" id="controls">
       <div class="seg" role="group" aria-label="ວິທີຮຽນ">
-        <button id="m-learn" data-mode="learn" type="button">ປະໂຫຍກ</button>
-        <button id="m-cards" data-mode="cards" type="button">ຄຳສັບ</button>
-        <button id="m-quiz" data-mode="quiz" type="button">ແບບທົດສອບ</button>
+        <button id="m-learn" data-mode="learn" type="button">ປະໂຫຍກ<kbd class="kc">Q</kbd></button>
+        <button id="m-cards" data-mode="cards" type="button">ຄຳສັບ<kbd class="kc">W</kbd></button>
+        <button id="m-quiz" data-mode="quiz" type="button">ແບບທົດສອບ<kbd class="kc">E</kbd></button>
       </div>
       <div id="bsel" class="dd"><button id="bselBtn" class="bsel ddb" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="ເລືອກບົດ"></button><div id="bselList" class="ddl" role="listbox" hidden></div></div>
-      <label class="ctl"><span>ຈຳນວນເທື່ອ <span class="ko">횟수</span></span><select id="repSel" class="bsel"><option value="1">1 ເທື່ອ</option><option value="2">2 ເທື່ອ</option><option value="3">3 ເທື່ອ</option><option value="4">4 ເທື່ອ</option><option value="5">5 ເທື່ອ</option></select></label>
-      <label class="ctl"><span>ຄວາມໄວ <span class="ko">속도</span></span><select id="rateSel" class="bsel"><option value="0.8">×0.8</option><option value="1">×1.0</option><option value="1.2">×1.2</option><option value="1.5">×1.5</option><option value="2">×2.0</option></select></label>
+      <label class="ctl"><span>ຈຳນວນເທື່ອ <span class="ko">횟수</span><kbd class="kc">1~5</kbd></span><select id="repSel" class="bsel"><option value="1">1 ເທື່ອ</option><option value="2">2 ເທື່ອ</option><option value="3">3 ເທື່ອ</option><option value="4">4 ເທື່ອ</option><option value="5">5 ເທື່ອ</option></select></label>
+      <label class="ctl"><span>ຄວາມໄວ <span class="ko">속도</span><kbd class="kc">±</kbd></span><select id="rateSel" class="bsel"><option value="0.8">×0.8</option><option value="1">×1.0</option><option value="1.2">×1.2</option><option value="1.5">×1.5</option><option value="2">×2.0</option></select></label>
       <div class="rowbtns ctlrep" id="ctlrep"></div>
+      <div class="kbinfo" id="kbinfo"><span><kbd class="kc">Esc</kbd>ຍົກເລີກ <span class="ko">정지</span></span><span><kbd class="kc">Enter</kbd>ຊ້ຳບໍ່ຢຸດ <span class="ko">무한 반복</span></span><span><kbd class="kc">←</kbd>ປະໂຫຍກກ່ອນ</span><span><kbd class="kc">→</kbd>ປະໂຫຍກຕໍ່ໄປ</span><label><input type="checkbox" id="loChk" checked><kbd class="kc">K</kbd>ສຽງລາວ <span class="ko">라오스어 음성</span></label></div>
     </div>
     <div class="body" id="view"><p class="empty">ກຳລັງໂຫຼດ…</p></div>
   </section>
@@ -1080,6 +1102,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-21%20v2.24"></script>
-<script src="app.js?v=2026-11-21%20v2.24"></script>
+<script src="audio/index.js?v=2026-11-21%20v2.25"></script>
+<script src="app.js?v=2026-11-21%20v2.25"></script>
 </body></html>
