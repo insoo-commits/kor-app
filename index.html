@@ -36,6 +36,9 @@
 [data-g="K5"]{--accent:var(--k5);--accent-soft:var(--k5-soft)} [data-g="K6"]{--accent:var(--k6);--accent-soft:var(--k6-soft)}
 [data-g="K7"]{--accent:var(--k7);--accent-soft:var(--k7-soft)} [data-g="K8"]{--accent:var(--k8);--accent-soft:var(--k8-soft)}
 [data-g="K9"]{--accent:var(--k9);--accent-soft:var(--k9-soft)} [data-g="KR"]{--accent:var(--k5);--accent-soft:var(--k5-soft)}
+[data-g="TP"]{--accent:#A33A6B;--accent-soft:#F8E6EF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) [data-g="TP"]{--accent:#EC93BD;--accent-soft:#3A1E2C}}
+:root[data-theme="dark"] [data-g="TP"]{--accent:#EC93BD;--accent-soft:#3A1E2C}
 
 /* wide screens: 115% from 900px (RYU asked for slightly smaller text on PC, was 125% like the Lao app); on bigger
    screens or windows the page grows with the width so the text does not look tiny (RYU 2026-11-14, v0.88; any pointer) */
@@ -819,6 +822,43 @@ html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jum
 #kbhelp kbd{font:600 14px var(--ko);white-space:nowrap}
 #kbhelp .m{color:var(--muted);font-size:13.5px}
 
+/* TOPIK practice questions (v2.24) */
+.tq{margin:8px 4px 18px}
+.tq>h3{font-size:16.5px;margin:18px 0 10px;padding-left:9px;border-left:4px solid var(--accent);line-height:1.35}
+.tqi{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 14px}
+.tqd{font-size:17px;font-weight:600;line-height:1.5;word-break:keep-all}
+.tqdl{font-size:14.5px;color:var(--muted);margin:2px 0 10px;line-height:1.5}
+.tqa{margin:4px 0 12px}
+.tqa .tqplay{min-width:7.7em;justify-content:center}
+.tqp{font-size:17px;line-height:1.8;margin:4px 0 12px;word-break:keep-all}
+.tqp .notice,.info .notice{border:1.5px solid var(--accent);border-radius:10px;padding:10px 14px;background:var(--accent-soft);line-height:1.75}
+.info .notice{font-size:16px;margin:6px 0 14px}
+.tqo{grid-template-columns:1fr 1fr;gap:8px}
+.tqo .choice{font-size:16.5px;padding:10px 14px;line-height:1.45;word-break:keep-all}
+.tqo .choice .n{color:var(--accent);font-weight:700}
+.tqo .choice:disabled{color:var(--ink);opacity:1;cursor:default}
+.tqx{margin-top:12px;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0;padding:10px 14px}
+.tqx .res{font-weight:700;margin-bottom:4px}
+.tqx .res.ok{color:var(--good)} .tqx .res.no{color:var(--bad)}
+.tqx .tqs{font-size:15.5px;line-height:1.7;margin:4px 0 6px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.tqx p{margin:6px 0 8px;font-size:15.5px;line-height:1.6}
+.tqx .btn{font-size:14px;padding:4px 12px}
+.sign{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:84px;height:84px;border-radius:14px;border:3px solid;margin:4px 6px 4px 0;vertical-align:top;background:var(--sheet)}
+.sign span{font-size:34px;line-height:1}
+.sign small{font-family:var(--ko);font-size:12px;margin-top:5px;font-weight:600;text-align:center;line-height:1.2}
+.sign.big{width:110px;height:110px}.sign.big span{font-size:56px}
+.s-red{border-color:#D23C3C}.s-yel{border-color:#E0A800}.s-blue{border-color:#2D6FD2}.s-green{border-color:#2E9B57}.s-plain{border-color:var(--line)}
+.signs{margin:4px 0 10px}
+.bars{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:8px 0 14px;background:var(--sheet)}
+.bars .bt{font-weight:700;text-align:center;margin-bottom:8px}
+.bars .bw{display:flex;justify-content:space-around;align-items:flex-end;height:150px;border-bottom:2px solid var(--line)}
+.bars .bw>div{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;width:28%}
+.bars .bw b{font-size:13.5px;margin-bottom:4px}
+.bars i{display:block;width:60%;background:var(--accent);border-radius:6px 6px 0 0}
+.bars .bw span{font-size:13.5px;margin-top:6px;position:relative;top:24px}
+.bars .bn{font-size:12.5px;color:var(--muted);margin-top:30px;text-align:center}
+@media (max-width:600px){.tqo{grid-template-columns:1fr}.tqi{padding:12px}.tqd,.tqp{font-size:16px}.tqo .choice{font-size:15.5px}}
+
 /* tablet text (generated) */
 html.tab{zoom:1}
 html.tab body{font-size:20.4px}
@@ -955,6 +995,22 @@ html.tab #kbhelp .kbcard{font-size:18px}
 html.tab #kbhelp b{font-size:20.4px}
 html.tab #kbhelp table{font-size:18px}
 html.tab #kbhelp .m{font-size:16.2px}
+html.tab .tq>h3{font-size:19.8px}
+html.tab .tqd{font-size:20.4px}
+html.tab .tqdl{font-size:17.4px}
+html.tab .tqp{font-size:20.4px}
+html.tab .info .notice{font-size:19.2px}
+html.tab .tqo .choice{font-size:19.8px}
+html.tab .tqx .tqs{font-size:18.6px}
+html.tab .tqx p{font-size:18.6px}
+html.tab .tqx .btn{font-size:16.8px}
+html.tab .sign span{font-size:40.8px}
+html.tab .sign small{font-size:14.4px}
+html.tab .sign.big span{font-size:67.2px}
+html.tab .bars .bw b{font-size:16.2px}
+html.tab .bars .bw span{font-size:16.2px}
+html.tab .bars .bn{font-size:15px}
+@media (max-width:600px){html.tab .tqd,html.tab .tqp{font-size:19.2px}html.tab .tqo .choice{font-size:18.6px}}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -1024,6 +1080,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-20%20v2.23"></script>
-<script src="app.js?v=2026-11-20%20v2.23"></script>
+<script src="audio/index.js?v=2026-11-21%20v2.24"></script>
+<script src="app.js?v=2026-11-21%20v2.24"></script>
 </body></html>

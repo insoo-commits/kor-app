@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-20 v2.23";
+const VER = "2026-11-21 v2.24";
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
 fs.mkdirSync(path.join(root, "preview"), {recursive: true});
@@ -85,6 +85,7 @@ for (const [a] of M.areas) for (const b of JSON.parse(fs.readFileSync(path.join(
   (b.c || []).forEach(c => { want("ko", c[1]); want("lo", c[3]); });
   (b.e || []).forEach(e => { want("ko", e[0]); want("lo", e[2]); });
   (b.dl || []).forEach(d => want("ko", d[1]));
+  (b.tq || []).forEach(q => (q.au || []).forEach(l => want(l[0] === "m" ? "km" : "ko", l[1])));   // TOPIK listening: 남자 lines in a man's voice
 }
 fs.mkdirSync(path.join(root, "audio"), {recursive: true});
 fs.writeFileSync(path.join(root, "audio/list.json"), JSON.stringify([...clips.values()], null, 0).replace(/\},\{/g, "},\n{"));

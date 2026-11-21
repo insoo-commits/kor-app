@@ -14,8 +14,8 @@ import argparse, asyncio, json, os, subprocess, sys, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AUDIO = os.path.join(ROOT, "audio")
-VOICE = {"ko": "ko-KR-SunHiNeural", "lo": "lo-LA-KeomanyNeural"}
-BITRATE = {"ko": "16k", "lo": "16k"}   # both 16k (RYU 2026-11-16; 8k sounded bad)
+VOICE = {"ko": "ko-KR-SunHiNeural", "lo": "lo-LA-KeomanyNeural", "km": "ko-KR-InJoonNeural"}   # km: 남자 lines of TOPIK listening questions
+BITRATE = {"ko": "16k", "lo": "16k", "km": "16k"}   # both 16k (RYU 2026-11-16; 8k sounded bad)
 VOWEL = dict(zip("ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ", "아애야얘어에여예오와왜외요우워웨위유으의이"))
 
 
@@ -60,7 +60,7 @@ async def make(clip, sem, proxy, failed):
 
 async def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--lang", choices=["ko", "lo"])
+    ap.add_argument("--lang", choices=["ko", "lo", "km"])
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--jobs", type=int, default=4)
     a = ap.parse_args()

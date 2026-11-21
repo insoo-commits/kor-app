@@ -75,7 +75,7 @@ const CLIPS = window.AUDIO_INDEX || {};
 let AEL = null;
 const hasClip = (lang, text) => !!CLIPS[clipKey(lang, lang === "lo" ? cleanLo(text) : cleanKo(text))];
 /* a ready-made clip when there is one, the device's voice otherwise */
-function speakOne(text, lao){
+function speakOne(text, lao, male){   // male: TOPIK listening lines of 남자 (own clips "km", RYU 2026-11-21)
   return new Promise(res => {
     const t = lao ? cleanLo(text) : cleanKo(text);
     if (!t) return res();
@@ -88,7 +88,7 @@ function speakOne(text, lao){
       u.rate = +S.rate || 1; u.onend = end; u.onerror = end; setTimeout(end, 4000 + t.length * 450);
       try { synth.speak(u); } catch (e) { end(); }
     };
-    const key = clipKey(lao ? "lo" : "ko", t);
+    const key = clipKey(lao ? "lo" : male ? "km" : "ko", t);
     if (!CLIPS[key]) return tts();
     try {
       if (!AEL) AEL = new Audio();
@@ -136,10 +136,10 @@ function msSync(title){
 function skipBy(d){ if (!P.mode || P.mode === "single") return; P.hold = false; P.skip = d; if (P.paused) togglePause(); quiet(); }
 async function hold(tok){ while (P.paused && tok === P.tok) await gap(150); return tok === P.tok; }
 /* says one piece; if paused in the middle, says it again after resuming */
-async function say(tok, text, lao){
+async function say(tok, text, lao, male){
   for (;;){
     if (!(await hold(tok))) return false;
-    await speakOne(text, lao);
+    await speakOne(text, lao, male);
     if (tok !== P.tok || P.skip) return false;
     if (!P.paused) return true;
   }
@@ -514,7 +514,7 @@ function render(){
   /* 대한민국 pages: the page itself and the prev / next buttons; no play controls (RYU 2026-11-20, v2.19) */
   if (b.info){ $("controls").hidden = true; $("ctlrep").hidden = true;
     const art = h("article", {class: "info"}); art.innerHTML = b.info;
-    view.replaceChildren(art, pnRow(b.code)); return; }
+    view.replaceChildren(art, b.tq ? tqView(b) : "", pnRow(b.code)); return; }
   /* the two repeat buttons sit in the control bar above its bottom line, learn tab only (RYU 2026-11-16, v1.67) */
   $("ctlrep").replaceChildren(...(S.mode !== "quiz" ? [
     h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll),
@@ -523,6 +523,40 @@ function render(){
   const parts = S.mode === "cards" ? renderCards(b) : S.mode === "quiz" ? renderQuiz(b) : renderLearn(b);
   view.replaceChildren(...parts.flat().filter(Boolean));
   if (S.mode === "cards") fitWords();
+}
+/* TOPIK practice questions (RYU 2026-11-21, v2.24): direction (Korean, then Lao), listen button or text to read,
+   four choices; a pick shows right / wrong, the script of a listening question and the Lao explanation */
+const TQ = {}, NUM = "①②③④";
+function tqView(b){
+  return h("section", {class: "tq"}, h("h3", null, "ລອງເຮັດຂໍ້ສອບ ", h("span", {class: "ko"}, "연습 문제")), b.tq.map((q, i) => tqItem(b, q, i)));
+}
+function tqItem(b, q, i){
+  const k = b.code + "#" + i, st = TQ[k];
+  const el = h("div", {class: "tqi"},
+    h("div", {class: "tqd"}, h("b", null, (i + 1) + ". "), h("span", {class: "ko"}, q.d)),
+    q.dl ? h("div", {class: "tqdl"}, q.dl) : null,
+    q.au ? h("div", {class: "tqa"}, h("button", {class: "wrep tbtn tqplay", type: "button", onclick: ev => tqPlay(q, ev.currentTarget)}, ico("spk"), "ຟັງ ", h("span", {class: "ko"}, "듣기"))) : null,
+    q.p ? (() => { const d = h("div", {class: "tqp ko"}); d.innerHTML = q.p; return d; })() : null,
+    h("div", {class: "choices tqo"}, q.o.map((o, j) => h("button", {class: "choice" + (q.lo ? "" : " ko") + (st != null ? (j === q.a ? " right" : j === st ? " wrong" : "") : ""), type: "button", disabled: st != null,
+      onclick: () => { TQ[k] = j; el.replaceWith(tqItem(b, q, i)); }}, h("span", {class: "n"}, NUM[j]), " " + o))),
+    st != null ? h("div", {class: "tqx"},
+      h("div", {class: "res " + (st === q.a ? "ok" : "no")}, st === q.a ? "✓ ຖືກ" : "✗ ຍັງບໍ່ຖືກ · ຄຳຕອບ " + NUM[q.a]),
+      q.au ? h("div", {class: "tqs ko"}, q.au.map(l => h("div", null, h("b", null, l[0] === "m" ? "남자: " : "여자: "), l[1]))) : null,
+      h("p", null, koMix(q.x)),
+      h("button", {class: "btn", type: "button", onclick: () => { delete TQ[k]; el.replaceWith(tqItem(b, q, i)); }}, "ລອງໃໝ່ ", h("span", {class: "ko"}, "다시"))) : null);
+  return el;
+}
+/* the script once, line by line (남자 in a man's voice); the same button stops it */
+async function tqPlay(q, btn){
+  if (P.mode === "tq" && P.box === btn) return stopPlay();
+  stopPlay();
+  const tok = ++P.tok; P.mode = "tq"; P.box = btn; P.paused = false; btn.classList.add("playing");
+  for (const [who, line] of q.au){
+    showPlayer("🔊 " + (who === "m" ? "남자: " : "여자: ") + line);
+    if (!(await say(tok, line, false, who === "m"))) return;
+    await gap(500);
+  }
+  if (tok === P.tok) stopPlay();
 }
 /* word cards: a word that does not fit its line is shrunk until it does, so every word stays on one line at the same height */
 function fitWords(){ document.querySelectorAll(".wcard .k").forEach(k => { let fs = parseFloat(getComputedStyle(k).fontSize);
