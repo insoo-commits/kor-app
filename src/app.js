@@ -345,7 +345,7 @@ const sec = (key, ...kids) => kids.flat().filter(Boolean).length ? h("section", 
   : key === "c" || key === "e" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playWord(ev.currentTarget.closest(".sec").querySelector(".rows"))}, ico("rep"), T.repGroup)
   : key === "dl" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playDialogue(ev.currentTarget.closest(".sec").querySelector(".dlg"))}, ico("rep"), T.repDlg)
   /* words and expressions: repeat the whole section, word by word, same place and look as the dialogue repeat (RYU 2026-11-14) */
-  : key === "w" || key === "f" ? h("button", {class: "wrep hrep", type: "button", onclick: ev => playSents(ev.currentTarget.closest(".sec"))}, ico("rep"), T.repGroup) : null), kids) : null;
+  : null), kids) : null;   // 단어 / 자주 쓰는 표현 group repeat button removed, title and line stay (RYU 2026-11-22, v2.33)
 const note = pair => [h("p", {class: "note-lo"}, pair[1] || pair[0]), S.showKo && pair[1] ? h("p", {class: "note-ko ko"}, pair[0]) : null];
 /* ※ key words of a sentence: [[word, Lao-script reading, Lao meaning], …] */
 const gloss = g => g && g.length ? h("div", {class: "gl"}, "※ ", g.flatMap((x, j) => [j ? " · " : null, h("span", {class: "ko"}, x[0]), " ", h("span", {class: "p"}, x[1]), " (", h("span", {class: "gm"}, x[2]), ")"])) : null;
