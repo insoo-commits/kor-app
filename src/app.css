@@ -880,6 +880,7 @@ html.tab .kbinfo>span{display:inline-flex}
 
 /* phones: tabs 문장·단어·퀴즈 as one pill group left, ⇄ 2회 and x 1.0 pills right, all on one line like lao-app (RYU 2026-11-22, v2.31) */
 .controls .sl,.rpi{display:none}
+.controls .opts{display:contents}   /* PC: count and speed sit in the row as before */
 @media (max-width:560px){
   .controls{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 10px}
   .controls .seg{width:auto;flex:0 0 auto;margin-right:auto;border:0;border-radius:999px;padding:3px;gap:2px;background:var(--bg)}
@@ -894,11 +895,19 @@ html.tab .kbinfo>span{display:inline-flex}
   .controls .crep .rpi{display:block;position:absolute;left:10px;width:16px;height:16px;pointer-events:none;color:var(--ink)}
   .controls .crep .bsel{padding-left:31px}
   .controls .seg button{padding:0 10px}
+  .controls .opts{display:flex;flex:0 0 auto;border-radius:999px;padding:3px;gap:2px;background:var(--bg)}   /* count + speed in one pill group like the tabs (v2.32) */
+  .controls .ctl .bsel{height:30px}
   .controls #ctlrep,.controls .kbinfo{flex-basis:100%}
 }
-@media (max-width:389px){
+@media (max-width:560px){
   .controls{gap:4px;padding:10px 8px}
-  .controls .seg button{padding:0 8px;font-size:14px}
+  .controls .seg button{padding:0 9px;font-size:14px}
   .controls .ctl .bsel{font-size:14px;padding:0 20px 0 9px;background-position:right 7px center}
   .controls .crep .bsel{padding-left:27px} .controls .crep .rpi{left:8px;width:15px;height:15px}
+}
+@media (max-width:389px){
+  .controls{padding:10px 6px}
+  .controls .seg button{padding:0 7px;font-size:13.5px}
+  .controls .ctl .bsel{font-size:13.5px;padding:0 17px 0 7px;background-position:right 6px center}
+  .controls .crep .bsel{padding-left:24px} .controls .crep .rpi{left:7px;width:14px;height:14px}
 }
