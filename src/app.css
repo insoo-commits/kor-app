@@ -867,3 +867,13 @@ html.tab .kbinfo .kc{height:19px;min-width:19px}
 .top{padding:12px 20px 10px;min-height:124px}
 .eyebrow{line-height:1.4}
 .top h1{line-height:.98;margin-top:-.06em}
+/* v2.30 (lao-app v2.80, v2.84, v2.85): middle dot between main tabs; K checkbox on phones too; tighter count and speed lists */
+.groups .group{position:relative;overflow:visible}
+.groups .group+.group::before{content:"·";position:absolute;left:-9px;top:50%;transform:translate(-50%,-55%);color:var(--muted);opacity:.55;font-weight:700;pointer-events:none;border:0}
+.kbinfo{display:flex}
+.kbinfo>span{display:none}
+.kbinfo label{color:var(--ink)}
+@media (hover:hover) and (pointer:fine){.kbinfo>span{display:inline-flex}.kbinfo label{color:var(--muted)}}
+html.tab .kbinfo>span{display:inline-flex}
+#repSel option,#rateSel option{padding:0 6px;line-height:1.15;min-height:0}
+@media (max-width:560px){.kbinfo{grid-column:1 / -1}}

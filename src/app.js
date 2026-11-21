@@ -102,9 +102,14 @@ function speakOne(text, lao, male){   // male: TOPIK listening lines of 남자 (
 let CUR_END = null;
 function quiet(){ if (synth) try { synth.cancel(); } catch (e) {} if (AEL) try { AEL.onended = AEL.onerror = null; AEL.pause(); } catch (e) {} const f = CUR_END; CUR_END = null; if (f) f(); }
 const gap = ms => new Promise(r => setTimeout(r, ms));
+/* keep the playing line in view, but move only when it leaves the middle of the screen (25-75%) or is cut off (lao-app v2.79, v2.30) */
+function follow(el){
+  const r = el.getBoundingClientRect(), pl = $("player"), ph = pl && !pl.hidden ? pl.getBoundingClientRect().height + 16 : 0, H = innerHeight - ph, c = r.top + r.height / 2;
+  if (c < H * .25 || c > H * .75 || (r.top < 0 && r.height < H) || (r.bottom > H && r.height < H)) window.scrollBy({top: c - H / 2, behavior: "smooth"});
+}
 function mark(el){
   document.querySelectorAll(".now").forEach(x => x.classList.remove("now"));
-  if (el && el.isConnected){ el.classList.add("now"); if (P.mode !== "single" && el.scrollIntoView) el.scrollIntoView({block: "nearest"}); }
+  if (el && el.isConnected){ el.classList.add("now"); if (P.mode !== "single") follow(el); }
 }
 function showPlayer(text){
   $("player").hidden = !P.mode;
