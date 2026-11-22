@@ -933,3 +933,6 @@ html.tab .kbinfo>span{display:inline-flex}
   .sheet{border-radius:12px}
   .sheet>.band,.sheet>.controls,.sheet>.body{padding-left:8px!important;padding-right:8px!important}
 }
+/* help: keyboard page shows only the phone note on phones */
+.info .kbph{display:none}
+@media not ((hover:hover) and (pointer:fine)){html:not(.tab) .info .kbph{display:block;font-size:1.1em}html:not(.tab) .info .kbpc{display:none}}
