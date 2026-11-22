@@ -525,6 +525,8 @@ function render(){
   $("ctlrep").replaceChildren(...(S.mode !== "quiz" ? [
     h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll, h("kbd", {class: "kc"}, "C")),
     h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(false)}, ico("rep"), T.repBundle, h("kbd", {class: "kc"}, "G"))] : []));   // key badges, PC and pad only (v2.25)
+  { const ph = matchMedia("(max-width:560px)").matches;   // phone: Lao-voice checkbox on the left of the two play buttons, one line (RYU 2026-11-22, v2.40)
+    if (ph && S.mode !== "quiz") $("ctlrep").prepend($("loLbl")); else $("kbinfo").append($("loLbl")); }
   $("kbinfo").hidden = S.mode === "quiz";
   $("ctlrep").hidden = S.mode === "quiz";   // learn and word-card tabs (v1.67)
   const parts = S.mode === "cards" ? renderCards(b) : S.mode === "quiz" ? renderQuiz(b) : renderLearn(b);

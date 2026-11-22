@@ -705,7 +705,7 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .ddi[aria-selected="true"]{background:var(--rev);color:var(--ink)}
 /* repeat buttons back to plain pills; only the one pressed or playing is shown in reverse */
 .wrep:active,.word.playing .wrep,.sec:has(.letters.playing) .hrep,.sec:has(.rows.playing) .hrep,.sec.playing>h3 .hrep,
-#ctlrep[data-on="chain"] .tbtn:first-child,#ctlrep[data-on="bundle"] .tbtn:last-child{background:var(--rev);border-color:var(--accent);color:var(--ink)}
+#ctlrep[data-on="chain"] .tbtn:first-of-type,#ctlrep[data-on="bundle"] .tbtn:last-of-type{background:var(--rev);border-color:var(--accent);color:var(--ink)}
 /* lesson title box a bit smaller and flatter (RYU 2026-11-18, v1.95) */
 .band #bsel .bsel{height:36px;font-size:17px}
 @media (max-width:759px){ .band #bsel .bsel{height:34px;font-size:16px} }
@@ -760,8 +760,8 @@ html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jum
 @media (max-width:560px){ .ddi{font-size:13.5px} }   /* phone lesson list a step smaller (RYU 2026-11-19, v2.11) */
 /* right-side repeat buttons: round left end, square right end; the two play buttons join in the middle (RYU 2026-11-19, v2.12) */
 .wrep,.wrep.hrep{border-radius:999px 0 0 999px}
-#ctlrep .wrep.tbtn:first-child{border-radius:999px 0 0 999px}
-#ctlrep .wrep.tbtn:last-child{border-radius:0 999px 999px 0}
+#ctlrep .wrep.tbtn:first-of-type{border-radius:999px 0 0 999px}
+#ctlrep .wrep.tbtn:last-of-type{border-radius:0 999px 999px 0}
 /* area and sub menus in the lao-app look: text tabs with an underline, then numbered pills, then one info line (RYU 2026-11-19, v2.13) */
 .groups{gap:18px!important;padding:0 4px!important;border-bottom:1px solid var(--line);scrollbar-width:none;margin-bottom:-4px}
 .groups::-webkit-scrollbar{display:none}
@@ -939,3 +939,5 @@ html.tab .kbinfo>span{display:inline-flex}
 /* help: keyboard page shows only the phone note on phones */
 .info .kbph{display:none}
 @media not ((hover:hover) and (pointer:fine)){html:not(.tab) .info .kbph{display:block;font-size:1.1em}html:not(.tab) .info .kbpc{display:none}}
+#ctlrep #loLbl{display:inline-flex;align-items:center;gap:3px;font-size:12px;color:var(--muted);white-space:nowrap;margin-right:2px}
+#ctlrep #loLbl .ko{display:none}
