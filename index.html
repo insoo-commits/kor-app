@@ -840,7 +840,18 @@ html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jum
 .tqx{margin-top:12px;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0;padding:10px 14px}
 .tqx .res{font-weight:700;margin-bottom:4px}
 .tqx .res.ok{color:var(--good)} .tqx .res.no{color:var(--bad)}
-.tqx .tqs{font-size:15.5px;line-height:1.7;margin:4px 0 6px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.tqs{font-size:15.5px;line-height:1.7;padding:6px 2px}
+.tqsd{margin:0 0 10px;border:1px dashed var(--line);border-radius:10px;padding:4px 12px}
+.tqsd summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:14.5px}
+.tqsub{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.tqq{font-size:16px;font-weight:600;margin-bottom:8px;line-height:1.5;word-break:keep-all}
+.tqo.two{grid-template-columns:1fr 1fr}
+.tqsc{text-align:center;font-weight:700;color:var(--accent);margin:6px 0 10px;font-size:16px}
+.pics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:4px 0}
+.pics>div{border:1px solid var(--line);border-radius:10px;padding:8px 4px;text-align:center;background:var(--sheet)}
+.pics b{display:block;color:var(--accent);font-size:14px}
+.pics span{display:block;font-size:34px;line-height:1.25;letter-spacing:2px}
+.pics small{display:block;font-family:var(--lao);font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:2px}
 .tqx p{margin:6px 0 8px;font-size:15.5px;line-height:1.6}
 .tqx .btn{font-size:14px;padding:4px 12px}
 .sign{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:84px;height:84px;border-radius:14px;border:3px solid;margin:4px 6px 4px 0;vertical-align:top;background:var(--sheet)}
@@ -857,7 +868,7 @@ html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jum
 .bars i{display:block;width:60%;background:var(--accent);border-radius:6px 6px 0 0}
 .bars .bw span{font-size:13.5px;margin-top:6px;position:relative;top:24px}
 .bars .bn{font-size:12.5px;color:var(--muted);margin-top:30px;text-align:center}
-@media (max-width:600px){.tqo{grid-template-columns:1fr}.tqi{padding:12px}.tqd,.tqp{font-size:16px}.tqo .choice{font-size:15.5px}}
+@media (max-width:600px){.tqo{grid-template-columns:1fr}.pics{grid-template-columns:1fr 1fr}.pics span{font-size:28px}.tqi{padding:12px}.tqd,.tqp{font-size:16px}.tqo .choice{font-size:15.5px}}
 /* key badges next to buttons and the key line under the play buttons, PC and pad only (like lao-app v2.75-2.77, v2.25) */
 .kc{display:none;font:600 10.5px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;align-items:center;justify-content:center;border:1px solid currentColor;border-bottom-width:2.5px;border-radius:5px;margin-left:6px;opacity:.72;vertical-align:1px;letter-spacing:0;white-space:nowrap}
 .pn.pv .kc{margin:0 6px 0 0}
@@ -921,6 +932,7 @@ html.tab .kbinfo>span{display:inline-flex}
   .controls .ctl .bsel{font-size:13.5px;padding:0 17px 0 7px;background-position:right 6px center}
   .controls .crep .bsel{padding-left:24px} .controls .crep .rpi{left:7px;width:14px;height:14px}
 }
+.pics span.tx{font-family:var(--ko);font-size:15px;letter-spacing:0;line-height:1.5}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -1064,7 +1076,13 @@ html.tab .tqdl{font-size:17.4px}
 html.tab .tqp{font-size:20.4px}
 html.tab .info .notice{font-size:19.2px}
 html.tab .tqo .choice{font-size:19.8px}
-html.tab .tqx .tqs{font-size:18.6px}
+html.tab .tqs{font-size:18.6px}
+html.tab .tqsd summary{font-size:17.4px}
+html.tab .tqq{font-size:19.2px}
+html.tab .tqsc{font-size:19.2px}
+html.tab .pics b{font-size:16.8px}
+html.tab .pics span{font-size:40.8px}
+html.tab .pics small{font-size:15px}
 html.tab .tqx p{font-size:18.6px}
 html.tab .tqx .btn{font-size:16.8px}
 html.tab .sign span{font-size:40.8px}
@@ -1073,12 +1091,13 @@ html.tab .sign.big span{font-size:67.2px}
 html.tab .bars .bw b{font-size:16.2px}
 html.tab .bars .bw span{font-size:16.2px}
 html.tab .bars .bn{font-size:15px}
-@media (max-width:600px){html.tab .tqd,html.tab .tqp{font-size:19.2px}html.tab .tqo .choice{font-size:18.6px}}
+@media (max-width:600px){html.tab .pics span{font-size:33.6px}html.tab .tqd,html.tab .tqp{font-size:19.2px}html.tab .tqo .choice{font-size:18.6px}}
 html.tab .kbinfo{font-size:13.8px}
 html.tab .kbinfo .kc{font-size:12px}
 @media (max-width:560px){html.tab .controls .seg button{font-size:18px}html.tab .controls .ctl .bsel{font-size:18px}}
 @media (max-width:560px){html.tab .controls .seg button{font-size:16.8px}html.tab .controls .ctl .bsel{font-size:16.8px}}
 @media (max-width:389px){html.tab .controls .seg button{font-size:16.2px}html.tab .controls .ctl .bsel{font-size:16.2px}}
+html.tab .pics span.tx{font-size:18px}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -1149,6 +1168,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-21%20v2.33"></script>
-<script src="app.js?v=2026-11-21%20v2.33"></script>
+<script src="audio/index.js?v=2026-11-22%20v2.34"></script>
+<script src="app.js?v=2026-11-22%20v2.34"></script>
 </body></html>

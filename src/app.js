@@ -533,24 +533,32 @@ function render(){
 }
 /* TOPIK practice questions (RYU 2026-11-21, v2.24): direction (Korean, then Lao), listen button or text to read,
    four choices; a pick shows right / wrong, the script of a listening question and the Lao explanation */
-const TQ = {}, NUM = "①②③④";
+const TQ = {}, NUM = "①②③④", WHO = {m: "남자: ", f: "여자: ", n: ""};
+/* v2.34: a set (one script or text, two or more questions) shows the script or text once; a score line counts the answers on this page */
+const tqList = b => b.tq.flatMap((q, i) => q.qs ? q.qs.map((s, j) => [b.code + "#" + i + "." + j, s]) : [[b.code + "#" + i, q]]);
+function tqScore(b){ const L = tqList(b), done = L.filter(([k]) => TQ[k] != null), ok = done.filter(([k, q]) => TQ[k] === q.a).length;
+  return done.length ? "ຖືກ " + ok + " / " + done.length + " (ທັງໝົດ " + L.length + " ຂໍ້)" : "ທັງໝົດ " + L.length + " ຂໍ້"; }
 function tqView(b){
-  return h("section", {class: "tq"}, h("h3", null, "ລອງເຮັດຂໍ້ສອບ ", h("span", {class: "ko"}, "연습 문제")), b.tq.map((q, i) => tqItem(b, q, i)));
+  const sc = h("div", {class: "tqsc"}, tqScore(b));
+  return h("section", {class: "tq"}, h("h3", null, "ລອງເຮັດຂໍ້ສອບ ", h("span", {class: "ko"}, "연습 문제")), b.tq.map((q, i) => tqItem(b, q, i, () => sc.textContent = tqScore(b))), sc,
+    h("div", {class: "rowbtns", style: "justify-content:center"}, h("button", {class: "btn", type: "button", onclick: () => { tqList(b).forEach(([k]) => delete TQ[k]); render(); }}, "ເລີ່ມໃໝ່ທັງໝົດ ", h("span", {class: "ko"}, "처음부터"))));
 }
-function tqItem(b, q, i){
-  const k = b.code + "#" + i, st = TQ[k];
-  const el = h("div", {class: "tqi"},
+const tqScript = au => h("div", {class: "tqs ko"}, au.map(l => h("div", null, WHO[l[0]] ? h("b", null, WHO[l[0]]) : null, l[1])));
+function tqChoices(q, k, redo){ const st = TQ[k];
+  return [h("div", {class: "choices tqo" + (q.o.length < 3 ? " two" : "")}, q.o.map((o, j) => h("button", {class: "choice" + (q.lo ? "" : " ko") + (st != null ? (j === q.a ? " right" : j === st ? " wrong" : "") : ""), type: "button", disabled: st != null,
+      onclick: () => { TQ[k] = j; redo(); }}, h("span", {class: "n"}, NUM[j]), " " + o))),
+    st != null ? h("div", {class: "tqx"}, h("div", {class: "res " + (st === q.a ? "ok" : "no")}, st === q.a ? "✓ ຖືກ" : "✗ ຍັງບໍ່ຖືກ · ຄຳຕອບ " + NUM[q.a]), h("p", null, koMix(q.x)),
+      h("button", {class: "btn", type: "button", onclick: () => { delete TQ[k]; redo(); }}, "ລອງໃໝ່ ", h("span", {class: "ko"}, "다시"))) : null]; }
+function tqItem(b, q, i, upd){
+  const k = b.code + "#" + i, redo = () => { el.replaceWith(tqItem(b, q, i, upd)); upd(); };
+  const answered = q.qs ? q.qs.some((s, j) => TQ[k + "." + j] != null) : TQ[k] != null;
+  const el = h("div", {class: "tqi" + (q.qs ? " set" : "")},
     h("div", {class: "tqd"}, h("b", null, (i + 1) + ". "), h("span", {class: "ko"}, q.d)),
     q.dl ? h("div", {class: "tqdl"}, q.dl) : null,
     q.au ? h("div", {class: "tqa"}, h("button", {class: "wrep tbtn tqplay", type: "button", onclick: ev => tqPlay(q, ev.currentTarget)}, ico("spk"), "ຟັງ ", h("span", {class: "ko"}, "듣기"))) : null,
     q.p ? (() => { const d = h("div", {class: "tqp ko"}); d.innerHTML = q.p; return d; })() : null,
-    h("div", {class: "choices tqo"}, q.o.map((o, j) => h("button", {class: "choice" + (q.lo ? "" : " ko") + (st != null ? (j === q.a ? " right" : j === st ? " wrong" : "") : ""), type: "button", disabled: st != null,
-      onclick: () => { TQ[k] = j; el.replaceWith(tqItem(b, q, i)); }}, h("span", {class: "n"}, NUM[j]), " " + o))),
-    st != null ? h("div", {class: "tqx"},
-      h("div", {class: "res " + (st === q.a ? "ok" : "no")}, st === q.a ? "✓ ຖືກ" : "✗ ຍັງບໍ່ຖືກ · ຄຳຕອບ " + NUM[q.a]),
-      q.au ? h("div", {class: "tqs ko"}, q.au.map(l => h("div", null, h("b", null, l[0] === "m" ? "남자: " : "여자: "), l[1]))) : null,
-      h("p", null, koMix(q.x)),
-      h("button", {class: "btn", type: "button", onclick: () => { delete TQ[k]; el.replaceWith(tqItem(b, q, i)); }}, "ລອງໃໝ່ ", h("span", {class: "ko"}, "다시"))) : null);
+    q.au && answered ? h("details", {class: "tqsd"}, h("summary", null, "ເບິ່ງບົດ ", h("span", {class: "ko"}, "대본")), tqScript(q.au)) : null,
+    q.qs ? q.qs.map((s, j) => h("div", {class: "tqsub"}, h("div", {class: "tqq ko"}, h("b", null, "(" + (j + 1) + ") "), s.q), ...tqChoices(s, k + "." + j, redo))) : tqChoices(q, k, redo));
   return el;
 }
 /* the script once, line by line (남자 in a man's voice); the same button stops it */
@@ -559,7 +567,7 @@ async function tqPlay(q, btn){
   stopPlay();
   const tok = ++P.tok; P.mode = "tq"; P.box = btn; P.paused = false; btn.classList.add("playing");
   for (const [who, line] of q.au){
-    showPlayer("🔊 " + (who === "m" ? "남자: " : "여자: ") + line);
+    showPlayer("🔊 " + WHO[who] + line);
     if (!(await say(tok, line, false, who === "m"))) return;
     await gap(500);
   }
