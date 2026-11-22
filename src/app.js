@@ -105,7 +105,7 @@ const gap = ms => new Promise(r => setTimeout(r, ms));
 /* keep the playing line in view, but move only when it leaves the middle of the screen (25-75%) or is cut off (lao-app v2.79, v2.30) */
 function follow(el){
   const r = el.getBoundingClientRect(), pl = $("player"), ph = pl && !pl.hidden ? pl.getBoundingClientRect().height + 16 : 0, H = innerHeight - ph, c = r.top + r.height / 2;
-  if (c < H * .25 || c > H * .75 || (r.top < 0 && r.height < H) || (r.bottom > H && r.height < H)) window.scrollBy({top: c - H / 2, behavior: "smooth"});
+  if (c < H * .25 || c > H * .75 || (r.top < 0 && r.height < H) || (r.bottom > H && r.height < H)) window.scrollBy({top: c - H * .25, behavior: "smooth"});   // land at ~25% so reading downward stays still until 75% (RYU 2026-11-22)
 }
 function mark(el){
   document.querySelectorAll(".now").forEach(x => x.classList.remove("now"));
