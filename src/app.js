@@ -62,6 +62,7 @@ const bundle = code => (cache.get(areaOf(code)) || []).find(b => b.code === code
 const synth = window.speechSynthesis || null;
 let koVoice = null, loVoice = null;
 const P = {tok: 0, mode: "", paused: false, round: 1, nav: false};
+let loLbl = null;
 function markMode(){ const c = document.getElementById("ctlrep"); if (c) c.dataset.on = P.mode; }   // bar repeat button shown in reverse while it plays (v1.94)
 function pickVoice(){
   if (!synth) return;
@@ -526,7 +527,8 @@ function render(){
     h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll, h("kbd", {class: "kc"}, "C")),
     h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(false)}, ico("rep"), T.repBundle, h("kbd", {class: "kc"}, "G"))] : []));   // key badges, PC and pad only (v2.25)
   { const ph = matchMedia("(max-width:560px)").matches;   // phone: Lao-voice checkbox on the left of the two play buttons, one line (RYU 2026-11-22, v2.40)
-    if (ph && S.mode !== "quiz") $("ctlrep").prepend($("loLbl")); else $("kbinfo").append($("loLbl")); }
+    const lbl = loLbl || (loLbl = $("loLbl"));   // keep a reference: replaceChildren above detaches it, then $() finds nothing (v2.44 "null" fix)
+    if (ph && S.mode !== "quiz") $("ctlrep").prepend(lbl); else $("kbinfo").append(lbl); }
   $("kbinfo").hidden = S.mode === "quiz";
   $("ctlrep").hidden = S.mode === "quiz";   // learn and word-card tabs (v1.67)
   const parts = S.mode === "cards" ? renderCards(b) : S.mode === "quiz" ? renderQuiz(b) : renderLearn(b);
