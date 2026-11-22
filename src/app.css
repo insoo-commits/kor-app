@@ -939,5 +939,5 @@ html.tab .kbinfo>span{display:inline-flex}
 /* help: keyboard page shows only the phone note on phones */
 .info .kbph{display:none}
 @media not ((hover:hover) and (pointer:fine)){html:not(.tab) .info .kbph{display:block;font-size:1.1em}html:not(.tab) .info .kbpc{display:none}}
-#ctlrep #loLbl{display:inline-flex;align-items:center;gap:3px;font-size:12px;color:var(--muted);white-space:nowrap;margin-right:2px}
+#ctlrep #loLbl{display:inline-flex;align-items:center;gap:3px;font-size:12px;color:var(--muted);white-space:nowrap;margin-right:auto}   /* left end, play buttons stay right (v2.41) */
 #ctlrep #loLbl .ko{display:none}
