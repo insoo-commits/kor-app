@@ -1,7 +1,7 @@
 // Areas and sub-groups: [code, Korean name, Lao name]. Lao names are drafts for the reviewer.
 module.exports = {
   areas: [
-    ["K2", "핵심회화", "ສົນທະນາ"],
+    ["K2", "기초회화", "ສົນທະນາພື້ນຖານ"],
     ["K1", "문자학습", "ຕົວອັກສອນ"],
     ["K6", "문장규칙", "ໄວຍາກອນ"],
     ["K7", "짝말비교", "ຄຳຄູ່"],
