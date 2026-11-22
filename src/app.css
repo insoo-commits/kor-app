@@ -923,3 +923,13 @@ html.tab .kbinfo>span{display:inline-flex}
   .controls .crep .bsel{padding-left:24px} .controls .crep .rpi{left:7px;width:14px;height:14px}
 }
 .pics span.tx{font-family:var(--ko);font-size:15px;letter-spacing:0;line-height:1.5}
+/* menu in a box like the content box; PC padding = content padding; phones: thin outer and inner side margins (lao-app v2.98-2.99, v2.35) */
+.menubox{background:var(--sheet);border:1px solid var(--line);border-radius:16px;padding:12px 20px 10px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.menubox .groups{padding-left:0!important;padding-right:0!important}
+.menubox .sinfo{margin-top:-4px;padding:0}
+@media (max-width:640px){
+  .wrap{padding-left:max(6px,env(safe-area-inset-left,0px));padding-right:max(6px,env(safe-area-inset-right,0px))}
+  .menubox{padding:8px 8px 6px;border-radius:12px}
+  .sheet{border-radius:12px}
+  .sheet>.band,.sheet>.controls,.sheet>.body{padding-left:8px!important;padding-right:8px!important}
+}

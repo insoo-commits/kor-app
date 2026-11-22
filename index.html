@@ -933,6 +933,16 @@ html.tab .kbinfo>span{display:inline-flex}
   .controls .crep .bsel{padding-left:24px} .controls .crep .rpi{left:7px;width:14px;height:14px}
 }
 .pics span.tx{font-family:var(--ko);font-size:15px;letter-spacing:0;line-height:1.5}
+/* menu in a box like the content box; PC padding = content padding; phones: thin outer and inner side margins (lao-app v2.98-2.99, v2.35) */
+.menubox{background:var(--sheet);border:1px solid var(--line);border-radius:16px;padding:12px 20px 10px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.menubox .groups{padding-left:0!important;padding-right:0!important}
+.menubox .sinfo{margin-top:-4px;padding:0}
+@media (max-width:640px){
+  .wrap{padding-left:max(6px,env(safe-area-inset-left,0px));padding-right:max(6px,env(safe-area-inset-right,0px))}
+  .menubox{padding:8px 8px 6px;border-radius:12px}
+  .sheet{border-radius:12px}
+  .sheet>.band,.sheet>.controls,.sheet>.body{padding-left:8px!important;padding-right:8px!important}
+}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -1141,9 +1151,11 @@ html.tab .ddi{font-size:17px}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
     <input id="q" type="search" placeholder="ຄົ້ນຫາດ້ວຍພາສາເກົາຫຼີ ຫຼື ພາສາລາວ (ຕົວຢ່າງ: 밥, ເຂົ້າ)" autocomplete="off">
   </label>
-  <nav class="groups" id="groups" aria-label="ໝວດໃຫຍ່"></nav>
-  <nav class="subs" id="subs" role="tablist" aria-label="ໝວດຍ່ອຍ"></nav>
-  <div class="sinfo" id="sinfo"></div>
+  <div class="menubox">
+    <nav class="groups" id="groups" aria-label="ໝວດໃຫຍ່"></nav>
+    <nav class="subs" id="subs" role="tablist" aria-label="ໝວດຍ່ອຍ"></nav>
+    <div class="sinfo" id="sinfo"></div>
+  </div>
   <section class="sheet" id="sheet">
     <div class="band" id="band"></div>
     <div class="controls" id="controls">
@@ -1168,6 +1180,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-22%20v2.34"></script>
-<script src="app.js?v=2026-11-22%20v2.34"></script>
+<script src="audio/index.js?v=2026-11-22%20v2.35"></script>
+<script src="app.js?v=2026-11-22%20v2.35"></script>
 </body></html>
