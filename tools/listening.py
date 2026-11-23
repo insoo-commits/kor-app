@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 from loread import read
 
 ORDER = "abcdefgh"
-LV = {"A": 1, "B": 1, "C": 2, "D": 2, "E": 2, "F": 3, "G": 3, "H": 3}
+LV = {"I": 2, "A": 1, "B": 1, "C": 2, "D": 2, "E": 2, "F": 3, "G": 3, "H": 3}
 HOW = ("듣는 순서: ❶ 본문 전체 듣기 → ❷ 한 줄씩 다시 듣기 → ❸ 단어 → ❹ 확인 문제.", "ລຳດັບ: ❶ ຟັງທັງໝົດ → ❷ ຟັງເທື່ອລະແຖວ → ❸ ຄຳສັບ → ❹ ຄຳຖາມ.")
 files = sorted(f for f in os.listdir(os.path.join(ROOT, "tools/listen")) if f.endswith(".py"))
 out, titles, subs = [], [], {}
@@ -17,7 +17,7 @@ for f in files:
     spec = importlib.util.spec_from_file_location("m" + sub, os.path.join(ROOT, "tools/listen", f))
     m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
     subs["LS-" + sub] = [m.SUB[0], m.SUB[1]]
-    for n, (t, tlo, lines, words, tips, qz) in enumerate(m.B, 1):
+    for n, (t, tlo, lines, words, tips, qz, *yt) in enumerate(m.B, 1):
         code = "LS-%s-%02d" % (sub, n)
         spk = []   # first named speaker: woman's voice, second: man's voice (as in lao-app)
         for s, _, _ in lines:
@@ -31,7 +31,7 @@ for f in files:
                     "i": [m.SUB[2] + " " + HOW[0], m.SUB[3] + " " + HOW[1]],
                     "m": [], "l": [], "w": w, "f": [], "c": [], "e": [], "x": [],
                     "tp": [list(x) for x in tips], "pr": [], "dl": dl, "sm": [], "qz": [list(x) for x in qz],
-                    "mv": spk[1:2]})
+                    "mv": spk[1:2], **({"yt": yt[0]} if yt else {})})
         titles.append(code + " | " + tlo)
 json.dump(out, open(os.path.join(ROOT, "data/LS.json"), "w", encoding="utf8"), ensure_ascii=False)
 tf = os.path.join(ROOT, "src/titles-lo.txt")

@@ -979,3 +979,4 @@ html.tab .kbinfo>span{display:inline-flex}
 [data-g="LS"]{--accent:#566079;--accent-soft:#E7E9EF}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) [data-g="LS"]{--accent:#AEB8CF;--accent-soft:#262B36}}
 :root[data-theme="dark"] [data-g="LS"]{--accent:#AEB8CF;--accent-soft:#262B36}
+.ytrow{margin:4px 0 14px;text-align:center}.ytbtn{display:inline-flex;gap:6px;align-items:center;text-decoration:none}
