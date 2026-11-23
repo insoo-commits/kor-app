@@ -1004,6 +1004,12 @@ html.tab .kbinfo>span{display:inline-flex}
 .info .when .ko{font-weight:600}.info .when .m{color:var(--muted);font-size:.92em}
 .info .ibml{font-weight:700;font-size:15px;margin:4px 2px 8px;color:var(--accent)}.info .ibml .ko{font-weight:500;color:var(--muted);font-size:13px;margin-left:6px}
 .info .ib{margin-bottom:12px}.info .ibb{padding:10px 16px 5px}
+/* menu separators | before 기초회화, before 대한민국, before and after 도움말; · stays inside a section (RYU 2026-11-23, lao-app v3.27, v2.53) */
+.groups .group[data-g="KR"]::before,.groups .group[data-g="HP"]::before{content:"|"!important;font-weight:400!important;opacity:.7!important;transform:translate(-50%,-52%)!important}
+/* the outer bars are drawn lines, so the first one sits exactly on the left edge of the first sub-group button below */
+.groups::before,.groups::after{content:"";flex:0 0 auto;align-self:center;width:1.5px;height:17px;background:var(--muted);opacity:.6;margin-top:-3px}
+.groups::before{margin-right:-8px}
+.groups::after{margin-left:-8px}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -1248,6 +1254,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-23%20v2.52"></script>
-<script src="app.js?v=2026-11-23%20v2.52"></script>
+<script src="audio/index.js?v=2026-11-23%20v2.53"></script>
+<script src="app.js?v=2026-11-23%20v2.53"></script>
 </body></html>
