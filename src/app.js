@@ -604,7 +604,8 @@ async function route(){
 }
 document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => { S.mode = b.dataset.mode; stopPlay(); save(); drawControls(); render(); }));
 function ddClose(){ $("bselList").hidden = true; $("bselBtn").setAttribute("aria-expanded", "false"); }
-$("bselBtn").addEventListener("click", () => {
+$("bselBtn").addEventListener("click", e => {
+  if (!e.isTrusted || Date.now() - (window.SWIPED_AT || 0) < 600) return;   // only a real tap opens the list, never the end of a swipe (rwanda-app fix, v2.52)
   const l = $("bselList"), open = l.hidden;
   if (!open) return ddClose();
   l.hidden = false; $("bselBtn").setAttribute("aria-expanded", "true");
@@ -740,7 +741,7 @@ if ("serviceWorker" in navigator && window.KO_SW) navigator.serviceWorker.regist
     sx = t.clientX; sy = t.clientY; st = Date.now(); ok = true; }, {passive: true});
   /* v2.51 (RYU 2026-11-23 "곧바로 안 넘어간다"): decide during the move, not at lift-off; looser limits (60px, 1s, 1.5× more sideways
      than down); change the bundle at once and only slide the new one in (no 150ms wait before it) */
-  const fire = (dx) => { ok = false;
+  const fire = (dx) => { ok = false; window.SWIPED_AT = Date.now();
     try { const s = getSelection(); if (s && String(s).length) return; } catch (_) {}
     const b = document.querySelector(dx < 0 ? "#view .pn.nx" : "#view .pn.pv"); if (!b) return;
     b.click();
