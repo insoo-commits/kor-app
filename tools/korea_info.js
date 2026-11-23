@@ -35,6 +35,7 @@ const SUBS = [
 
 const P = [];
 const MORE = require("./korea_more.js")(K);
+const EXTRA = require("./korea_extra.js")(K);
 const say = rows => box("ib-s", hd("ປະໂຫຍກທີ່ໃຊ້ໄດ້", "이렇게 말해요"), `<div class="says">${rows.map(([ko, lo]) => `<div><div class="ko">${ko}</div><div class="m">${lo}</div></div>`).join("")}</div>`);
 const tip = t => box("ib-k", hd("ຮູ້ໄວ້ຈະດີ", "알아 두면 좋아요"), `<p>${t}</p>`);
 const add = (code, t, lo, body) => {
@@ -42,6 +43,11 @@ const add = (code, t, lo, body) => {
   const x = MORE[code] || {};
   body = body.replace("<!--more-->", (x.more ? sec(...x.more) : "") + (x.tip ? tip(x.tip) : ""));
   if (x.say) body = body.replace('<section class="ib ib-t">', say(x.say) + '<section class="ib ib-t">');
+  /* v2.48 (RYU 2026-11-23, like lao-app v3.22): "더 알아보기" practical boxes and "이럴 때 이렇게 말해요" before the words */
+  const y = EXTRA[code] || {};
+  const more = (y.know || []).length ? `<div class="ibml">ຮູ້ຕື່ມ<span class="ko">더 알아보기</span></div><div class="ibs ibm">${y.know.map(([lo, ko, t]) => box("ib-m", hd(lo, ko), `<p>${t}</p>`)).join("")}</div>` : "";
+  const when = (y.when || []).length ? box("ib-w", hd("ເວລານີ້ ເວົ້າແບບນີ້", "이럴 때 이렇게 말해요"), `<table class="when">${y.when.map(([sit, ko, lo]) => `<tr><th>${sit}</th><td><div class="ko">${ko}</div><div class="m">${lo}</div></td></tr>`).join("")}</table>`) : "";
+  if (more || when) body = body.includes('<section class="ib ib-t">') ? body.replace('<section class="ib ib-t">', more + when + '<section class="ib ib-t">') : body + more + when;
   P.push({code, t, lo, info: page(t, lo, body)});
 };
 
