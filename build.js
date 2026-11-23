@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-22 v2.44";
+const VER = "2026-11-22 v2.45";
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
 fs.mkdirSync(path.join(root, "preview"), {recursive: true});
@@ -84,7 +84,7 @@ for (const [a] of M.areas) for (const b of JSON.parse(fs.readFileSync(path.join(
   [].concat(b.w || [], b.f || []).forEach(w => { want("ko", w[0]); want("lo", w[2]); (w[3] || []).forEach(e => { want("ko", e[0]); want("lo", e[2]); }); });   // example Lao too: played once after the Korean (RYU 2026-11-16)
   (b.c || []).forEach(c => { want("ko", c[1]); want("lo", c[3]); });
   (b.e || []).forEach(e => { want("ko", e[0]); want("lo", e[2]); });
-  (b.dl || []).forEach(d => want("ko", d[1]));
+  (b.dl || []).forEach(d => { want((b.mv || []).includes(d[0]) ? "km" : "ko", d[1]); if (b.type === "듣기") want("lo", d[2]); });   // 듣기연습: second speaker in a man's voice, Lao meaning voiced too (v2.45)
   (b.tq || []).forEach(q => (q.au || []).forEach(l => want(l[0] === "m" ? "km" : "ko", l[1])));   // TOPIK listening: 남자 lines in a man's voice
 }
 fs.mkdirSync(path.join(root, "audio"), {recursive: true});

@@ -941,3 +941,8 @@ html.tab .kbinfo>span{display:inline-flex}
 @media not ((hover:hover) and (pointer:fine)){html:not(.tab) .info .kbph{display:block;font-size:1.1em}html:not(.tab) .info .kbpc{display:none}}
 #ctlrep #loLbl{display:inline-flex;align-items:center;gap:3px;font-size:12px;color:var(--muted);white-space:nowrap;margin-right:2px}   /* one centred line with the play buttons (RYU 2026-11-22, v2.42) */
 #ctlrep #loLbl .ko{display:none}
+/* 듣기연습: speaker name before each line (v2.45) */
+.dlg.lis .who{color:var(--accent);font-weight:600;margin-right:2px}
+[data-g="LS"]{--accent:#566079;--accent-soft:#E7E9EF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) [data-g="LS"]{--accent:#AEB8CF;--accent-soft:#262B36}}
+:root[data-theme="dark"] [data-g="LS"]{--accent:#AEB8CF;--accent-soft:#262B36}

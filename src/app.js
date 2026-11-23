@@ -162,7 +162,7 @@ async function sayItem(tok, it, label, noLo){
   for (let k = 0; k < n || P.hold; k++){
     if (P.hold) P.held = true;
     showPlayer(label + " · " + (P.hold ? "∞ " + (k + 1) : (k + 1) + "/" + n) + " · " + it.ko);   // Enter: this item over and over (∞) until Enter again (RYU 2026-11-20, v2.23)
-    face(); if (!(await say(tok, it.ko))) return false; await gap(k === 0 && withLo ? 300 : 250);   // the same line again: short pause (v2.25)
+    face(); if (!(await say(tok, it.ko, false, it.male))) return false; await gap(k === 0 && withLo ? 300 : 250);   // the same line again: short pause (v2.25)
     if (k === 0 && withLo){ face(); if (!(await say(tok, it.lo, true))) return false; await gap(300); }
   }
   if (it.card) flipCard(it.card, false);
@@ -170,17 +170,18 @@ async function sayItem(tok, it, label, noLo){
   return tok === P.tok;
 }
 /* bundle / all-bundle repeat: everything above the dialogue (the dialogue has its own repeat button) */
-const queue = () => [...document.querySelectorAll("#view [data-say]")].filter(el => !el.closest(".dlg")).map(el => ({el, ko: el.dataset.say, lo: el.dataset.lo || "", head: el.dataset.head === "1"}));
+const queue = () => { const lis = document.querySelector("#view .dlg.lis");   // 듣기연습: the bundle button plays the text itself (v2.45)
+  return [...document.querySelectorAll(lis ? "#view .dlg.lis [data-say]" : "#view [data-say]")].filter(el => lis || !el.closest(".dlg")).map(el => ({el, ko: el.dataset.say, lo: el.dataset.lo || "", head: el.dataset.head === "1", male: el.dataset.m === "1"})); };
 async function playSingle(el){
   if (P.mode === "single" && el.classList.contains("now")) return stopPlay();
   stopPlay();
   const tok = ++P.tok; P.mode = "single"; markMode(); P.paused = false;
   mark(el);
-  const ko = el.dataset.say, lo = el.dataset.lo || "";
+  const ko = el.dataset.say, lo = el.dataset.lo || "", male = el.dataset.m === "1";
   const withLo = S.sayLo !== false && lo && (loVoice || hasClip("lo", lo));   // word or sentence: Korean, Lao once, then Korean over and over (RYU 2026-11-16)   // a headword: Korean, Lao, then Korean over and over
   for (let k = 1; tok === P.tok; k++){
     showPlayer("🔊 ∞ · " + k + " · " + ko);
-    if (!(await say(tok, ko))) return;
+    if (!(await say(tok, ko, false, male))) return;
     if (withLo && k === 1){ await gap(300); if (!(await say(tok, lo, true))) return; }
     await gap(500);
   }
@@ -230,6 +231,7 @@ async function playWord(box){
   }
 }
 /* dialogue repeat: each dialogue line S.rep times, in order, round and round until stopped */
+const b_lis = el => el.closest(".dlg.lis") ? el.dataset.lo || "" : "";   // 듣기연습 lines say their Lao too (K turns it off)
 async function playDialogue(box){
   if (P.mode === "dialog") return stopPlay();
   stopPlay();
@@ -238,7 +240,7 @@ async function playDialogue(box){
     const q = [...box.querySelectorAll("[data-say]")];
     if (!q.length) return stopPlay();
     for (let i = 0; i < q.length; i++){
-      if (!(await sayItem(tok, {el: q[i], ko: q[i].dataset.say}, "🔊 " + (i + 1) + "/" + q.length + " · ↻" + P.round))){
+      if (!(await sayItem(tok, {el: q[i], ko: q[i].dataset.say, lo: b_lis(q[i]), male: q[i].dataset.m === "1"}, "🔊 " + (i + 1) + "/" + q.length + " · ↻" + P.round))){
         if (tok === P.tok && P.skip){ i = Math.max(-1, i + P.skip - 1); P.skip = 0; continue; } return; }
       await gap(350);
     }
@@ -364,8 +366,11 @@ function pnRow(code){
 }
 function renderLearn(b){
   const i = byCode.get(b.code), next = IDX[i + 1], prev = i > 0 ? IDX[i - 1] : null, isDone = !!S.done[b.code];
-  const dl = b.dl || [];
+  const dl = b.dl || [], lis = b.type === "듣기";
+  const dlSec = sec("dl", dl.length ? [
+      h("div", {class: "rows dlg" + (lis ? " lis" : "")}, dl.map((d, n) => h("div", {class: "line", "data-say": d[1], "data-lo": d[2], "data-m": (b.mv || []).includes(d[0]) ? "1" : null}, h("div", {class: "exn", "aria-label": String(n + 1)}, String(n + 1)), spk(), h("div", null, h("div", {class: "k ko"}, lis && d[0] ? h("span", {class: "who"}, d[0] + ": ") : null, d[1]), d[4] ? h("div", {class: "p"}, d[4]) : null, h("div", {class: "m"}, d[2]), gloss(d[3])))))] : null);   // d[4]: Lao-script reading, as in the example sentences (RYU 2026-11-14)
   return [
+    lis ? dlSec : null,   // 듣기연습: the text comes first (v2.45)
     sec("m", (b.m || []).map(m => h("div", {class: "tip"}, note(m)))),
     /* letters (ຕົວອັກສອນ) section dropped from the sentence tab: the letters are studied in the word tab (RYU 2026-11-16, v1.75) */
     b.x && b.x.length > 1 ? sec("x", h("div", {class: "tablewrap"}, h("table", null,
@@ -376,8 +381,7 @@ function renderLearn(b){
     sec("c", (b.c || []).length ? h("div", {class: "rows grid2"}, b.c.map(c => line(c[1], c[2], c[3], "", c[4] ? null : c[0], c[4]))) : null),
     sec("e", (b.e || []).length ? h("div", {class: "rows grid2"}, b.e.map(e => line(e[0], e[1], e[2], "", null, e[3]))) : null),
     sec("pr", (b.pr || []).length ? h("div", {class: "pairs"}, b.pr.map(p => h("div", {class: "pair"}, p.flatMap((x, j) => j ? [h("i", null, "↔"), x] : [x])))) : null),
-    sec("dl", dl.length ? [
-      h("div", {class: "rows dlg"}, dl.map((d, n) => h("div", {class: "line", "data-say": d[1], "data-lo": d[2]}, h("div", {class: "exn", "aria-label": String(n + 1)}, String(n + 1)), spk(), h("div", null, h("div", {class: "k ko"}, d[1]), d[4] ? h("div", {class: "p"}, d[4]) : null, h("div", {class: "m"}, d[2]), gloss(d[3])))))] : null),   // d[4]: Lao-script reading, as in the example sentences (RYU 2026-11-14)
+    lis ? null : dlSec,
     sec("sm", b.sm && b.sm.length ? h("div", {class: "tip"}, note(b.sm)) : null),
     sec("qz", (b.qz || []).map((q, n) => { const a = h("div", {class: "a", hidden: true}, q[1]);
       return h("div", {class: "qa"}, h("div", {class: "qq"}, h("div", {class: "exn", "aria-label": String(n + 1)}, String(n + 1)), h("div", {class: "ko"}, q[0])), h("div", {class: "qr"}, a, h("button", {class: "btn", type: "button", onclick: ev => { a.hidden = !a.hidden; ev.currentTarget.textContent = a.hidden ? T.showAns : T.hideAns; }}, T.showAns))); })),   // tap again hides the answer (v1.80)
