@@ -729,3 +729,21 @@ $("ver").textContent = META.ver + " · ສ້າງດ້ວຍ Claude AI · Cla
 route();
 if ("serviceWorker" in navigator && window.KO_SW) navigator.serviceWorker.register("sw.js").catch(() => {});
 })();
+/* phone swipe left / right = next / previous bundle, like the 다음 묶음 / 이전 묶음 buttons (lao-app v3.23, RYU 2026-11-23, v2.49).
+   Ignored: screen edges (browser back gesture), menus, tables, pickers, the player bar, anything that scrolls sideways,
+   short or slow swipes, mostly vertical moves, and text selection. */
+(function(){ let sx = 0, sy = 0, st = 0, ok = false;
+  const hscroll = el => { for (; el && el !== document.body; el = el.parentElement){ if (el.scrollWidth > el.clientWidth + 4){ const o = getComputedStyle(el).overflowX; if (o === "auto" || o === "scroll") return true; } } return false; };
+  document.addEventListener("touchstart", e => { ok = false; if (e.touches.length !== 1) return; const t = e.touches[0], w = innerWidth;
+    if (t.clientX < 24 || t.clientX > w - 24) return;
+    const el = e.target; if (el.closest && el.closest("input,select,textarea,#player,table,.dd,#groups,#subs,.tabs,.top2,figure,#kbhelp")) return; if (hscroll(el)) return;
+    sx = t.clientX; sy = t.clientY; st = Date.now(); ok = true; }, {passive: true});
+  document.addEventListener("touchend", e => { if (!ok) return; ok = false; const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Date.now() - st > 700 || Math.abs(dx) < 80 || Math.abs(dx) < Math.abs(dy) * 2) return;
+    try { const s = getSelection(); if (s && String(s).length) return; } catch (_) {}
+    const b = document.querySelector(dx < 0 ? "#view .pn.nx" : "#view .pn.pv"); if (!b) return;
+    const sh = document.getElementById("sheet"); if (!sh) return b.click();
+    sh.style.transition = "transform .18s,opacity .18s"; sh.style.transform = "translateX(" + (dx < 0 ? -40 : 40) + "px)"; sh.style.opacity = ".3";
+    setTimeout(() => { b.click(); sh.style.transition = "none"; sh.style.transform = "translateX(" + (dx < 0 ? 40 : -40) + "px)";
+      requestAnimationFrame(() => { sh.style.transition = "transform .18s,opacity .18s"; sh.style.transform = ""; sh.style.opacity = ""; }); }, 150); }, {passive: true});
+})();
