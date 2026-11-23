@@ -738,12 +738,20 @@ if ("serviceWorker" in navigator && window.KO_SW) navigator.serviceWorker.regist
     if (t.clientX < 24 || t.clientX > w - 24) return;
     const el = e.target; if (el.closest && el.closest("input,select,textarea,#player,.dd,#groups,#subs,#kbhelp")) return; if (hscroll(el)) return;
     sx = t.clientX; sy = t.clientY; st = Date.now(); ok = true; }, {passive: true});
-  document.addEventListener("touchend", e => { if (!ok) return; ok = false; const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
-    if (Date.now() - st > 700 || Math.abs(dx) < 80 || Math.abs(dx) < Math.abs(dy) * 2) return;
+  /* v2.51 (RYU 2026-11-23 "곧바로 안 넘어간다"): decide during the move, not at lift-off; looser limits (60px, 1s, 1.5× more sideways
+     than down); change the bundle at once and only slide the new one in (no 150ms wait before it) */
+  const fire = (dx) => { ok = false;
     try { const s = getSelection(); if (s && String(s).length) return; } catch (_) {}
     const b = document.querySelector(dx < 0 ? "#view .pn.nx" : "#view .pn.pv"); if (!b) return;
-    const sh = document.getElementById("sheet"); if (!sh) return b.click();
-    sh.style.transition = "transform .18s,opacity .18s"; sh.style.transform = "translateX(" + (dx < 0 ? -40 : 40) + "px)"; sh.style.opacity = ".3";
-    setTimeout(() => { b.click(); sh.style.transition = "none"; sh.style.transform = "translateX(" + (dx < 0 ? 40 : -40) + "px)";
-      requestAnimationFrame(() => { sh.style.transition = "transform .18s,opacity .18s"; sh.style.transform = ""; sh.style.opacity = ""; }); }, 150); }, {passive: true});
+    b.click();
+    const sh = document.getElementById("sheet"); if (!sh) return;
+    sh.style.transition = "none"; sh.style.transform = "translateX(" + (dx < 0 ? 36 : -36) + "px)"; sh.style.opacity = ".4";
+    requestAnimationFrame(() => requestAnimationFrame(() => { sh.style.transition = "transform .16s ease-out,opacity .16s"; sh.style.transform = ""; sh.style.opacity = ""; })); };
+  const judge = (t, end) => { const dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Date.now() - st > 1000) { ok = false; return; }
+    if (Math.abs(dy) > 40 && Math.abs(dy) > Math.abs(dx)) { ok = false; return; }   // a vertical scroll: leave it
+    if (Math.abs(dx) >= 60 && Math.abs(dx) >= Math.abs(dy) * 1.5) fire(dx); else if (end) ok = false; };
+  document.addEventListener("touchmove", e => { if (ok && e.touches.length === 1) judge(e.touches[0], false); }, {passive: true});
+  document.addEventListener("touchend", e => { if (ok) judge(e.changedTouches[0], true); }, {passive: true});
+  document.addEventListener("touchcancel", () => { ok = false; }, {passive: true});
 })();
