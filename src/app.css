@@ -805,6 +805,39 @@ html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jum
   .info .two{display:grid;grid-template-columns:1fr 1fr;gap:32px}
   .info .facts th{width:28%}
 }
+/* 대한민국 pages in boxes (RYU 2026-11-23, v2.46): each part in its own card with a head line;
+   basic facts (ib-f), explanations (.ibs, two by two on wide screens), sentences to try (ib-s), good to know (ib-k), words (ib-t) */
+.info .ib{background:var(--sheet);border:1px solid var(--line);border-radius:14px;margin:0 0 14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.info .ib>h3{margin:0;padding:9px 16px 8px;border:0;border-bottom:1px solid var(--line);background:var(--raise);font-size:16.5px;line-height:1.35;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.info .ib>h3::before{content:"";flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:var(--accent);align-self:center}
+.info .ib>h3 small{font-size:13px;font-weight:500;color:var(--muted)}
+.info .ibb{padding:12px 16px 6px}
+.info .ibb>p:last-child{margin-bottom:6px}
+.info .ib-f>h3,.info .ib-t>h3{background:var(--accent-soft)}
+.info .ib-f .ibb{padding-bottom:8px}
+.info .ib-f .facts{margin:0}
+.info .ib-f .facts tr:last-child th,.info .ib-f .facts tr:last-child td{border-bottom:0}
+.info .ib-f figure{margin:0 0 4px}
+.info .ib-s>h3{background:color-mix(in srgb,var(--good) 13%,var(--sheet))}
+.info .ib-s>h3::before{background:var(--good)}
+.info .ib-k{border-color:color-mix(in srgb,#E0A800 45%,var(--line))}
+.info .ib-k>h3{background:color-mix(in srgb,#E0A800 16%,var(--sheet))}
+.info .ib-k>h3::before{background:#E0A800}
+.info .ibs{display:grid;grid-template-columns:1fr;gap:0 14px}
+.info .says{display:grid;grid-template-columns:1fr;gap:10px;padding-bottom:8px}
+.info .says>div{border-left:4px solid var(--good);border-radius:0 10px 10px 0;background:var(--raise);padding:7px 12px}
+.info .says .ko{font-size:17px;font-weight:600;line-height:1.5;word-break:keep-all}
+.info .says .m{font-size:15px;color:var(--muted);line-height:1.5}
+.info .ib-t .terms{background:none;border-radius:0;padding:0 0 6px;margin:0;display:grid;grid-template-columns:1fr;column-gap:24px}
+.info .ib-t .terms div{border-bottom:1px dashed var(--line)!important;padding:6px 0}
+@media (min-width:700px){
+  .info .ibs{grid-template-columns:1fr 1fr}
+  .info .ibs>.ib:last-child:nth-child(odd){grid-column:1 / -1}
+  .info .says{grid-template-columns:1fr 1fr}
+  .info .ib-t .terms{grid-template-columns:1fr 1fr}
+  .info .ib-f .top2{gap:24px}
+}
+@media (min-width:900px){.info .ib-t .terms{grid-template-columns:1fr 1fr 1fr}}
 #controls[hidden],#ctlrep[hidden]{display:none!important}
 /* keyboard shortcut list (? key), v2.23 */
 #kbhelp{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35)}
