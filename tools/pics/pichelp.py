@@ -57,6 +57,16 @@ def board(x, y, w, h, lines, col="#2f5a46", ink="#f6f1e0"):
         out.append(t(x + w / 2, y + gap * (i + 1) + size * 0.35, s, size, ink, lao=lao, w="600"))
     return "".join(out)
 def bubble(x, y, s, w=70, size=18, lao=True, col="#ffffff", tail="l"):
+    # RYU 2026-11-24: a bubble never covers a head: move it up, or sideways when there is no room above
+    import pics as _P
+    for hx, hy, hr in list(_P.HEADS):
+        if hx + hr > x - 10 and hx - hr < x + w + 10 and hy - hr < y + 50 and hy + hr > y:
+            ny = hy - hr - 50
+            if ny >= 2: y = ny
+            else:
+                y = max(2, y)
+                x = hx + hr + 12 if hx < x + w / 2 else hx - hr - w - 12
+                x = min(max(12, x), 400 - w - 12)
     tl = f"l-10,10 l2,-10" if tail == "l" else f"l10,10 l-2,-10"
     if tail == "l":
         d = f"M{x},{y} h{w} a10,10 0 0 1 10,10 v18 a10,10 0 0 1 -10,10 h-{w-18} l-10,10 l2,-10 h-8 a10,10 0 0 1 -10,-10 v-18 a10,10 0 0 1 10,-10 z"

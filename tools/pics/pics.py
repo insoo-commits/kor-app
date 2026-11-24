@@ -4,7 +4,9 @@ W, H = 400, 260
 SKIN, SKIN2 = "#f1c7a3", "#e0b08a"
 INK = "#33414e"
 
+HEADS = []   # head circles drawn since the last svg(): speech bubbles move off them (RYU 2026-11-24)
 def svg(body, bg="#eef3f6"):
+    HEADS.clear()
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" role="img" class="pic">'
             f'<rect width="{W}" height="{H}" fill="{bg}"/>{body}</svg>')
 
@@ -35,12 +37,18 @@ def person(x, foot, shirt, pants, hair, female=False, arms=(), lean=0, cap=None,
     # body
     out.append(f'<path d="M{hx-19*s},{sh} Q{hx},{sh-6*s} {hx+19*s},{sh} L{x+18*s},{hip+4*s} L{x-18*s},{hip+4*s} Z" fill="{shirt}"/>')
     # arms (behind the head, in front of the body)
+    # RYU 2026-11-24: never one-armed or armless: a side without a posed arm gets a relaxed arm hanging down
+    if not back:
+        arms = list(arms); sides = {(-1 if a[-1][0] < 0 else 1) for a in arms}
+        for sd in (-1, 1):
+            if sd not in sides: arms.append([(0, 0), (sd * 5, 40)])
     for a in arms:
         side = -1 if a[-1][0] < 0 else 1
         pts = [(hx + side * 15 * s + px * s, sh + 6 * s + py * s) for px, py in a]
         out.append(ln(pts, shirt, 10 * s)); out.append(c(pts[-1][0], pts[-1][1], 5.5 * s, SKIN))
     # head
     hy = sh - 20 * s
+    HEADS.append((hx, hy, 18 * s))
     out.append(ln([(hx, sh), (hx, sh - 8 * s)], SKIN, 9 * s))
     out.append(c(hx, hy, 15 * s, SKIN))
     if back:
