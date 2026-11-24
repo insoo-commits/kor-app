@@ -755,4 +755,56 @@ if ("serviceWorker" in navigator && window.KO_SW) navigator.serviceWorker.regist
   document.addEventListener("touchmove", e => { if (ok && e.touches.length === 1) judge(e.touches[0], false); }, {passive: true});
   document.addEventListener("touchend", e => { if (ok) judge(e.changedTouches[0], true); }, {passive: true});
   document.addEventListener("touchcancel", () => { ok = false; }, {passive: true});
+
 })();
+
+{ const $ = id => document.getElementById(id);
+  const h = (tag, attrs) => { const el = document.createElement(tag); for (const k in attrs || {}) el.setAttribute(k, attrs[k]); return el; };
+// v2.54 RYU: design A — sticky menu bar, PC hover glide, arrow buttons (same code as the hotel English app v1.51–v1.57)
+// menu bar that stays at the top while reading down (design A, RYU 2026-11-24)
+(function(){
+  const st = $("stick"), mb = document.querySelector(".menubox"), sg = $("stickG"), g = $("groups");
+  if (!st || !mb || !("IntersectionObserver" in window)) return;
+  const sync = () => { sg.innerHTML = g.innerHTML; sg.querySelectorAll(".glide").forEach(x => x.remove()); $("stickT").textContent = $("bselBtn").textContent.trim(); const on = sg.querySelector('[aria-pressed="true"]'); if (on && !st.hidden) on.scrollIntoView({block: "nearest", inline: "center"}); };
+  new IntersectionObserver(es => { const e = es[0]; const show = !e.isIntersecting && e.boundingClientRect.bottom < 0; if (show === !st.hidden) return; st.hidden = !show; if (show) sync(); }).observe(mb);
+  new MutationObserver(() => { if (!st.hidden) sync(); }).observe(g, {childList: true, subtree: true, attributes: true});
+  new MutationObserver(() => { if (!st.hidden) sync(); }).observe($("bselBtn"), {childList: true, subtree: true, characterData: true});
+  sg.addEventListener("click", e => { const t = e.target.closest(".group"); if (!t) return; const i = [...sg.querySelectorAll(".group")].indexOf(t); const o = g.querySelectorAll(".group")[i]; if (o) o.click(); document.querySelector(".search").scrollIntoView({block: "start"}); });
+  $("stickQ").addEventListener("click", () => { window.scrollTo(0, 0); $("q").focus(); });
+})();
+
+// PC: a soft pill with a line under it slides along the menu after the mouse (RYU 2026-11-24)
+(function(){
+  if (!matchMedia("(hover:hover) and (pointer:fine)").matches) return;
+  for (const id of ["groups", "stickG"]) { const nav = $(id); if (!nav) continue;
+    const gl = () => { let e = nav.querySelector(".glide"); if (!e) { e = h("span", {class: "glide", "aria-hidden": "true"}); nav.appendChild(e); } return e; };
+    nav.addEventListener("mouseover", ev => { const t = ev.target.closest(".group"); if (!t || !nav.contains(t)) return; const e = gl(), first = e.style.opacity !== "1";
+      if (first) { e.style.transition = "none"; e.style.left = t.offsetLeft + "px"; e.style.width = t.offsetWidth + "px"; e.style.top = t.offsetTop + "px"; e.style.height = t.offsetHeight + "px"; e.offsetWidth; e.style.transition = ""; }
+      e.style.left = t.offsetLeft + "px"; e.style.width = t.offsetWidth + "px"; e.style.top = t.offsetTop + "px"; e.style.height = t.offsetHeight + "px"; e.style.opacity = "1"; });
+    nav.addEventListener("mouseleave", () => { const e = nav.querySelector(".glide"); if (e) e.style.opacity = "0"; });
+  }
+})();
+
+// PC: menu rows that do not fit get a round arrow button at the end that has more; the mouse wheel moves the row too (RYU 2026-11-24)
+(function(){
+  if (!matchMedia("(hover:hover) and (pointer:fine)").matches) return;
+  const chev = d => { const b = h("button", {class: "hsb " + (d < 0 ? "l" : "r"), type: "button", "aria-label": d < 0 ? "왼쪽 메뉴 보기" : "오른쪽 메뉴 보기"}); b.hidden = true;
+    b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (d < 0 ? "m15 5-7 7 7 7" : "m9 5 7 7-7 7") + '"/></svg>'; return b; };
+  for (const id of ["groups", "subs", "stickG"]) { const nav = $(id); if (!nav) continue;
+    const w = h("div", {class: "hs"}); nav.parentNode.insertBefore(w, nav); w.appendChild(nav);
+    const l = chev(-1), r = chev(1); w.append(l, r);
+    const upd = () => { const m = nav.scrollWidth - nav.clientWidth, x = nav.scrollLeft; l.hidden = !(m > 2 && x > 2); r.hidden = !(m > 2 && x < m - 2); w.classList.toggle("ml", !l.hidden); w.classList.toggle("mr", !r.hidden); };
+    const mv = d => nav.scrollBy({left: d * Math.max(120, nav.clientWidth * .6), behavior: "smooth"});
+    l.addEventListener("click", () => mv(-1)); r.addEventListener("click", () => mv(1));
+    nav.addEventListener("scroll", upd, {passive: true});
+    nav.addEventListener("wheel", e => { if (nav.scrollWidth - nav.clientWidth < 3 || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; e.preventDefault(); nav.scrollLeft += e.deltaY; }, {passive: false});
+    addEventListener("resize", upd);
+    const show = () => { const t = nav.querySelector('[aria-pressed="true"],[aria-selected="true"]'); if (t) { const a = t.offsetLeft - 40, z = t.offsetLeft + t.offsetWidth + 40 - nav.clientWidth; if (nav.scrollLeft > a) nav.scrollLeft = Math.max(0, a); else if (nav.scrollLeft < z) nav.scrollLeft = z; } upd(); };
+    new MutationObserver(() => requestAnimationFrame(show)).observe(nav, {childList: true, subtree: true, attributes: true, attributeFilter: ["aria-pressed", "aria-selected"]});
+    requestAnimationFrame(show);
+    if ("ResizeObserver" in window) new ResizeObserver(upd).observe(nav);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(upd);
+    upd();
+  }
+})();
+}
