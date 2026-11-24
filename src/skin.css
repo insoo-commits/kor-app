@@ -231,3 +231,5 @@
 html.tab #app .band .bandtxt .intro{font-size:17.4px!important}
 html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
 @media (max-width:600px){#app .band .bandtxt .tipbox{font-size:13.5px!important}}
+/* v2.63 RYU: 대화 반복 bold like the other repeat buttons */
+#app .wrep.hrep{font-weight:600}
