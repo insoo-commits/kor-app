@@ -1413,6 +1413,8 @@ html.tab .ddi{font-size:17px}
 /* v2.57 RYU: bullet list with exact hanging indent (wrapped lines start under the text) */
 #app .band .tipbox p.bl{position:relative;padding-left:1em;text-indent:0}
 #app .band .tipbox p.bl::before{content:"•";position:absolute;left:.15em;top:0}
+/* RYU 2026-11-24: phone: 문장·단어·퀴즈 tabs fill the free width beside the repeat/speed boxes */
+@media (max-width:600px){#app .controls .seg{flex:1 1 auto;margin-right:10px!important}#app .controls .seg button{flex:1 1 0;text-align:center;display:inline-flex;justify-content:center;align-items:center}}
 </style></head>
 <body>
 <div class="wrap" id="app" data-g="K1">
@@ -1481,6 +1483,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-24%20v2.57"></script>
-<script src="app.js?v=2026-11-24%20v2.57"></script>
+<script src="audio/index.js?v=2026-11-24%20v2.58"></script>
+<script src="app.js?v=2026-11-24%20v2.58"></script>
 </body></html>
