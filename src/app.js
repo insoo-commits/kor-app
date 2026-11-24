@@ -337,7 +337,7 @@ function drawBand(b){
   const txt = [
       b && b.i ? h("p", {class: "intro"}, b.i[1] || "", b.i[1] ? " " : "", h("span", {class: "sub-ko ko"}, b.i[0])) : null,   // Lao then Korean in one run, always shown; level/type tags not shown (RYU 2026-11-14)
       /* tips under the intro, Lao text with Korean words mixed in, one bullet each, like lao-app (RYU 2026-11-16) */
-      b && b.tp && b.tp.length ? h("div", {class: "tipbox"}, b.tp.map(t => h("p", null, "• ", koMix(t[1] || t[0])))) : null].filter(Boolean);
+      b && b.tp && b.tp.length ? h("div", {class: "tipbox"}, b.tp.map(t => h("p", {class: "bl"}, koMix(t[1] || t[0])))) : null].filter(Boolean);
   /* one picture per sub-group left of the intro (RYU 2026-11-24, v2.55) */
   const sp = (window.KO_SUBPIC || {})[S.code.split("-").slice(0, 2).join("-")];
   let pic = null; if (sp && txt.length){ pic = h("div", {class: "bandpic", "aria-hidden": "true"}); pic.innerHTML = sp; }
