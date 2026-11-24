@@ -1000,3 +1000,9 @@ html.tab .kbinfo>span{display:inline-flex}
 .groups::before,.groups::after{content:"";flex:0 0 auto;align-self:center;width:1.5px;height:17px;background:var(--muted);opacity:.6;margin-top:-3px}
 .groups::before{margin-right:-8px}
 .groups::after{margin-left:-8px}
+
+/* 듣기연습: blurred text until 본문 보기 (2026-11-24) */
+.veilbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 10px}
+.veilbar .veilbtn{font-weight:600}
+.veilhint{font-size:14px;color:var(--muted)}
+.dlg.veil .line .k,.dlg.veil .line .p,.dlg.veil .line .m,.dlg.veil .line .gl{filter:blur(7px);user-select:none;-webkit-user-select:none}

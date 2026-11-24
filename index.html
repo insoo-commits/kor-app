@@ -1011,6 +1011,12 @@ html.tab .kbinfo>span{display:inline-flex}
 .groups::before{margin-right:-8px}
 .groups::after{margin-left:-8px}
 
+/* 듣기연습: blurred text until 본문 보기 (2026-11-24) */
+.veilbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 10px}
+.veilbar .veilbtn{font-weight:600}
+.veilhint{font-size:14px;color:var(--muted)}
+.dlg.veil .line .k,.dlg.veil .line .p,.dlg.veil .line .m,.dlg.veil .line .gl{filter:blur(7px);user-select:none;-webkit-user-select:none}
+
 /* tablet text (generated) */
 html.tab{zoom:1}
 html.tab body{font-size:20.4px}
@@ -1182,6 +1188,7 @@ html.tab .pics span.tx{font-size:18px}
 html.tab #ctlrep #loLbl{font-size:14.4px}
 html.tab .info .ibml{font-size:18px}
 html.tab .info .ibml .ko{font-size:15.6px}
+html.tab .veilhint{font-size:16.8px}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -1491,6 +1498,6 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-24%20v2.63"></script>
-<script src="app.js?v=2026-11-24%20v2.63"></script>
+<script src="audio/index.js?v=2026-11-24%20v2.64"></script>
+<script src="app.js?v=2026-11-24%20v2.64"></script>
 </body></html>

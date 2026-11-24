@@ -368,11 +368,15 @@ function pnRow(code){
     prev ? h("button", {class: "pn pv", type: "button", onclick: () => go(prev[0])}, h("b", null, h("kbd", {class: "kc"}, "<"), "← ບົດກ່ອນ ", h("span", {class: "ko"}, "이전 묶음")), h("small", {class: "ko"}, ...ordTag(prev[0]), " " + prev[1])) : h("span"),
     next ? h("button", {class: "pn nx", type: "button", onclick: () => go(next[0])}, h("b", null, "ບົດຕໍ່ໄປ ", h("span", {class: "ko"}, "다음 묶음"), " →", h("kbd", {class: "kc"}, ">")), h("small", {class: "ko"}, ...ordTag(next[0]), " " + next[1])) : h("span"));
 }
+/* 듣기연습: the text is blurred until the learner has listened and taps 본문 보기 (RYU 2026-11-24) */
+const veilLbl = on => on ? ["ເບິ່ງບົດ ", h("span", {class: "ko"}, "본문 보기")] : ["ປິດບົດ ", h("span", {class: "ko"}, "본문 가리기")];
+const veilBar = () => h("div", {class: "veilbar"}, h("button", {class: "btn veilbtn", type: "button", onclick: ev => { const r = ev.currentTarget.closest(".sec").querySelector(".dlg"); ev.currentTarget.replaceChildren(...veilLbl(r.classList.toggle("veil"))); }}, ...veilLbl(true)), h("span", {class: "veilhint"}, "ຟັງກ່ອນ ແລ້ວຈຶ່ງເບິ່ງບົດ.", " ", h("span", {class: "ko"}, "먼저 듣고 나서 본문을 보세요.")));
 function renderLearn(b){
   const i = byCode.get(b.code), next = IDX[i + 1], prev = i > 0 ? IDX[i - 1] : null, isDone = !!S.done[b.code];
   const dl = b.dl || [], lis = b.type === "듣기";
   const dlSec = sec("dl", dl.length ? [
-      h("div", {class: "rows dlg" + (lis ? " lis" : "")}, dl.map((d, n) => h("div", {class: "line", "data-say": d[1], "data-lo": d[2], "data-m": (b.mv || []).includes(d[0]) ? "1" : null}, h("div", {class: "exn", "aria-label": String(n + 1)}, String(n + 1)), spk(), h("div", null, h("div", {class: "k ko"}, lis && d[0] ? h("span", {class: "who"}, d[0] + ": ") : null, d[1]), d[4] ? h("div", {class: "p"}, d[4]) : null, h("div", {class: "m"}, d[2]), gloss(d[3])))))] : null);   // d[4]: Lao-script reading, as in the example sentences (RYU 2026-11-14)
+      lis ? veilBar() : null,
+      h("div", {class: "rows dlg" + (lis ? " lis veil" : "")}, dl.map((d, n) => h("div", {class: "line", "data-say": d[1], "data-lo": d[2], "data-m": (b.mv || []).includes(d[0]) ? "1" : null}, h("div", {class: "exn", "aria-label": String(n + 1)}, String(n + 1)), spk(), h("div", null, h("div", {class: "k ko"}, lis && d[0] ? h("span", {class: "who"}, d[0] + ": ") : null, d[1]), d[4] ? h("div", {class: "p"}, d[4]) : null, h("div", {class: "m"}, d[2]), gloss(d[3])))))] : null);   // d[4]: Lao-script reading, as in the example sentences (RYU 2026-11-14)
   return [
     lis ? dlSec : null,   // 듣기연습: the text comes first (v2.45)
     b.yt ? h("p", {class: "ytrow"}, h("a", {class: "btn ytbtn", href: b.yt, target: "_blank", rel: "noopener"}, "▶ ເບິ່ງ MV ໃນ YouTube ", h("span", {class: "ko"}, "뮤직비디오 보기"))) : null,   // K-POP: find the official MV (no lyrics in the app) (v2.46)
