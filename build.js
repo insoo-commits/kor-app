@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-24 v2.54";
+const VER = "2026-11-24 v2.55";
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
 fs.mkdirSync(path.join(root, "preview"), {recursive: true});
@@ -49,7 +49,8 @@ const REL = {};
     if (top.length) REL[b.code] = top;
   }
 }
-const meta = "window.KO_META=" + JSON.stringify({areas: M.areas, subs: M.subs, idx, rel: REL, ver: VER, nWords: wordSet.size, nSents: sentSet.size}) + ";";
+const SUBPIC = fs.existsSync(path.join(__dirname, "data", "subpics.json")) ? fs.readFileSync(path.join(__dirname, "data", "subpics.json"), "utf8") : "{}";   // one picture per sub-group (tools/pics/subpics.py, RYU 2026-11-24)
+const meta = "window.KO_SUBPIC=" + SUBPIC + ";\n" + "window.KO_META=" + JSON.stringify({areas: M.areas, subs: M.subs, idx, rel: REL, ver: VER, nWords: wordSet.size, nSents: sentSet.size}) + ";";
 // iPad / large touch screens (html.tab, set by the same check as the Lao app): text bigger, layout width unchanged.
 // Every px font-size in app.css gets an html.tab copy scaled by TAB_K, inside the same @media block (RYU 2026-11-14, v0.96).
 const TAB_K = 1.2;
