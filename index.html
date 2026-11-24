@@ -1415,6 +1415,12 @@ html.tab .ddi{font-size:17px}
 #app .band .tipbox p.bl::before{content:"•";position:absolute;left:.15em;top:0}
 /* RYU 2026-11-24: phone: 문장·단어·퀴즈 tabs fill the free width beside the repeat/speed boxes */
 @media (max-width:600px){#app .controls .seg{flex:1 1 auto;margin-right:10px!important}#app .controls .seg button{flex:1 1 0;text-align:center;display:inline-flex;justify-content:center;align-items:center}}
+/* v2.59 RYU 2026-11-24: description sizes = hotel English app (intro 14.5 / tips 14; tablet 17.4 / 16.2; phone tips 13.5) */
+#app .band .bandtxt .intro{font-size:14.5px!important}
+#app .band .bandtxt .tipbox{font-size:14px!important}
+html.tab #app .band .bandtxt .intro{font-size:17.4px!important}
+html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
+@media (max-width:600px){#app .band .bandtxt .tipbox{font-size:13.5px!important}}
 </style></head>
 <body>
 <div class="wrap" id="app" data-g="K1">
@@ -1483,6 +1489,6 @@ html.tab .ddi{font-size:17px}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-24%20v2.58"></script>
-<script src="app.js?v=2026-11-24%20v2.58"></script>
+<script src="audio/index.js?v=2026-11-24%20v2.59"></script>
+<script src="app.js?v=2026-11-24%20v2.59"></script>
 </body></html>
