@@ -39,9 +39,9 @@ def person(x, foot, shirt, pants, hair, female=False, arms=(), lean=0, cap=None,
     # arms (behind the head, in front of the body)
     # RYU 2026-11-24: never one-armed or armless: a side without a posed arm gets a relaxed arm hanging down
     if True:   # also people seen from behind
-        arms = list(arms); sides = {(-1 if a[-1][0] < 0 else 1) for a in arms}
+        arms = list(arms); sides = {(-1 if sum(q[0] for q in a) < 0 else 1) for a in arms}
         for sd in (-1, 1):
-            if sd not in sides: arms.append([(sd * 6, 0), (sd * 10, 40)])
+            if sd not in sides and len(arms) < 2: arms.append([(sd * 6, 0), (sd * 10, 40)])
     # arms a shade darker than the shirt, so an arm in front of the body still shows (RYU 2026-11-24)
     def _dk(h, k=0.8):
         h = h.lstrip("#")
@@ -49,7 +49,7 @@ def person(x, foot, shirt, pants, hair, female=False, arms=(), lean=0, cap=None,
         return "#" + "".join(f"{int(int(h[i:i+2], 16) * k):02x}" for i in (0, 2, 4))
     arm_col = _dk(shirt) if str(shirt).startswith("#") else shirt
     for a in arms:
-        side = -1 if a[-1][0] < 0 else 1
+        side = -1 if sum(q[0] for q in a) < 0 else 1
         pts = [(hx + side * 15 * s + px * s, sh + 6 * s + py * s) for px, py in a]
         out.append(ln(pts, arm_col, 10 * s)); out.append(c(pts[-1][0], pts[-1][1], 5.5 * s, SKIN))
     # head
