@@ -15,3 +15,6 @@
 - 만들기: `pip install edge-tts` 후 `python3 tools/tts_gen.py` (빠진 것만 만듦), 다시 `node build.js`, 그리고 커밋. `speech.platform.bing.com`에 접속할 수 있어야 합니다.
 - 음성은 화면 글을 그대로 읽되, 문형 표제어는 줄표 없이 읽고("-아서, -어서" → "아서, 어서") 받침 글자로 시작하는 꼴("-ㄴ데", "-ㄹ 때")은 소리 낼 수 없어 빼고 읽습니다. 따옴표는 읽지 않고, 홀로 쓴 모음 글자("ㅓ")는 소리("어")로 읽습니다. 규칙은 `tools/tts_gen.py`의 `spoken()`에 있습니다.
 - 문장을 고치면 그 문장의 파일 이름이 바뀌므로 같은 순서로 다시 돌리면 됩니다. 목록에 없는 옛 mp3는 지워도 됩니다.
+
+## Cloudflare Pages (kor4lao.pages.dev)
+- Build command `node tools/cf-build.js`, build output directory `cf`. main에 push하면 Cloudflare가 다시 빌드합니다.
