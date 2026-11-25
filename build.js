@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-24 v2.64";
+const VER = "2026-11-25 v2.65";
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
 fs.mkdirSync(path.join(root, "preview"), {recursive: true});
@@ -68,19 +68,20 @@ function tabCss(src){
   while (i < s.length){ const r = block(); out.push(...r); }
   return "\n/* tablet text (generated) */\nhtml.tab{zoom:1}\n" + out.join("\n");
 }
-const css = read("app.css") + tabCss(read("app.css")) + "\n" + read("tab.css") + "\n" + read("skin.css"), body = read("body.html"), clip = read("clip.js"), js = clip + "\n" + read("app.js");
+const css = read("app.css") + tabCss(read("app.css")) + "\n" + read("tab.css") + "\n" + read("skin.css"), body = read("body.html"), clip = read("clip.js"), js = clip + "\n" + read("audiopack.js") + "\n" + read("app.js");
 
 // audio: audio/list.json = every clip the app can use; audio/index.js = the clips that exist as mp3 in audio/
 const {cleanKo, cleanLo, clipKey} = new Function(clip + "; return {cleanKo, cleanLo, clipKey};")();
-const clips = new Map();
+const clips = new Map(), lessons = []; let cur = null;   // lessons: the clips of each lesson, for the audio packs
 function want(lang, raw){
   const text = lang === "lo" ? cleanLo(raw) : cleanKo(raw);
   if (!text) return;
   const key = clipKey(lang, text), had = clips.get(key);
   if (had && had.text !== text) throw new Error("clip name clash: " + had.text + " / " + text);
-  clips.set(key, {key, lang, text});
+  clips.set(key, {key, lang, text}); cur.push(key);
 }
 for (const [a] of M.areas) for (const b of JSON.parse(fs.readFileSync(path.join(root, "data", a + ".json"), "utf8"))){
+  lessons.push([b.code, cur = []]);
   (b.l || []).forEach(l => want("ko", l[2] || l[0]));
   [].concat(b.w || [], b.f || []).forEach(w => { want("ko", w[0]); want("lo", w[2]); (w[3] || []).forEach(e => { want("ko", e[0]); want("lo", e[2]); }); });   // example Lao too: played once after the Korean (RYU 2026-11-16)
   (b.c || []).forEach(c => { want("ko", c[1]); want("lo", c[3]); });
@@ -91,7 +92,10 @@ for (const [a] of M.areas) for (const b of JSON.parse(fs.readFileSync(path.join(
 fs.mkdirSync(path.join(root, "audio"), {recursive: true});
 fs.writeFileSync(path.join(root, "audio/list.json"), JSON.stringify([...clips.values()], null, 0).replace(/\},\{/g, "},\n{"));
 const have = fs.readdirSync(path.join(root, "audio")).filter(f => f.endsWith(".mp3")).map(f => f.slice(0, -4)).filter(k => clips.has(k)).sort();
-fs.writeFileSync(path.join(root, "audio/index.js"), "window.AUDIO_INDEX=" + (have.length ? JSON.stringify(Object.fromEntries(have.map(k => [k, 1]))) : "null") + ";\n");
+/* audio/p/<code>.bin: one pack per lesson (tools/audiopack.js, v2.65, same as kor-app-en v0.5). AUDIO_INDEX = clip -> its home pack, AUDIO_PACKS = [code, hash] */
+const AP = require(path.join(root, "tools/audiopack.js")).writePacks(path.join(root, "audio"), lessons);
+fs.writeFileSync(path.join(root, "audio/index.js"), "window.AUDIO_INDEX=" + (have.length ? JSON.stringify(AP.index) : "null") + ";\nwindow.AUDIO_PACKS=" + JSON.stringify(AP.packs) + ";\n");
+console.log("audio packs", AP.packs.length, "clips", Object.keys(AP.index).length, "of", have.length);
 const fonts = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=Noto+Sans+Lao+Looped:wght@400;600&display=swap">';
 
 // standalone site
@@ -130,6 +134,7 @@ const aput=(k,v)=>ADB().then(db=>new Promise(res=>{const tx=db.transaction("c","
 const mp3=b=>new Response(b,{headers:{"Content-Type":"audio/mpeg","Content-Length":String(b.byteLength)}});
 /* app files: network first so updates show right away; when offline, answer from the cache */
 self.addEventListener("fetch",e=>{const u=new URL(e.request.url);if(e.request.method!=="GET"||u.origin!==location.origin)return;
+  if(u.pathname.includes("/audio/p/"))return;   /* lesson packs: the app keeps them in IndexedDB itself (v2.65) */
   if(u.pathname.includes("/audio/")&&u.pathname.endsWith(".mp3")){const k=u.pathname.split("/").pop().slice(0,-4);
     e.respondWith(aget(k).then(b=>b?mp3(b):fetch(e.request.url).then(r=>{if(r.ok){const cl=r.clone();e.waitUntil(cl.arrayBuffer().then(b=>aput(k,b)).catch(()=>{}))}return r})));return}
   e.respondWith(fetch(e.request,{cache:"no-cache"}).then(r=>{if(r.ok){const cl=r.clone();caches.open(SHELL).then(c=>c.put(e.request.mode==="navigate"?"index.html":e.request,cl))}return r})

@@ -72,9 +72,9 @@ function pickVoice(){
   $("voiceNote").textContent = all.length && !koVoice && !window.AUDIO_INDEX ? T.noVoice : "";
 }
 if (synth){ pickVoice(); try { synth.addEventListener("voiceschanged", pickVoice); } catch (e) {} } else if (!window.AUDIO_INDEX) $("voiceNote").textContent = T.noVoice;
-const CLIPS = window.AUDIO_INDEX || {};
+const CLIPS = window.AUDIO_INDEX || {}, AP = makeAudioPack({db: "ko-audio"});   // clips come in one pack per lesson (v2.65)
 let AEL = null;
-const hasClip = (lang, text) => !!CLIPS[clipKey(lang, lang === "lo" ? cleanLo(text) : cleanKo(text))];
+const hasClip = (lang, text) => AP.has(clipKey(lang, lang === "lo" ? cleanLo(text) : cleanKo(text)));
 /* a ready-made clip when there is one, the device's voice otherwise */
 function speakOne(text, lao, male){   // male: TOPIK listening lines of 남자 (own clips "km", RYU 2026-11-21)
   return new Promise(res => {
@@ -90,17 +90,26 @@ function speakOne(text, lao, male){   // male: TOPIK listening lines of 남자 (
       try { synth.speak(u); } catch (e) { end(); }
     };
     const key = clipKey(lao ? "lo" : male ? "km" : "ko", t);
-    if (!CLIPS[key]) return tts();
-    try {
-      if (!AEL) AEL = new Audio();
-      AEL.onended = end; AEL.onerror = () => { if (!fin) tts(); };
-      AEL.src = "audio/" + key + ".mp3"; AEL.playbackRate = +S.rate || 1;
-      const pr = AEL.play(); if (pr && pr.catch) pr.catch(() => { if (!fin) tts(); });
-      setTimeout(end, 8000 + t.length * 600);
-    } catch (e) { tts(); }
+    if (!AP.has(key)) return tts();
+    const go = url => {
+      if (fin) return; if (!url) return tts();
+      try {
+        AEL.onended = end; AEL.onerror = () => { if (!fin) tts(); };
+        AEL.src = url; AEL.playbackRate = +S.rate || 1;
+        const pr = AEL.play(); if (pr && pr.catch) pr.catch(() => { if (!fin) tts(); });
+        setTimeout(end, 8000 + t.length * 600);
+      } catch (e) { tts(); }
+    };
+    if (!AEL) AEL = new Audio();
+    const now = AP.now(key);
+    if (now) return go(now);
+    /* the lesson's pack is not in memory yet: start the player now, while this is still the tap (iPhone allows sound only then), then play when it arrives */
+    try { AEL.onended = AEL.onerror = null; AEL.src = SILENT; const pr = AEL.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (e) {}
+    AP.url(key).then(go, () => go(null));
   });
 }
 let CUR_END = null;
+const SILENT = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
 function quiet(){ if (synth) try { synth.cancel(); } catch (e) {} if (AEL) try { AEL.onended = AEL.onerror = null; AEL.pause(); } catch (e) {} const f = CUR_END; CUR_END = null; if (f) f(); }
 const gap = ms => new Promise(r => setTimeout(r, ms));
 /* keep the playing line in view, but move only when it leaves the middle of the screen (25-75%) or is cut off (lao-app v2.79, v2.30) */
@@ -604,6 +613,7 @@ async function route(){
   (S.lastA = S.lastA || {})[areaOf(S.code)] = S.code; (S.lastS = S.lastS || {})[subOf(S.code)] = S.code;
   if (P.nav) P.nav = false; else stopPlay();
   quiz = null; save(); drawAll();
+  { const c = S.code, i = IDX.findIndex(x => x[0] === c); AP.warm(c).then(() => { const n = IDX[i + 1]; if (n && S.code === c) AP.warm(n[0]); }); }   // this lesson's sound, then the next one's (for 연속 재생)
   const a = areaOf(S.code);
   if (!cache.has(a)){
     try { await loadArea(a); } catch (e) { if (areaOf(S.code) === a) $("view").replaceChildren(h("p", {class: "empty"}, T.loadFail)); return; }
@@ -698,25 +708,16 @@ $("q").addEventListener("input", ev => {
    one zip of every clip, built in the browser: area / bundle folders, files numbered in playing order.
    Each fetch also passes through the service worker, so the clips stay saved in the app for offline use. */
 const allKeys = () => Object.keys(window.AUDIO_INDEX || {});
-const fetchPool = async (items, n, work, tick) => { let i = 0, done = 0;
-  await Promise.all(Array.from({length: n}, async () => { while (i < items.length){ const it = items[i++]; try { await work(it); } catch (e) {} tick(++done); } })); };
 let dlBusy = false;
 /* RYU 2026-11-16 (v1.77): no zip file any more (phones then ask which app should open it). The button saves every clip
    inside the app, in the same IndexedDB store the service worker answers from ("ko-audio" / "c"), so the app plays offline. */
-let _adb;
-const ADB = () => _adb || (_adb = new Promise((res, rej) => { const r = indexedDB.open("ko-audio", 1); r.onupgradeneeded = () => r.result.createObjectStore("c"); r.onsuccess = () => res(r.result); r.onerror = () => { _adb = null; rej(r.error); }; }));
-const aHas = (db, k) => new Promise(res => { const q = db.transaction("c").objectStore("c").count(k); q.onsuccess = () => res(q.result > 0); q.onerror = () => res(false); });
-const aPut = (db, k, v) => new Promise(res => { const tx = db.transaction("c", "readwrite"); tx.objectStore("c").put(v, k); tx.oncomplete = () => res(true); tx.onerror = tx.onabort = () => res(false); });
 async function saveAll(ev){
   ev.preventDefault(); if (dlBusy) return; dlBusy = true; const msg = $("dlMsg");
   try {
     try { if (navigator.storage && navigator.storage.persist) await navigator.storage.persist(); } catch (e) {}
-    const db = await ADB(), keys = allKeys(); let bad = 0;
-    await fetchPool(keys, 6, async k => { if (await aHas(db, k)) return;
-      const r = await fetch("audio/" + k + ".mp3"); if (!r.ok){ bad++; return; } if (!(await aPut(db, k, await r.arrayBuffer()))) bad++; },
-      d => { msg.textContent = Math.floor(d / keys.length * 100) + "% (" + d + " / " + keys.length + ")"; });
+    const bad = await AP.saveAll((d, n) => { msg.textContent = Math.floor(d / n * 100) + "% (" + d + " / " + n + ")"; });   // one pack per lesson (v2.65)
     if (bad) throw new Error("missing " + bad);
-    S.offline = {n: keys.length, at: new Date().toISOString().slice(0, 10)}; save();
+    S.offline = {n: allKeys().length, sig: AP.sig(), at: new Date().toISOString().slice(0, 10)}; save();
     dlState(); $("dlNote").hidden = false;
   } catch (e) { msg.textContent = "✗ ລອງໃໝ່ · 다시 눌러 주세요"; }
   dlBusy = false;
@@ -728,7 +729,7 @@ if (!allKeys().length) $("dlbox").hidden = true;
 function dlState(){
   const msg = $("dlMsg"), d = S.offline;   // the zip-era mark (dlDone) is not used: the clips must be in the app itself
   if (!d){ msg.textContent = ""; msg.className = "count"; return; }
-  const fresh = d.n === allKeys().length;
+  const fresh = d.sig ? d.sig === AP.sig() : d.n === allKeys().length;
   msg.textContent = fresh ? "✓ " + d.at : "↻ ມີສຽງໃໝ່";
   msg.className = "count " + (fresh ? "dlok" : "dlnew");
 }
