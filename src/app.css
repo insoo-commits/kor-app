@@ -1204,3 +1204,6 @@ html.tab .kbinfo>span{display:inline-flex}
 :root[data-theme="dark"] .info.hpinfo .ib.hc3{--hc:#E0A84A}
 .info.hpinfo .ib.ib-lead{counter-increment:none;border-top-width:1px;background:color-mix(in srgb,var(--accent-soft) 45%,var(--sheet))}
 .info.hpinfo>figure.poster{margin-bottom:14px}
+/* v2.78 (RYU): app name as a small badge on the first line, like KoJey; big title 한국어 배우기 */
+#app .top .eyebrow .logo{display:inline-block;font:700 12px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.6px;padding:3px 7px 2px;border-radius:6px;background:#fff;color:#1A3F86;margin-right:6px;vertical-align:1px;opacity:1}
+@media (max-width:600px){#app .top .eyebrow .logo{font-size:11px;padding:2px 6px 1px}}
