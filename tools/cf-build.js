@@ -1,4 +1,4 @@
-/* Cloudflare Pages build (kor4lao.pages.dev): copies the site into cf/ without the single mp3 clips, which the app no longer
+/* Cloudflare Pages build (phasakao.pages.dev (was kor4lao.pages.dev)): copies the site into cf/ without the single mp3 clips, which the app no longer
    loads (it plays from the lesson packs in audio/p/). Keeps the site far under the free plan's 20,000 files (RYU 2026-11-25).
    Cloudflare settings: Build command  node tools/cf-build.js   ·  Build output directory  cf
    The mp3 files stay in the repository: tools/tts_gen.py makes them there and build.js joins them into packs. */
