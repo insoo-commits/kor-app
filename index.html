@@ -1194,6 +1194,27 @@ html.tab .kbinfo>span{display:inline-flex}
 .info .elerow figcaption{font-size:12.5px;color:var(--muted);margin-top:4px}
 @media (max-width:600px){.info .elerow{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+/* v2.77 (RYU 2026-11-26): help pages grouped into numbered section boxes, each with its own colour */
+.info.hpinfo{counter-reset:hpsec}
+.info.hpinfo .ib{counter-increment:hpsec;--hc:var(--accent);border-color:color-mix(in srgb,var(--hc) 28%,var(--line));border-top:4px solid var(--hc);box-shadow:0 2px 10px rgba(15,47,77,.07)}
+.info.hpinfo .ib.hc1{--hc:#1E7F4F}
+.info.hpinfo .ib.hc2{--hc:#A23B57}
+.info.hpinfo .ib.hc3{--hc:#B7791F}
+.info.hpinfo .ib>h3{background:color-mix(in srgb,var(--hc) 9%,var(--sheet));border-bottom-color:color-mix(in srgb,var(--hc) 20%,var(--line));font-size:17px;align-items:center}
+.info.hpinfo .ib>h3::before{content:counter(hpsec);width:26px;height:26px;border-radius:50%;background:var(--hc);color:#fff;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;align-self:center}
+.info.hpinfo .ibb{padding:12px 16px 10px}
+.info.hpinfo .ibb .facts{margin:6px 0 4px}
+.info.hpinfo .ibb .facts th{color:var(--hc)}
+.info.hpinfo .ibb figure.shot{margin:10px auto}
+.info.hpinfo .ibb>.shots{margin:10px 0 4px}
+.info.hpinfo>p{background:var(--accent-soft);border-radius:12px;padding:10px 14px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .info.hpinfo .ib.hc1{--hc:#4CB582}:root:not([data-theme="light"]) .info.hpinfo .ib.hc2{--hc:#E07A95}:root:not([data-theme="light"]) .info.hpinfo .ib.hc3{--hc:#E0A84A}}
+:root[data-theme="dark"] .info.hpinfo .ib.hc1{--hc:#4CB582}
+:root[data-theme="dark"] .info.hpinfo .ib.hc2{--hc:#E07A95}
+:root[data-theme="dark"] .info.hpinfo .ib.hc3{--hc:#E0A84A}
+.info.hpinfo .ib.ib-lead{counter-increment:none;border-top-width:1px;background:color-mix(in srgb,var(--accent-soft) 45%,var(--sheet))}
+.info.hpinfo>figure.poster{margin-bottom:14px}
+
 /* tablet text (generated) */
 html.tab{zoom:1}
 html.tab body{font-size:20.4px}
@@ -1413,6 +1434,8 @@ html.tab .tqd .tqdt>.ko{font-size:20.4px}
 html.tab .tqx .res{font-size:19.2px}
 @media (max-width:600px){html.tab .tqd .tqn{font-size:15.6px}}
 html.tab .info .elerow figcaption{font-size:15px}
+html.tab .info.hpinfo .ib>h3{font-size:20.4px}
+html.tab .info.hpinfo .ib>h3::before{font-size:16.8px}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -1771,6 +1794,6 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-26%20v2.76"></script>
-<script src="app.js?v=2026-11-26%20v2.76"></script>
+<script src="audio/index.js?v=2026-11-26%20v2.77"></script>
+<script src="app.js?v=2026-11-26%20v2.77"></script>
 </body></html>
