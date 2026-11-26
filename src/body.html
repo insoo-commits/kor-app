@@ -35,6 +35,7 @@
     <input id="q" type="search" placeholder="ຄົ້ນຫາດ້ວຍພາສາເກົາຫຼີ ຫຼື ພາສາລາວ (ຕົວຢ່າງ: 밥, ເຂົ້າ)" autocomplete="off">
   </label>
   <div class="mine" id="mine"></div>
+  <div class="svbox" id="svbox"></div>
   <div class="menubox">
     <nav class="groups" id="groups" aria-label="ໝວດໃຫຍ່"></nav>
     <nav class="subs" id="subs" role="tablist" aria-label="ໝວດຍ່ອຍ"></nav>
@@ -59,7 +60,7 @@
   </section>
   <div class="player" id="player" hidden><span class="t ko" id="pt"></span><button id="ppause" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5.5" y="4.5" width="4.5" height="15" rx="1"/><rect x="14" y="4.5" width="4.5" height="15" rx="1"/></svg></span><span class="bt">ຢຸດຊົ່ວຄາວ</span></button><button id="pstop" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5.5" y="5.5" width="13" height="13" rx="1.5"/></svg></span><span class="bt">ຍົກເລີກ</span></button></div>
   <p class="foot" id="voiceNote"></p>
-  <p class="foot"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></span>ຟັງສຽງ · <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>ຟັງຊ້ຳ (1–5 ເທື່ອ) ຈົນກວ່າຈະກົດອີກເທື່ອ. ບັນທຶກການຮຽນໄວ້ໃນອຸປະກອນນີ້ເທົ່ານັ້ນ.</p>
+  <p class="foot"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></span>ຟັງສຽງ · <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>ຟັງຊ້ຳ (1–5 ເທື່ອ) ຈົນກວ່າຈະກົດອີກເທື່ອ. ບັນທຶກການຮຽນໄວ້ໃນອຸປະກອນນີ້. ເພື່ອປັບປຸງແອັບ, ສົ່ງພຽງຈຳນວນການໃຊ້ແບບບໍ່ລະບຸຊື່ (ບໍ່ມີຊື່ ຫຼື ອີເມວ).</p>
   <p class="dlline" id="dlbox"><a href="#" id="dlAll">⤓ ບັນທຶກສຽງໄວ້ໃນແອັບ · <span class="ko">음성 앱에 저장</span></a> <span class="count" id="dlMsg"></span></p>
   <p class="dlnote" id="dlNote" hidden>ບັນທຶກສຽງທັງໝົດໄວ້ໃນແອັບນີ້ແລ້ວ. ຟັງໄດ້ໂດຍບໍ່ມີອິນເຕີເນັດ.<br><span class="ko">모든 음성을 이 앱 안에 저장했습니다. 인터넷 없이 들을 수 있습니다.</span></p>
   <div class="prefs" id="prefs"></div>

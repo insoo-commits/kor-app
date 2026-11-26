@@ -1047,3 +1047,40 @@ html.tab .kbinfo>span{display:inline-flex}
 .pb{border:0;background:none;padding:5px 11px;font:inherit;font-size:12px;color:var(--ink);cursor:pointer}
 .pb+.pb{border-left:1px solid var(--line)}
 .pb.on{background:var(--accent);color:#fff;font-weight:600}
+/* ---------- 사용 통계 page (src/stats.js, v1.3) ---------- */
+.stwrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:6px}
+.sttiles{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px}
+.sttile{display:flex;flex-direction:column;gap:1px;padding:12px 14px;border-radius:14px;background:var(--raise);border:1px solid var(--line);position:relative;overflow:hidden}
+.sttile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+.sttile b{font:700 28px/1.15 var(--display);color:var(--ink);letter-spacing:-.5px}
+.sttile span{font-size:13px;color:var(--ink)} .sttile span.ko{font-size:12px;color:var(--muted)} .sttile small{font-size:11px;color:var(--muted)}
+.stcard{padding:14px 14px 10px;border-radius:14px;background:var(--sheet);border:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.05);min-width:0}
+.stcard.wide{grid-column:1/-1}
+.info .stcard h3{margin:0 0 8px;font-size:15px} .info .stcard h3 .ko{font-weight:400;color:var(--muted);font-size:13px}
+.stsvg{width:100%;height:auto;display:block;overflow:visible}
+.stgrid{stroke:var(--line);stroke-width:1} .stax{fill:var(--muted);font-size:11px;font-family:var(--lao)}
+.stline{fill:none;stroke:var(--k3);stroke-width:2.2;stroke-linejoin:round} .stdot{fill:var(--sheet);stroke:var(--k3);stroke-width:2}
+.stleg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-top:4px;flex-wrap:wrap}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:6px} .sw.ln{height:3px;background:var(--k3);border-radius:2px}
+.sthb{display:flex;flex-direction:column;gap:7px}
+.sthr{display:grid;grid-template-columns:minmax(90px,38%) 1fr auto;align-items:center;gap:8px;font-size:13px}
+.sthl{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .sthl small{display:block;font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.stht{height:12px;border-radius:6px;background:var(--line);overflow:hidden} .stht i{display:block;height:100%;border-radius:6px;transition:width .6s ease}
+.sthr b{font-variant-numeric:tabular-nums;font-size:13px}
+.stdnw{display:flex;align-items:center;gap:14px;flex-wrap:wrap} .stdnw .stsvg{width:150px;flex:none}
+.stdn{fill:none;stroke-width:26} .stdc{fill:var(--ink);font:700 30px var(--display)}
+.stdl{list-style:none;margin:0;padding:0;font-size:13px;display:flex;flex-direction:column;gap:6px} .stdl .sw{margin:0 6px 0 0}
+.stnote{grid-column:1/-1;font-size:12px;color:var(--muted);margin:2px 0 0}
+/* satisfaction survey (like KoJey, v2.68) */
+.svbox:empty{display:none}
+.svcard{position:relative;margin:10px 0 4px;padding:14px 16px;border-radius:16px;background:var(--card,#fff);border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,40,90,.06)}
+.svq{margin:10px 0 6px;font-size:15px}.svhead .svq{margin:0}
+.svstars{display:flex;gap:4px;margin:6px 0 2px}
+.svstar{font-size:30px;line-height:1;background:none;border:0;color:var(--line2,#ccd);cursor:pointer;padding:2px 3px}.svstar.on{color:#F2B705}
+.svchips{display:flex;flex-wrap:wrap;gap:6px}
+.svchip{border:1px solid var(--line);background:var(--sheet,#fff);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:14px;cursor:pointer}
+.svchip.on{background:var(--accent);border-color:transparent;color:#fff}
+.svtext{width:100%;box-sizing:border-box;margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;font:inherit;font-size:14px;background:var(--sheet,#fff);color:var(--ink)}
+.svbtns{display:flex;justify-content:flex-end;margin-top:8px}
+.svx{position:absolute;right:8px;top:6px;border:0;background:none;font-size:22px;color:var(--muted);cursor:pointer}
+.svdone p{margin:0}
