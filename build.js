@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-26 v2.74";
+const VER = "2026-11-26 v2.75";
 const STATS_PUBLIC = /const STATS_PUBLIC = true;/.test(fs.readFileSync(path.join(src, "stats.js"), "utf8"));
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
@@ -106,9 +106,9 @@ fs.writeFileSync(path.join(root, "app.js"), meta + "\nwindow.KO_SW=true;\n" + js
 fs.writeFileSync(path.join(root, "index.html"), `<!doctype html>
 <html lang="lo"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>KOR Lang</title>
+<title>phasaKAO</title>
 <meta name="description" content="ແອັບຮຽນພາສາເກົາຫຼີສຳລັບຄົນລາວ">
-<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1F5F8F">
+<link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="phasaKAO"><meta name="application-name" content="phasaKAO"><meta name="theme-color" content="#1F5F8F">
 <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">${fonts}
 <script>(function(){var n=navigator,t=n.maxTouchPoints>0||"ontouchstart" in window;if((/iPad/.test(n.userAgent)||(/Macintosh/.test(n.userAgent)&&t))||(t&&Math.min(screen.width,screen.height)>=700))document.documentElement.classList.add("tab")})()</script>
@@ -121,7 +121,7 @@ ${body}
 </body></html>
 `);
 fs.writeFileSync(path.join(root, "manifest.webmanifest"), JSON.stringify({
-  name: "KOR Lang", short_name: "KOR Lang", start_url: "./", display: "standalone", background_color: "#F3F4F2", theme_color: "#1F5F8F",
+  name: "phasaKAO", short_name: "phasaKAO", start_url: "./", display: "standalone", background_color: "#F3F4F2", theme_color: "#1F5F8F",
   icons: [{src: "icon-192.png", sizes: "192x192", type: "image/png"}, {src: "icon-512.png", sizes: "512x512", type: "image/png"}, {src: "icon.svg", sizes: "any", type: "image/svg+xml"}]
 }, null, 1));
 fs.writeFileSync(path.join(root, "icon.svg"), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#1F5F8F"/><text x="256" y="340" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif" font-weight="700" font-size="280" fill="#fff">한</text></svg>`);
@@ -145,7 +145,7 @@ self.addEventListener("fetch",e=>{const u=new URL(e.request.url);if(e.request.me
 `);
 
 // preview page (same app, one file plus data/)
-fs.writeFileSync(path.join(root, "preview/korean-app.html"), `<title>KOR Lang</title>
+fs.writeFileSync(path.join(root, "preview/korean-app.html"), `<title>phasaKAO</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 ${fonts}
 <style>
