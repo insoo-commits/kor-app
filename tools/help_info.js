@@ -114,14 +114,16 @@ add("HP-B-07", "내 학습·오답·화면 설정", "ການຮຽນຂອງ
 /* screenshots under each page (v2.69) */
 const FIG = {
   "HP-B-01": shot("menu", `① ໝວດໃຫຍ່ · ② ໝວດຍ່ອຍ · ③ ຊື່ບົດ ${K("영역 · 소그룹 · 묶음 제목")}`) + shot("lessons", `③ ລາຍຊື່ບົດ ${K("묶음 목록")}`),
-  "HP-B-02": shots(shot("sentences", `① ປະໂຫຍກ ${K("예문보기")}`), shot("cards", `② ຄຳສັບ ${K("단어공부")}`), shot("quiz", `③ ແບບທົດສອບ ${K("확인퀴즈")}`)),
+  "HP-B-02": shots(shot("tips", `① ໂທລະສັບ: ກົດ ເຄັດລັບ ເພື່ອເບິ່ງ ${K("팁 버튼")}`), shot("tipsopen", `ເຄັດລັບເປີດແລ້ວ ${K("팁 펼침")}`)) + shots(shot("sentences", `① ປະໂຫຍກ ${K("예문보기")}`), shot("cards", `② ຄຳສັບ ${K("단어공부")}`), shot("quiz", `③ ແບບທົດສອບ ${K("확인퀴즈")}`)),
   "HP-B-03": shot("controls", `① ຈຳນວນເທື່ອ · ② ຄວາມໄວ · ③ ສຽງລາວ · ④ ຟັງຕໍ່ເນື່ອງ · ⑤ ຟັງບົດນີ້`),
   "HP-B-04": shot("keyboard", `ໃນຄອມພິວເຕີ ຕົວອັກສອນຂ້າງປຸ່ມ ແມ່ນປຸ່ມລັດ ${K("버튼 옆의 글자가 단축키")}`),
   "HP-B-05": shot("listening", `ຟັງກ່ອນ ແລ້ວຈຶ່ງກົດ ເບິ່ງບົດ ${K("먼저 듣고 나서 본문 보기")}`),
   "HP-B-06": shot("save", `ລຸ່ມສຸດຂອງໜ້າ: ⤓ ບັນທຶກສຽງ ແລະ ເລກລຸ້ນ ${K("맨 아래: 음성 저장 · 버전")}`),
+  "HP-A-01": shot("home", `ໜ້າທຳອິດ: ຊື່ແອັບ, ຊ່ອງຄົ້ນຫາ, ການຮຽນຂອງຂ້ອຍ ${K("첫 화면")}`),
+  "HP-A-02": shots(shot("topik", `TOPIK: ຕອບແລ້ວ ເຫັນຄຳອະທິບາຍ ${K("토픽 문제")}`), shot("topikr", `ຝຶກແບບສຸ່ມ · ຂໍ້ທີ່ຂ້ອຍຜິດ ${K("랜덤 · 틀린 문제")}`)),
   "HP-B-07": shot("mine", `ການຮຽນຂອງຂ້ອຍ ${K("내 학습")}`) + shots(shot("result", `ຜົນແບບທົດສອບ ${K("퀴즈 결과")}`), shot("prefs", `ໜ້າຈໍ · ຂະໜາດຕົວໜັງສື ${K("화면 · 글자 크기")}`))
 };
-for (const p of P) if (FIG[p.code]) p.info += FIG[p.code];
+for (const p of P) if (FIG[p.code]) p.info += `<h3>ຮູບໜ້າຈໍ ${K("화면 보기")}</h3>` + FIG[p.code];   // v2.77: screenshots in their own box
 /* baby elephant character under the poster (RYU 2026-11-26, v2.74) */
 { const p = P.find(p => p.code === "HP-A-01");
   p.info += `<h3>ໝູ່ຮຽນນຳ: ຊ້າງນ້ອຍ ${K("아기 코끼리")}</h3><p>ລາວແມ່ນປະເທດລ້ານຊ້າງ. ຊ້າງນ້ອຍໃສ່ຫູຟັງ ແລະ ຜ້າພັນຄໍລາຍລາວ, ຮຽນພາສາເກົາຫຼີນຳທ່ານ. ໃນແບບທົດສອບ ໜ້າຂອງມັນປ່ຽນຕາມຄະແນນ.</p><div class="elerow"><figure><img src="img/ele/main.webp" alt="" loading="lazy"><figcaption>ຮຽນ ${K("공부 중")}</figcaption></figure><figure><img src="img/ele/happy.webp" alt="" loading="lazy"><figcaption>80% ຂຶ້ນໄປ ${K("기쁨")}</figcaption></figure><figure><img src="img/ele/think.webp" alt="" loading="lazy"><figcaption>50% ຂຶ້ນໄປ ${K("생각 중")}</figcaption></figure><figure><img src="img/ele/try.webp" alt="" loading="lazy"><figcaption>ສູ້ໆ! ${K("화이팅")}</figcaption></figure></div>`; }

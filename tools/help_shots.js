@@ -57,6 +57,16 @@ async function run(b, theme){
   // listening
   c = await mk(); p = await c.newPage(); await p.goto("http://localhost:8765/#LS-B-01"); await p.waitForTimeout(2500);
   ct = await rect(p, "#controls"); await shot(p, "listening", sfx, {x: 0, y: ct.y - 2, width: 390, height: 560}, 2); await c.close();
+  // v2.77: home screen top, phone tips button, TOPIK question
+  c = await mk(); p = await c.newPage(); await p.goto("http://localhost:8765/#K6-A-01"); await p.waitForTimeout(2500);
+  await shot(p, "home", sfx, {x: 0, y: 0, width: 390, height: 300}, 2);
+  { const bd = await rect(p, "#band"); await badge(p, [[".tiptog", 1, -8, -10]]); await shot(p, "tips", sfx, {x: 0, y: bd.y - 6, width: 390, height: Math.min(bd.h + 12, 300)}, 2);
+    await p.click(".tiptog"); await badge(p, []); const b2 = await rect(p, "#band"); await shot(p, "tipsopen", sfx, {x: 0, y: b2.y - 6, width: 390, height: Math.min(b2.h + 12, 460)}, 2); }
+  await p.goto("http://localhost:8765/#TP-B-04"); await p.waitForTimeout(2500);
+  { const q = await rect(p, ".tqi"); await p.click(".tqi .choice"); await p.waitForTimeout(400); const q2 = await rect(p, ".tqi"); await shot(p, "topik", sfx, {x: 0, y: q2.y - 8, width: 390, height: Math.min(q2.h + 16, 640)}, 2); }
+  await p.goto("http://localhost:8765/#TP-H-00"); await p.waitForTimeout(2500);
+  { const r = await rect(p, "#tpRandom"); await shot(p, "topikr", sfx, {x: 0, y: r.y - 8, width: 390, height: 230}, 2); }
+  await c.close();
   // keyboard (computer)
   c = await mk({viewport: {width: 1000, height: 900}, deviceScaleFactor: 1, isMobile: false, hasTouch: false}); p = await c.newPage();
   await p.goto("http://localhost:8765/#K2-A-01"); await p.waitForTimeout(2500);

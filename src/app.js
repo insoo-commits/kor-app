@@ -631,7 +631,11 @@ function render(){
     const art = h("article", {class: "info"}); art.innerHTML = b.info;
     { const sp = art.querySelector("#statsPage"); if (sp) STP.page(sp); const sv = art.querySelector("#surveyPage"); if (sv) SV.form(sv, true); }   // 학습 통계 · 의견 보내기 pages (src/stats.js, v2.68)
     { const tr = art.querySelector("#tpRandom"); if (tr) tprMount(tr); }   // TOPIK random practice (as KoJey, v2.70)
-    if (b.code.startsWith("TP-") && !art.querySelector(".ib")) ibGroup(art);   // TOPIK guide pages, each group in a box (as KoJey)
+    if ((b.code.startsWith("TP-") || b.code.startsWith("HP-")) && !art.querySelector(".ib")) ibGroup(art);   // v2.77 (RYU): help pages in section boxes too
+    if (b.code.startsWith("HP-")){ art.classList.add("hpinfo");
+      { const lead = []; let n = art.querySelector(".sub2"); n = n ? n.nextSibling : null;   // text before the first section box: a box of its own
+        while (n && !(n.nodeType === 1 && (n.classList.contains("ib") || /^H[23]$/.test(n.tagName)))) { if (!(n.nodeType === 1 && n.classList.contains("poster"))) lead.push(n); n = n.nextSibling; }
+        if (lead.some(x => x.nodeType === 1)) { const ib = h("div", {class: "ib ib-lead"}), bb = h("div", {class: "ibb"}); lead[0].before(ib); ib.append(bb); bb.append(...lead); } } art.querySelectorAll(".ib").forEach((e, i) => e.classList.add("hc" + (i % 4))); }   // TOPIK guide pages, each group in a box (as KoJey)
     const bq = !b.tq ? b : MOCK[b.code] ? mockBundle(b) : isPage(b.code) ? pageBundle(b) : b;   // mock tests and 5-question pages (as KoJey)
     view.replaceChildren(art, bq.tq ? tqView(bq) : "", pnRow(b.code)); return; }
   /* the two repeat buttons sit in the control bar above its bottom line, learn tab only (RYU 2026-11-16, v1.67) */
