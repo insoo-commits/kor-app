@@ -44,6 +44,7 @@ S.showKo = true;   // Korean notes always shown; the checkbox was removed (RYU 2
 if (!S.playDef){ S.rate = "1"; S.rep = "2"; S.playDef = 1; }   // RYU 2026-11-14: start at speed 1.0, 2 times
 if (!byCode.has(S.code)) S.code = IDX[0][0];
 S.hidePr = false; S.hideLo = false; S.onlyNew = false;   // both boxes removed (v1.64, v1.66); the hide-reading box was removed (v1.64), so a saved "hide" must not stick
+if (!S.seen && S.done){ S.seen = {}; for (const k in S.done) if (S.done[k] && byCode.has(k)) S.seen[k] = "old"; }   // 내 진도 starts from lessons already marked done (v2.67)
 function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
 
 /* ---------- data ---------- */
@@ -290,6 +291,36 @@ function togglePause(){
 const spk = () => h("button", {class: "spk", type: "button", "aria-label": "ຟັງ", onclick: ev => { const el = ev.currentTarget.closest("[data-say]"); if (el) playSingle(el); }}, ico("spk"));
 
 /* ---------- chrome ---------- */
+/* 내 학습 card under the search box (like KoJey v1.4, RYU 2026-11-26, v2.67): days in a row, lessons visited, today, mistakes, the next new lesson.
+   Kept on this device only (S.seen = first day each lesson was opened, S.days = days with study, S.td = today's counts). */
+const dayStr = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+function track(code){
+  const t = dayStr(new Date()), r = IDX[byCode.get(code)]; if (!r || r[3] === "info") return;
+  S.seen = S.seen || {}; if (!S.seen[code]) S.seen[code] = t;
+  S.days = S.days || []; if (S.days[S.days.length - 1] !== t){ S.days.push(t); S.days = S.days.slice(-400); }
+  if (!S.td || S.td.d !== t) S.td = {d: t, l: 0, q: 0}; S.td.l++;
+}
+function streak(){
+  const set = new Set(S.days || []), d = new Date(); let n = 0;
+  if (!set.has(dayStr(d))) d.setDate(d.getDate() - 1);
+  while (set.has(dayStr(d))){ n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function drawMine(){
+  const box = $("mine"); if (!box) return;
+  const L = IDX.filter(r => r[3] !== "info"), seen = S.seen || {}, n = L.filter(r => seen[r[0]]).length, pct = L.length ? Math.round(1000 * n / L.length) / 10 : 0;
+  const at = L.findIndex(r => r[0] === S.code), nx = L.slice(at + 1).concat(L.slice(0, at + 1)).find(r => !seen[r[0]]) || L[(at + 1) % L.length];
+  const td = S.td && S.td.d === dayStr(new Date()) ? S.td : {l: 0, q: 0}, st = streak();
+  box.replaceChildren(...[
+    h("div", {class: "mn mn-st" + (st ? " on" : "")}, h("b", null, h("span", {class: "fire", "aria-hidden": "true"}, "🔥"), String(st)), h("span", null, "ມື້ຕິດຕໍ່ກັນ"), h("small", {class: "ko"}, "연속 학습")),
+    h("div", {class: "mn mn-pr"}, h("b", null, pct + "%"), h("span", null, n + " / " + L.length + " " + T.lessons), h("small", {class: "ko"}, "내 진도"), h("div", {class: "mbar"}, h("i", {style: "width:" + Math.max(pct, n ? 1.5 : 0) + "%"}))),
+    h("div", {class: "mn mn-td"}, h("b", null, String(td.l)), h("span", null, "ບົດມື້ນີ້" + (td.q ? " · ທົດສອບ " + td.q : "")), h("small", {class: "ko"}, "오늘 공부")),
+    nx ? h("button", {class: "mn mn-nx", type: "button", onclick: () => { go(nx[0]); scrollTo({top: 0, behavior: "smooth"}); }}, h("small", null, "ບົດໃໝ່ຕໍ່ໄປ ", h("span", {class: "ko"}, "다음 새 묶음")), h("span", {class: "ko"}, nx[1]), h("i", {"aria-hidden": "true"}, "→")) : null,
+    (S.wb || []).length ? h("button", {class: "mn mn-wb", type: "button", onclick: wbReview}, h("small", null, "ທວນຂໍ້ທີ່ຜິດ ", h("span", {class: "ko"}, "오답 복습")), h("span", null, S.wb.length + " ຂໍ້"), h("i", {"aria-hidden": "true"}, "→")) : null].filter(Boolean));   // next lesson before mistakes: on a PC the 4 cards share one row, mistakes get their own row below
+}
+/* a thin bar under each sub tab: how many of its lessons were opened (v2.67) */
+function subProg(rows){ const L = rows.filter(r => r[3] !== "info"); if (!L.length) return null; const n = L.filter(r => (S.seen || {})[r[0]]).length; if (!n) return null;
+  return h("i", {class: "sprog" + (n === L.length ? " full" : ""), style: "--p:" + (100 * n / L.length).toFixed(0) + "%", title: n + " / " + L.length}); }
 function drawStats(){
   const n = x => Number(x).toLocaleString("en-US");
   $("stats").replaceChildren(h("span", null, h("b", null, n(IDX.filter(r => r[3] !== "info").length)), T.lessons), h("span", null, h("b", null, n(META.nWords)), T.words), h("span", null, h("b", null, n(META.nSents)), T.sents));
@@ -312,7 +343,7 @@ function drawSubs(){
   $("subs").replaceChildren(...ids.map(s => {
     const rows = IDX.filter(r => r[0].startsWith(s + "-")), n = SUBS[s] || [s, s];
     return h("button", {class: "sub", type: "button", role: "tab", "aria-selected": s === cur ? "true" : "false", onclick: () => go(lastIn(S.lastS, s, rows))},
-      h("span", {class: "code"}, String(ids.indexOf(s) + 1).padStart(2, "0")), h("span", {class: "name ko"}, n[0].replace(/\s+/g, "")));
+      h("span", {class: "code"}, String(ids.indexOf(s) + 1).padStart(2, "0")), h("span", {class: "name ko"}, n[0].replace(/\s+/g, "")), subProg(rows));
   }));
   /* line under the sub tabs, like lao-app: [1-01] name · N묶음 N단어 N문장 */
   const sr = IDX.filter(r => r[0].startsWith(cur + "-")), ai = AREAS.findIndex(x => x[0] === a) + 1, sn = SUBS[cur] || [cur];
@@ -499,11 +530,42 @@ function makeQuiz(b){
   });
   return {code: b.code, qs, at: 0, right: 0};
 }
+/* mistake notebook (like KoJey v1.12): wrong quiz answers are kept on this device (up to 80);
+   "ທວນຂໍ້ທີ່ຜິດ 오답 복습" asks them again in one quiz; a right answer there takes the question out of the list. */
+const wbKey = q => q.kind + "|" + q.a + "|" + (q.q || q.say || "");
+function wbAdd(qz){
+  const bank = S.wb = (S.wb || []).filter(x => x && x.q), have = new Set(bank.map(x => wbKey(x.q)));
+  qz.qs.filter(q => q.picked !== q.a).forEach(q => { const c = Object.assign({}, q, {picked: null}); if (!have.has(wbKey(c))){ have.add(wbKey(c)); bank.unshift({q: c, code: qz.code}); } });
+  S.wb = bank.slice(0, 80);
+}
+function wbDrop(q){ S.wb = (S.wb || []).filter(x => wbKey(x.q) !== wbKey(q)); }
+function wbReview(){
+  const bank = (S.wb || []).filter(x => x && x.q); if (!bank.length) return;
+  stopPlay(); S.mode = "quiz";
+  quiz = {code: S.code, review: true, qs: shuffle(bank.slice(0, 20)).map(x => Object.assign({}, x.q, {picked: null, opts: shuffle(x.q.opts.slice())})), at: 0, right: 0};
+  save(); drawControls(); render(); const v = $("view"); if (v) v.scrollIntoView({behavior: "smooth", block: "start"});
+}
+/* quiz result (like KoJey v1.4): a score ring, a word for the result, the questions that were wrong, and "only the wrong ones" */
+function quizEnd(){
+  const N = quiz.qs.length, R = quiz.right, pct = N ? Math.round(100 * R / N) : 0, wrong = quiz.qs.filter(q => q.picked !== q.a);
+  const C = 2 * Math.PI * 52, NS = "http://www.w3.org/2000/svg", mk = (t, at) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); return e; };
+  const ring = mk("svg", {viewBox: "0 0 120 120", class: "qring"});
+  ring.append(mk("circle", {cx: 60, cy: 60, r: 52, class: "qr0"}), mk("circle", {cx: 60, cy: 60, r: 52, class: "qr1" + (pct >= 80 ? " hi" : pct < 50 ? " lo" : ""), "stroke-dasharray": (C * pct / 100) + " " + C, transform: "rotate(-90 60 60)"}));
+  const msg = pct === 100 ? ["ດີເລີດ!", "완벽해요!"] : pct >= 80 ? ["ເກັ່ງຫຼາຍ!", "잘했어요!"] : pct >= 50 ? ["ດີແລ້ວ, ສູ້ຕໍ່ອີກໜ້ອຍ!", "좋아요, 조금 더!"] : ["ລອງໃໝ່ອີກເທື່ອ.", "다시 해 봐요."];
+  const qText = q => q.kind === "blank" ? q.blank.full : q.kind === "listen" ? q.say : q.q;
+  return [quiz.review ? h("p", {class: "qrev"}, "ທວນຂໍ້ທີ່ຜິດ ", h("span", {class: "ko"}, "오답 복습"), " · ເຫຼືອ " + (S.wb || []).length + " ຂໍ້") : null, h("div", {class: "qend"}, h("div", {class: "qringw"}, ring, h("div", {class: "qrt"}, h("b", null, pct + "%"), h("span", null, R + " / " + N))),
+      h("p", {class: "qmsg"}, msg[0], " ", h("span", {class: "ko"}, msg[1]))),
+    wrong.length ? h("div", {class: "qwrong"}, h("h3", null, "ຂໍ້ທີ່ຄວນເບິ່ງອີກ ", h("span", {class: "ko"}, "다시 볼 문제")),
+      wrong.map(q => h("div", {class: "qw"}, h("span", {class: q.toLo ? "ko" : ""}, qText(q)), h("b", {class: q.toLo ? "" : "ko"}, q.a)))) : null,
+    h("div", {class: "rowbtns", style: "justify-content:center"},
+      (S.wb || []).length && !quiz.review ? h("button", {class: "btn", type: "button", onclick: wbReview}, "ທວນຂໍ້ທີ່ຜິດ ", h("span", {class: "ko"}, "오답 복습"), " · " + S.wb.length) : null,
+      wrong.length && wrong.length < N ? h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz = {code: quiz.code, review: quiz.review, qs: wrong.map(q => Object.assign({}, q, {picked: null})), at: 0, right: 0}; render(); }}, "ສະເພາະຂໍ້ທີ່ຜິດ ", h("span", {class: "ko"}, "틀린 것만")) : null,
+      h("button", {class: "btn" + (wrong.length && wrong.length < N ? "" : " primary"), type: "button", onclick: () => { stopPlay(); quiz = null; render(); }}, T.again))];
+}
 function renderQuiz(b){
   if (!quiz || quiz.code !== b.code) quiz = makeQuiz(b);
   if (!quiz.qs.length) return [h("p", {class: "empty"}, T.noQuiz)];
-  if (quiz.at >= quiz.qs.length) return [h("p", {class: "quizp"}, T.score), h("div", {class: "score"}, quiz.right + " / " + quiz.qs.length),
-    h("div", {class: "rowbtns", style: "justify-content:center"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz = null; render(); }}, T.again))];
+  if (quiz.at >= quiz.qs.length) return quizEnd();
   const q = quiz.qs[quiz.at];
   const head = q.kind === "listen" ? h("div", {class: "quizq listen", "data-say": q.say}, h("button", {class: "btn primary", type: "button", onclick: ev => playSingle(ev.currentTarget.parentNode)}, ico("spk"), " " + T.listenBtn))
     : q.kind === "blank" ? h("div", {class: "quizq qblank"}, h("div", {class: "ko"}, q.blank.pre, h("span", {class: "blank"}, "?"), q.blank.post), h("div", {class: "qlo"}, q.blank.lo))
@@ -512,8 +574,8 @@ function renderQuiz(b){
   return [h("div", null, head, h("p", {class: "quizp"}, lab + " · " + (quiz.at + 1) + " / " + quiz.qs.length)),
     q.say && q.kind === "mean" || q.picked != null && q.say ? h("div", {class: "rowbtns", style: "justify-content:center", "data-say": q.say}, spk()) : null,
     h("div", {class: "choices"}, q.opts.map(o => h("button", {class: "choice" + (q.toLo ? "" : " ko") + (q.picked != null ? (o === q.a ? " right" : o === q.picked ? " wrong" : "") : ""), type: "button", disabled: q.picked != null,
-      onclick: () => { q.picked = o; if (o === q.a) quiz.right++; render(); if (!q.toLo){ stopPlay(); const tok = ++P.tok; say(tok, q.kind === "blank" ? q.blank.full : q.a); } }}, o))),
-    q.picked != null ? h("div", {class: "rowbtns", style: "justify-content:flex-end"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz.at++; render(); const nq = quiz.qs[quiz.at], el = document.querySelector(".quizq.listen"); if (nq && nq.kind === "listen" && el) playSingle(el); }}, T.nextCard)) : null];
+      onclick: () => { q.picked = o; if (o === q.a){ quiz.right++; if (quiz.review) wbDrop(q); } render(); if (!q.toLo){ stopPlay(); const tok = ++P.tok; say(tok, q.kind === "blank" ? q.blank.full : q.a); } }}, o))),
+    q.picked != null ? h("div", {class: "rowbtns", style: "justify-content:flex-end"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz.at++; if (quiz.at === quiz.qs.length){ if (!quiz.review){ wbAdd(quiz); const t = dayStr(new Date()); if (!S.td || S.td.d !== t) S.td = {d: t, l: 0, q: 0}; S.td.q++; } save(); drawMine(); } render(); const nq = quiz.qs[quiz.at], el = document.querySelector(".quizq.listen"); if (nq && nq.kind === "listen" && el) playSingle(el); }}, T.nextCard)) : null];
 }
 
 /* ---------- search ---------- */
@@ -530,6 +592,20 @@ function renderSearch(){
   return [h("div", null, hits.slice(0, 80).map(x => h("button", {class: "hit", type: "button", onclick: () => { $("q").value = ""; query = ""; go(x.code); }},
     h("span", {class: "k ko"}, x.ko), h("span", {class: "where"}, (IDX[byCode.get(x.code)] || [])[1] || ""), h("span", null, x.lo || (SUBS[subOf(x.code)] || ["", ""])[1]))))];
 }
+
+/* theme and text size (like KoJey v1.4, RYU 2026-11-26, v2.67): a row under the audio-save line; saved on this device */
+function applyPrefs(){
+  const r = document.documentElement;
+  if (S.theme === "light" || S.theme === "dark") r.setAttribute("data-theme", S.theme); else r.removeAttribute("data-theme");
+  r.style.setProperty("--fz", String(S.fz || 1));
+  const box = $("prefs"); if (!box) return;
+  const seg = (label, opts, cur, set) => h("div", {class: "pseg", role: "group", "aria-label": label, title: label},
+    h("div", {class: "pbtns"}, opts.map(([v, t]) => h("button", {type: "button", class: "pb" + (String(cur) === String(v) ? " on" : ""), "aria-pressed": String(cur) === String(v) ? "true" : "false", onclick: () => { set(v); save(); applyPrefs(); if (S.mode === "cards") fitWords(); }}, t))));
+  box.replaceChildren(
+    seg("ໜ້າຈໍ 화면", [["auto", "ອັດຕະໂນມັດ"], ["light", "☀ ແຈ້ງ"], ["dark", "☾ ມືດ"]], S.theme || "auto", v => S.theme = v),
+    seg("ຂະໜາດຕົວໜັງສື 글자 크기", [[0.9, "A−"], [1, "A"], [1.15, "A+"], [1.3, "A++"]], S.fz || 1, v => S.fz = v));
+}
+applyPrefs();
 
 /* ---------- render and routing ---------- */
 function render(){
@@ -612,7 +688,7 @@ async function route(){
   if (byCode.has(name)) S.code = name;
   (S.lastA = S.lastA || {})[areaOf(S.code)] = S.code; (S.lastS = S.lastS || {})[subOf(S.code)] = S.code;
   if (P.nav) P.nav = false; else stopPlay();
-  quiz = null; save(); drawAll();
+  track(S.code); quiz = null; save(); drawAll(); drawMine();
   { const c = S.code, i = IDX.findIndex(x => x[0] === c); AP.warm(c).then(() => { const n = IDX[i + 1]; if (n && S.code === c) AP.warm(n[0]); }); }   // this lesson's sound, then the next one's (for 연속 재생)
   const a = areaOf(S.code);
   if (!cache.has(a)){
