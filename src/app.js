@@ -833,12 +833,12 @@ document.addEventListener("click", ev => { if (!ev.target.closest("#bsel")) ddCl
 document.addEventListener("keydown", ev => { if (ev.key === "Escape") ddClose(); });
 /* ---------- keyboard (same keys as lao-app v2.74, RYU 2026-11-20, v2.23) ----------
    Space pause / resume (idle: 묶음 재생) · C 연속 재생 · G 묶음 재생 (again = stop) · Esc stop · ← → previous / next line
-   , . previous / next lesson · Enter this line without end (∞) · 1-5 횟수 · - = 속도 · Q W E tabs · ? list of keys.
+   , . previous / next lesson · Enter this line without end (∞) · 1-5 횟수 · - = 속도 · S W E tabs (was Q W E; S since v2.79, same keys in all apps, RYU 2026-11-26) · ? list of keys.
    Keys go by e.code too, so they work with the Korean or Lao keyboard on; ↑ ↓ still scroll. */
 const KEYS = [["Space", "ຢຸດຊົ່ວຄາວ · ສືບຕໍ່ (ບໍ່ມີສຽງ: ຟັງບົດນີ້)", "일시정지 · 재개"], ["C", "ຟັງຕໍ່ເນື່ອງ", "연속 재생"], ["G", "ຟັງບົດນີ້", "묶음 재생"],
   ["Esc", "ຍົກເລີກ", "정지"], ["← →", "ປະໂຫຍກກ່ອນ · ຕໍ່ໄປ", "이전 · 다음 문장"], ["< >  (, .)", "ບົດກ່ອນ · ບົດຕໍ່ໄປ", "이전 · 다음 묶음"],
   ["Enter", "ຊ້ຳອັນນີ້ບໍ່ຢຸດ · ປິດ", "지금 문장 무한 반복"], ["K", "ເປີດ · ປິດ ສຽງລາວ", "라오스어 음성 켜기 · 끄기"], ["1 ~ 5", "ຈຳນວນເທື່ອ", "반복 횟수"], ["-  =", "ຊ້າລົງ · ໄວຂຶ້ນ", "배속"],
-  ["Q W E", "ປະໂຫຍກ · ຄຳສັບ · ແບບທົດສອບ", "예문 · 단어 · 퀴즈"], ["?", "ເປີດ · ປິດ ລາຍການນີ້", "단축키 목록"]];
+  ["S W E", "ປະໂຫຍກ · ຄຳສັບ · ແບບທົດສອບ", "예문 · 단어 · 퀴즈"], ["?", "ເປີດ · ປິດ ລາຍການນີ້", "단축키 목록"]];
 function keyHelp(){
   const box = h("div", {id: "kbhelp", onclick: () => box.remove()},
     h("div", {class: "kbcard"}, h("b", null, "ປຸ່ມລັດແປ້ນພິມ ", h("span", {class: "ko"}, "키보드 단축키")),
@@ -863,8 +863,8 @@ document.addEventListener("keydown", e => {
     e.preventDefault(); const i = byCode.get(S.code), d = is("Period", ".", ">") ? 1 : -1;
     go(IDX[(i + d + IDX.length) % IDX.length][0]); window.scrollTo(0, 0); return; }
   const ctl = !$("controls").hidden, rep = ctl && !$("ctlrep").hidden;
-  if (is("KeyQ", "q", "ㅂ") || is("KeyW", "w", "ㅈ") || is("KeyE", "e", "ㄷ")){
-    if (!ctl) return; e.preventDefault(); const b = $(is("KeyQ", "q", "ㅂ") ? "m-learn" : is("KeyW", "w", "ㅈ") ? "m-cards" : "m-quiz"); if (b) b.click(); return; }
+  if (is("KeyS", "s", "ㄴ") || is("KeyW", "w", "ㅈ") || is("KeyE", "e", "ㄷ")){
+    if (!ctl) return; e.preventDefault(); const b = $(is("KeyS", "s", "ㄴ") ? "m-learn" : is("KeyW", "w", "ㅈ") ? "m-cards" : "m-quiz"); if (b) b.click(); return; }
   if (is("KeyC", "c", "ㅊ")){ if (rep){ e.preventDefault(); playBundle(true); } return; }
   if (is("KeyG", "g", "ㅎ")){ if (rep){ e.preventDefault(); playBundle(false); } return; }
   if (/^Digit[1-5]$/.test(c) || /^[1-5]$/.test(e.key)){ if (ctl){ e.preventDefault(); setSel("repSel", +(e.key.match(/[1-5]/) || c.slice(-1))[0] - 1); } return; }
