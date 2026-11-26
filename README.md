@@ -1,4 +1,4 @@
-# KOR Lang
+# phasaKAO (Korean for Lao speakers; was KOR Lang)
 
 라오스 사람이 한국어를 배우는 웹앱입니다. (ແອັບຮຽນພາສາເກົາຫຼີສຳລັບຄົນລາວ)
 
