@@ -935,10 +935,10 @@ function dlState(){
 }
 dlState();
 window.addEventListener("hashchange", route);
-$("ver").replaceChildren("phasaKAO " + META.ver + " · ", h("span", {class: "cl", "aria-hidden": "true"}, "©"), " Copyleft · ແບ່ງປັນ ແລະ ດັດແປງໄດ້ເສລີ");   // copyleft line like KoJey (RYU 2026-11-26, v2.69): a mirrored ©, since 🄯 is missing on older phones
+$("ver").replaceChildren("PhasaKAO " + META.ver + " · ", h("span", {class: "cl", "aria-hidden": "true"}, "©"), " Copyleft · ແບ່ງປັນ ແລະ ດັດແປງໄດ້ເສລີ");   // copyleft line like KoJey (RYU 2026-11-26, v2.69): a mirrored ©, since 🄯 is missing on older phones
 route();
 if ("serviceWorker" in navigator && window.KO_SW) navigator.serviceWorker.register("sw.js").catch(() => {});
-/* tapping the title at the top left (or phasaKAO in the sticky bar; app renamed from 한국어 배우기 / KOR Lang by RYU 2026-11-26, v2.75) goes back to the first menu's first lesson, at the top (like KoJey v1.21.12, RYU 2026-11-26, v2.69) */
+/* tapping the title at the top left (or PhasaKAO in the sticky bar; app renamed from 한국어 배우기 / KOR Lang by RYU 2026-11-26, v2.75) goes back to the first menu's first lesson, at the top (like KoJey v1.21.12, RYU 2026-11-26, v2.69) */
 (() => { const home = () => { const g = document.querySelector("#groups .group"), r = g && IDX.find(r => areaOf(r[0]) === g.dataset.g);
     if (r) go(r[0]); setTimeout(() => scrollTo(0, 0), 80); };
   for (const e of [document.querySelector(".top .brand"), document.querySelector("#stick .strow > b")]) if (e){
