@@ -122,6 +122,9 @@ const FIG = {
   "HP-B-07": shot("mine", `ການຮຽນຂອງຂ້ອຍ ${K("내 학습")}`) + shots(shot("result", `ຜົນແບບທົດສອບ ${K("퀴즈 결과")}`), shot("prefs", `ໜ້າຈໍ · ຂະໜາດຕົວໜັງສື ${K("화면 · 글자 크기")}`))
 };
 for (const p of P) if (FIG[p.code]) p.info += FIG[p.code];
+/* baby elephant character under the poster (RYU 2026-11-26, v2.74) */
+{ const p = P.find(p => p.code === "HP-A-01");
+  p.info += `<h3>ໝູ່ຮຽນນຳ: ຊ້າງນ້ອຍ ${K("아기 코끼리")}</h3><p>ລາວແມ່ນປະເທດລ້ານຊ້າງ. ຊ້າງນ້ອຍໃສ່ຫູຟັງ ແລະ ຜ້າພັນຄໍລາຍລາວ, ຮຽນພາສາເກົາຫຼີນຳທ່ານ. ໃນແບບທົດສອບ ໜ້າຂອງມັນປ່ຽນຕາມຄະແນນ.</p><div class="elerow"><figure><img src="img/ele/main.webp" alt="" loading="lazy"><figcaption>ຮຽນ ${K("공부 중")}</figcaption></figure><figure><img src="img/ele/happy.webp" alt="" loading="lazy"><figcaption>80% ຂຶ້ນໄປ ${K("기쁨")}</figcaption></figure><figure><img src="img/ele/think.webp" alt="" loading="lazy"><figcaption>50% ຂຶ້ນໄປ ${K("생각 중")}</figcaption></figure><figure><img src="img/ele/try.webp" alt="" loading="lazy"><figcaption>ສູ້ໆ! ${K("화이팅")}</figcaption></figure></div>`; }
 /* app poster at the top of 이 앱은 (like KoJey, RYU 2026-11-26, v2.71); the A4 poster lives in /mnt/project-files/kor-app/poster */
 { const p = P.find(p => p.code === "HP-A-01"), i = p.info.indexOf("</div>") + 6;
   p.info = p.info.slice(0, i) + `<figure class="shot poster"><a href="img/help/poster-lo.webp" target="_blank" rel="noopener"><img src="img/help/poster-lo.webp" width="1240" height="1754" loading="lazy" alt="poster"></a><figcaption>ໂປສເຕີ: ແອັບນີ້ ແລະ ວິທີຕິດຕັ້ງ. ກົດເພື່ອເບິ່ງຮູບໃຫຍ່. ${K("포스터")}</figcaption></figure>` + p.info.slice(i); }

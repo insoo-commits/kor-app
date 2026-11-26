@@ -317,7 +317,7 @@ function drawMine(){
     h("div", {class: "mn mn-st" + (st ? " on" : "")}, h("b", null, h("span", {class: "fire", "aria-hidden": "true"}, "🔥"), String(st)), h("span", null, "ມື້ຕິດຕໍ່ກັນ"), h("small", {class: "ko"}, "연속 학습")),
     h("div", {class: "mn mn-pr"}, h("b", null, pct + "%"), h("span", null, n + " / " + L.length + " " + T.lessons), h("small", {class: "ko"}, "내 진도"), h("div", {class: "mbar"}, h("i", {style: "width:" + Math.max(pct, n ? 1.5 : 0) + "%"}))),
     h("div", {class: "mn mn-td"}, h("b", null, String(td.l)), h("span", null, "ບົດມື້ນີ້" + (td.q ? " · ທົດສອບ " + td.q : "")), h("small", {class: "ko"}, "오늘 공부")),
-    nx ? h("button", {class: "mn mn-nx", type: "button", onclick: () => { go(nx[0]); scrollTo({top: 0, behavior: "smooth"}); }}, h("small", null, "ບົດໃໝ່ຕໍ່ໄປ ", h("span", {class: "ko"}, "다음 새 묶음")), h("span", {class: "ko"}, nx[1]), h("i", {"aria-hidden": "true"}, "→")) : null,
+    nx ? h("button", {class: "mn mn-nx", type: "button", onclick: () => { go(nx[0]); scrollTo({top: 0, behavior: "smooth"}); }}, h("small", null, "ບົດໃໝ່ຕໍ່ໄປ ", h("span", {class: "ko"}, "다음 새 묶음")), h("span", {class: "ko"}, nx[1]), h("i", {"aria-hidden": "true"}, "→"), elePic("think", "nxele")) : null,
     (S.wb || []).length ? h("button", {class: "mn mn-wb", type: "button", onclick: wbReview}, h("small", null, "ທວນຂໍ້ທີ່ຜິດ ", h("span", {class: "ko"}, "오답 복습")), h("span", null, S.wb.length + " ຂໍ້"), h("i", {"aria-hidden": "true"}, "→")) : null].filter(Boolean));   // next lesson before mistakes: on a PC the 4 cards share one row, mistakes get their own row below
 }
 /* a thin bar under each sub tab: how many of its lessons were opened (v2.67) */
@@ -554,6 +554,8 @@ function wbReview(){
   save(); drawControls(); render(); const v = $("view"); if (v) v.scrollIntoView({behavior: "smooth", block: "start"});
 }
 /* quiz result (like KoJey v1.4): a score ring, a word for the result, the questions that were wrong, and "only the wrong ones" */
+/* baby elephant character (RYU 2026-11-26, v2.74): img/ele/{main,happy,think,try}.webp, placed like KoJey's JeyJey */
+function elePic(n, cls){ return h("img", {class: cls, src: "img/ele/" + n + ".webp", alt: "", loading: "lazy"}); }
 function quizEnd(){
   const N = quiz.qs.length, R = quiz.right, pct = N ? Math.round(100 * R / N) : 0, wrong = quiz.qs.filter(q => q.picked !== q.a);
   const C = 2 * Math.PI * 52, NS = "http://www.w3.org/2000/svg", mk = (t, at) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); return e; };
@@ -562,7 +564,7 @@ function quizEnd(){
   const msg = pct === 100 ? ["ດີເລີດ!", "완벽해요!"] : pct >= 80 ? ["ເກັ່ງຫຼາຍ!", "잘했어요!"] : pct >= 50 ? ["ດີແລ້ວ, ສູ້ຕໍ່ອີກໜ້ອຍ!", "좋아요, 조금 더!"] : ["ລອງໃໝ່ອີກເທື່ອ.", "다시 해 봐요."];
   const qText = q => q.kind === "blank" ? q.blank.full : q.kind === "listen" ? q.say : q.q;
   return [quiz.review ? h("p", {class: "qrev"}, "ທວນຂໍ້ທີ່ຜິດ ", h("span", {class: "ko"}, "오답 복습"), " · ເຫຼືອ " + (S.wb || []).length + " ຂໍ້") : null, h("div", {class: "qend"}, h("div", {class: "qringw"}, ring, h("div", {class: "qrt"}, h("b", null, pct + "%"), h("span", null, R + " / " + N))),
-      h("p", {class: "qmsg"}, msg[0], " ", h("span", {class: "ko"}, msg[1]))),
+      h("p", {class: "qmsg"}, msg[0], " ", h("span", {class: "ko"}, msg[1])), elePic(pct >= 80 ? "happy" : pct >= 50 ? "think" : "try", "qele")),
     wrong.length ? h("div", {class: "qwrong"}, h("h3", null, "ຂໍ້ທີ່ຄວນເບິ່ງອີກ ", h("span", {class: "ko"}, "다시 볼 문제")),
       wrong.map(q => h("div", {class: "qw"}, h("span", {class: q.toLo ? "ko" : ""}, qText(q)), h("b", {class: q.toLo ? "" : "ko"}, q.a)))) : null,
     h("div", {class: "rowbtns", style: "justify-content:center"},
