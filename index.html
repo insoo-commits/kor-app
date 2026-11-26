@@ -1637,6 +1637,24 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
 @media (max-width:600px){#app .band .bandtxt .tipbox{font-size:13.5px!important}}
 /* v2.63 RYU: 대화 반복 bold like the other repeat buttons */
 #app .wrep.hrep{font-weight:600}
+
+/* v2.72 (RYU 2026-11-26, like KoJey v1.19.19/21): phone tips folded behind a button right under the picture */
+#app .tiptog{display:none}
+@media (max-width:600px){
+  #app .tiptog{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line2,var(--line));border-radius:999px;background:var(--sheet);color:var(--accent);font-weight:600;line-height:1.2;cursor:pointer}
+  #app .tiptog i{font-style:normal;transition:transform .2s}
+  #app .band.tipopen .tiptog i{transform:rotate(180deg)}
+  #app .band:not(.tipopen) .tipbox{display:none}
+  #app .bandrow{display:grid;grid-template-columns:112px minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:12px;row-gap:4px;align-items:start}
+  #app .bandrow::after{display:none}
+  #app .bandpic{float:none;width:auto;margin:2px 0 0;grid-column:1;grid-row:1}
+  #app .bandtxt{display:contents}
+  #app .bandtxt .intro{grid-column:2;grid-row:1 / span 2}
+  #app .bandtxt .tiptog{grid-column:1;grid-row:2;justify-self:stretch;align-self:start;justify-content:center;margin-top:8px!important;padding:3px 4px;font-size:12.5px}
+  #app .bandtxt .tipbox{grid-column:1 / -1;grid-row:3;margin-top:8px!important}
+  #app .bandrow:not(:has(.bandpic)) .tiptog{grid-column:1 / -1;justify-self:start;padding:5px 12px}
+  #app .bandrow:not(:has(.bandpic)) .intro{grid-column:1 / -1;grid-row:1}
+}
 </style></head>
 <body>
 <div class="wrap" id="app" data-g="K1">
@@ -1708,6 +1726,6 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-26%20v2.71"></script>
-<script src="app.js?v=2026-11-26%20v2.71"></script>
+<script src="audio/index.js?v=2026-11-26%20v2.72"></script>
+<script src="app.js?v=2026-11-26%20v2.72"></script>
 </body></html>

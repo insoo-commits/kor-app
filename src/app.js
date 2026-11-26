@@ -375,12 +375,17 @@ function drawControls(){
 }
 /* Lao text with Korean runs (Hangul and jamo) wrapped in the Korean font */
 const koMix = t => String(t).split(/([\u3131-\u318E\uAC00-\uD7A3]+(?:[\s~\-]+[\u3131-\u318E\uAC00-\uD7A3]+)*)/).map((x, j) => j % 2 ? h("span", {class: "ko"}, x) : x);
+let TIPOPEN = false;   // phone tips folded until opened (v2.72)
 function drawBand(b){
   const r = IDX[byCode.get(S.code)];
   const txt = [
       b && b.i ? h("p", {class: "intro"}, b.i[1] || "", b.i[1] ? " " : "", h("span", {class: "sub-ko ko"}, b.i[0])) : null,   // Lao then Korean in one run, always shown; level/type tags not shown (RYU 2026-11-14)
       /* tips under the intro, Lao text with Korean words mixed in, one bullet each, like lao-app (RYU 2026-11-16) */
+      /* phone: tips fold behind a button under the picture so the first sentence shows sooner (like KoJey v1.19.19/21, RYU 2026-11-26, v2.72) */
+      b && b.tp && b.tp.length ? h("button", {class: "tiptog", type: "button", "aria-expanded": String(TIPOPEN), onclick: ev => { TIPOPEN = !TIPOPEN; $("band").classList.toggle("tipopen", TIPOPEN); ev.currentTarget.setAttribute("aria-expanded", String(TIPOPEN)); }},
+        "ເຄັດລັບ ", h("span", {class: "ko"}, "팁 " + b.tp.length), h("i", {"aria-hidden": "true"}, "▾")) : null,
       b && b.tp && b.tp.length ? h("div", {class: "tipbox"}, b.tp.map(t => h("p", {class: "bl"}, koMix(t[1] || t[0])))) : null].filter(Boolean);
+  $("band").classList.toggle("tipopen", TIPOPEN);
   /* one picture per sub-group left of the intro (RYU 2026-11-24, v2.55) */
   const sp = (window.KO_SUBPIC || {})[S.code.split("-").slice(0, 2).join("-")];
   let pic = null; if (sp && txt.length){ pic = h("div", {class: "bandpic", "aria-hidden": "true"}); pic.innerHTML = sp; }
