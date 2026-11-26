@@ -1,5 +1,5 @@
 // Builds the app from src/ and the bundle JSON.
-//   node build.js [bundlesDir]     (bundlesDir defaults to ./data, which holds K1.json … K9.json)
+//   node build.js [bundlesDir]     (bundlesDir defaults to ./data: one file per menu in src/meta.js areas; K8 · K9 bundles are inside K7.json and K6.json since v2.69)
 // Output, in the repository root (served by GitHub Pages): index.html, app.js, sw.js, manifest.webmanifest, icon.svg, data/
 //         preview/korean-app.html: the same app as one page, for a preview (not committed).
 // Edit src/ and run this; do not edit the generated files. To release, change VER below (small change: bump the decimal).
@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-26 v2.68";
+const VER = "2026-11-26 v2.69";
 const STATS_PUBLIC = /const STATS_PUBLIC = true;/.test(fs.readFileSync(path.join(src, "stats.js"), "utf8"));
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
@@ -53,7 +53,7 @@ const REL = {};
   }
 }
 const SUBPIC = fs.existsSync(path.join(__dirname, "data", "subpics.json")) ? fs.readFileSync(path.join(__dirname, "data", "subpics.json"), "utf8") : "{}";   // one picture per sub-group (tools/pics/subpics.py, RYU 2026-11-24)
-const meta = "window.KO_SUBPIC=" + SUBPIC + ";\n" + "window.KO_META=" + JSON.stringify({areas: M.areas, subs: M.subs, idx, rel: REL, ver: VER, nWords: wordSet.size, nSents: sentSet.size}) + ";";
+const meta = "window.KO_SUBPIC=" + SUBPIC + ";\n" + "window.KO_META=" + JSON.stringify({areas: M.areas, alias: M.alias || {}, seps: M.seps || [], subAlias: M.subAlias || {}, subArea: M.subArea || {}, parts: M.parts || {}, subs: M.subs, idx, rel: REL, ver: VER, nWords: wordSet.size, nSents: sentSet.size}) + ";";
 // iPad / large touch screens (html.tab, set by the same check as the Lao app): text bigger, layout width unchanged.
 // Every px font-size in app.css gets an html.tab copy scaled by TAB_K, inside the same @media block (RYU 2026-11-14, v0.96).
 const TAB_K = 1.2;

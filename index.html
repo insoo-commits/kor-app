@@ -1005,7 +1005,7 @@ html.tab .kbinfo>span{display:inline-flex}
 .info .ibml{font-weight:700;font-size:15px;margin:4px 2px 8px;color:var(--accent)}.info .ibml .ko{font-weight:500;color:var(--muted);font-size:13px;margin-left:6px}
 .info .ib{margin-bottom:12px}.info .ibb{padding:10px 16px 5px}
 /* menu separators | before 기초회화, before 대한민국, before and after 도움말; · stays inside a section (RYU 2026-11-23, lao-app v3.27, v2.53) */
-.groups .group[data-g="KR"]::before,.groups .group[data-g="HP"]::before{content:"|"!important;font-weight:400!important;opacity:.7!important;transform:translate(-50%,-52%)!important}
+.groups .group.msep::before{content:"|"!important;font-weight:400!important;opacity:.7!important;transform:translate(-50%,-52%)!important}
 /* the outer bars are drawn lines, so the first one sits exactly on the left edge of the first sub-group button below */
 .groups::before,.groups::after{content:"";flex:0 0 auto;align-self:center;width:1.5px;height:17px;background:var(--muted);opacity:.6;margin-top:-3px}
 .groups::before{margin-right:-8px}
@@ -1094,6 +1094,19 @@ html.tab .kbinfo>span{display:inline-flex}
 .svbtns{display:flex;justify-content:flex-end;margin-top:8px}
 .svx{position:absolute;right:8px;top:6px;border:0;background:none;font-size:22px;color:var(--muted);cursor:pointer}
 .svdone p{margin:0}
+/* 어휘 sub row: 짝말 · 비슷한 말 · 단어 가족 labels (like KoJey, v2.69) */
+.subs .subpart{flex:0 0 auto;align-self:center;font-size:12px;font-weight:700;color:var(--accent);padding:0 2px 0 8px;white-space:nowrap}
+.subs .subpart:first-child{padding-left:2px}
+/* 도움말 screenshots (tools/help_shots.js, like KoJey, v2.69): light and dark copies swap with the theme */
+.info figure.shot img{max-width:340px;border:1px solid var(--line);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.info figure.shot figcaption{font-size:13px;color:var(--muted,#667);margin-top:4px}
+.info .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;align-items:start;margin-bottom:14px}
+.info .shots figure{margin:0}
+.info figure img.hl-d{display:none}
+:root[data-theme="dark"] .info figure img.hl-l{display:none}:root[data-theme="dark"] .info figure img.hl-d{display:block}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .info figure img.hl-l{display:none}:root:not([data-theme="light"]) .info figure img.hl-d{display:block}}
+.ver .cl{display:inline-block;transform:scaleX(-1)}
+@media (max-width:600px){#ver{font-size:11.5px;white-space:nowrap;letter-spacing:-.1px}}   /* copyleft line on one line on phones (v2.69) */
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -1295,6 +1308,9 @@ html.tab .svstar{font-size:36px}
 html.tab .svchip{font-size:16.8px}
 html.tab .svtext{font-size:16.8px}
 html.tab .svx{font-size:26.4px}
+html.tab .subs .subpart{font-size:14.4px}
+html.tab .info figure.shot figcaption{font-size:15.6px}
+@media (max-width:600px){html.tab #ver{font-size:13.8px}}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -1509,8 +1525,8 @@ html.tab .ddi{font-size:17px}
 #app .top h1.ko{color:#fff}
 #app .groups::before,#app .groups::after{display:none!important;content:none!important}
 #app .groups .group+.group::before{display:none!important;content:none!important}
-#app .groups .group[data-g="KR"],#app .groups .group[data-g="HP"]{margin-left:9px}
-#app .groups .group[data-g="KR"]::before,#app .groups .group[data-g="HP"]::before{content:""!important;display:block!important;position:absolute;left:-5px;top:50%;width:1px;height:16px;transform:translateY(-50%);background:var(--line2);opacity:1!important}
+#app .groups .group.msep{margin-left:9px}
+#app .groups .group.msep::before{content:""!important;display:block!important;position:absolute;left:-5px;top:50%;width:1px;height:16px;transform:translateY(-50%);background:var(--line2);opacity:1!important}
 #app .groups .group[aria-pressed="true"] .gn{color:#fff}
 #app .top .eyebrow{line-height:1.6!important;font-family:"Noto Sans Lao Looped",var(--ko),sans-serif}
 
@@ -1600,13 +1616,13 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
   </section>
   <div class="player" id="player" hidden><span class="t ko" id="pt"></span><button id="ppause" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5.5" y="4.5" width="4.5" height="15" rx="1"/><rect x="14" y="4.5" width="4.5" height="15" rx="1"/></svg></span><span class="bt">ຢຸດຊົ່ວຄາວ</span></button><button id="pstop" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5.5" y="5.5" width="13" height="13" rx="1.5"/></svg></span><span class="bt">ຍົກເລີກ</span></button></div>
   <p class="foot" id="voiceNote"></p>
-  <p class="foot"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></span>ຟັງສຽງ · <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>ຟັງຊ້ຳ (1–5 ເທື່ອ) ຈົນກວ່າຈະກົດອີກເທື່ອ. ບັນທຶກການຮຽນໄວ້ໃນອຸປະກອນນີ້. ເພື່ອປັບປຸງແອັບ, ສົ່ງພຽງຈຳນວນການໃຊ້ແບບບໍ່ລະບຸຊື່ (ບໍ່ມີຊື່ ຫຼື ອີເມວ).</p>
+  <p class="foot"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></span>ຟັງສຽງ · <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>ຟັງຊ້ຳ (1–5 ເທື່ອ) ຈົນກວ່າຈະກົດອີກເທື່ອ. ຄວາມຄືບໜ້າການຮຽນ ບັນທຶກໄວ້ໃນເຄື່ອງນີ້. ເພື່ອປັບປຸງແອັບ, ສົ່ງພຽງຈຳນວນການໃຊ້ແບບບໍ່ລະບຸຕົວຕົນ (ບໍ່ມີຊື່ ຫຼື ອີເມວ). <span class="ko">학습 기록은 이 기기에만 저장되며, 앱 개선을 위해 이름·이메일 없는 익명 사용 횟수만 보냅니다.</span></p>
   <p class="dlline" id="dlbox"><a href="#" id="dlAll">⤓ ບັນທຶກສຽງໄວ້ໃນແອັບ · <span class="ko">음성 앱에 저장</span></a> <span class="count" id="dlMsg"></span></p>
   <p class="dlnote" id="dlNote" hidden>ບັນທຶກສຽງທັງໝົດໄວ້ໃນແອັບນີ້ແລ້ວ. ຟັງໄດ້ໂດຍບໍ່ມີອິນເຕີເນັດ.<br><span class="ko">모든 음성을 이 앱 안에 저장했습니다. 인터넷 없이 들을 수 있습니다.</span></p>
   <div class="prefs" id="prefs"></div>
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-26%20v2.68"></script>
-<script src="app.js?v=2026-11-26%20v2.68"></script>
+<script src="audio/index.js?v=2026-11-26%20v2.69"></script>
+<script src="app.js?v=2026-11-26%20v2.69"></script>
 </body></html>
