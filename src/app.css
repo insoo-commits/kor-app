@@ -1097,3 +1097,73 @@ html.tab .kbinfo>span{display:inline-flex}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .info figure img.hl-l{display:none}:root:not([data-theme="light"]) .info figure img.hl-d{display:block}}
 .ver .cl{display:inline-block;transform:scaleX(-1)}
 @media (max-width:600px){#ver{font-size:11.5px;white-space:nowrap;letter-spacing:-.1px}}   /* copyleft line on one line on phones (v2.69) */
+/* TOPIK question design, random practice, picture choices (as KoJey, v2.70) */
+.tprrow{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;align-items:center}
+.tprrow .seg{border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:13.5px;cursor:pointer}
+.tprrow .seg.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tprrow .seg:disabled{opacity:.45;cursor:default}
+.tprrow .btn{margin-left:auto}
+.tprinfo{font-size:13px;color:var(--muted);margin:4px 0 10px}
+.tq h3 .tqnew{float:right;font-size:13px;padding:4px 12px}
+.tprrow .seg .ko{margin-left:4px}
+.tqd{display:flex;align-items:flex-start;gap:6px;margin-bottom:10px;width:100%;align-self:stretch;box-sizing:border-box}
+.tqd .tqn{flex:none}
+.tqd .tqdt{flex:1;min-width:0}
+.tqd .tqdl{font-weight:400;margin:2px 0 0}
+.tqd .tqplay{flex:none;min-width:7.7em;justify-content:center;margin-left:6px}
+.tqi{--ind:26px}
+.tqd .tqn{width:var(--ind);flex:none}
+.tqd{gap:0}
+.tqi > :not(.tqd){margin-left:var(--ind)}
+.tqq{display:flex;align-items:flex-start}
+.tqq .tqn{width:2.1em;flex:none}
+.tqsub > :not(.tqq){margin-left:2.1em}
+.tqo .choice{padding:7px 12px}
+@media (max-width:600px){.tqi{--ind:23px}.tqq .tqn{width:1.9em}.tqsub > :not(.tqq){margin-left:1.9em}}
+.tq h3{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.tq h3 .tqnew{float:none;margin-left:auto}
+@media (max-width:600px){.tqd{flex-wrap:wrap}.tqd .tqdt{flex:1 1 calc(100% - var(--ind))}.tqd .tqplay{margin:8px 0 0 var(--ind)}}   /* phone: listen button under the direction, at the text start (RYU v1.18.3) */
+.tqi{--ind2:34px}
+.tqq .tqn{width:var(--ind2)}
+.tqsub > :not(.tqq){margin-left:var(--ind2)}
+.tqi > .tqo{margin-left:calc(var(--ind) - 13px)}
+.tqsub > .tqo{margin-left:calc(var(--ind2) - 13px)}
+@media (max-width:600px){.tqi{--ind2:30px}.tqq .tqn{width:var(--ind2)}.tqsub > :not(.tqq){margin-left:var(--ind2)}.tqi > .tqo{margin-left:calc(var(--ind) - 13px)}.tqsub > .tqo{margin-left:calc(var(--ind2) - 13px)}}
+@media (max-width:600px){.tqd .tqplay{margin:6px 0 0 auto}}   /* phone: own row, right side for the right thumb (RYU v1.18.5) */
+.info .ib-t .terms div{padding:3px 0 3px 16px}
+.tqi:has(> .tqp .notice) > .tqo,.tqi:has(> .tqp .pics) > .tqo{margin-left:var(--ind)}   /* v1.18.9 (RYU): with a boxed text or pictures, the choice boxes line up with that box */
+.tqo.picgrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tqo .choice.picch{text-align:center;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.picch .pic span{display:block;font-size:30px;line-height:1.25;letter-spacing:1px;overflow-wrap:anywhere;word-break:break-all}
+.picch .pic span.tx{font-size:15px;letter-spacing:0;word-break:keep-all}
+.picch .pic small{display:block;font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:2px}
+.pics>div{min-width:0}.pics span{overflow-wrap:anywhere;word-break:break-all}
+@media (max-width:600px){.tqo.picgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.picch .pic span{font-size:26px}.pics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tqi > .tqo.picgrid{margin-left:var(--ind)}
+.picch .pic i.em{display:block;font-style:normal;font-size:26px;line-height:1.2}
+.picch .pic span.tx.kt{font-size:15.5px;font-weight:700;line-height:1.4;color:var(--ink)}
+@media (max-width:600px){.picch .pic i.em{font-size:22px}.picch .pic span.tx.kt{font-size:14.5px}}
+.info .ib-j{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.info .ib-j>h3{background:var(--accent-soft)}
+.tq>h3{font-size:17.5px;padding:8px 12px;border-left:0;border-radius:12px;background:var(--accent-soft);color:var(--accent)}
+.tq>h3 .ko{color:var(--ink)}
+.tqi{background:var(--raise);background:color-mix(in srgb,var(--accent-soft) 55%,var(--sheet));border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.04);padding:16px 18px}
+.tqi{--ind:34px}
+.tqd .tqn{width:26px;height:26px;margin-right:8px;border-radius:50%;background:var(--accent);color:var(--sheet);display:inline-flex;align-items:center;justify-content:center;font-size:14px;line-height:1;margin-top:1px}
+.tqd .tqdt>.ko{font-size:17px}
+.tqp{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.tqp:has(> .pics){background:none;border:0;padding:0}
+.tqp .notice{background:var(--sheet)}
+.tqsd{background:var(--sheet);border-style:solid}
+.tqsub{border-top:1px dashed color-mix(in srgb,var(--accent) 30%,var(--line))}
+.tqo .choice{background:var(--sheet);box-shadow:0 1px 2px rgba(0,0,0,.05);transition:border-color .15s,transform .15s,box-shadow .15s}
+.tqo .choice:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.tqo .choice.right{background:var(--good-soft)} .tqo .choice.wrong{background:var(--bad-soft)}
+.tqx{background:var(--sheet);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px}
+.tqx .res{font-size:16px}
+.tqsc{display:table;margin:6px auto 12px;padding:8px 20px;border-radius:999px;background:var(--accent-soft)}
+.tqd .tqplay{background:var(--sheet)}
+@media (max-width:600px){.tqi{padding:14px 12px;--ind:31px}.tqd .tqn{width:24px;height:24px;margin-right:7px;font-size:13px}}
+.info .two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 14px}.info .two>div>.ib{margin:0;height:100%}
+.info .ib .terms{margin:4px 0 10px}
+.tqi:has(> .tqp) > .tqo{margin-left:var(--ind)}
+.tqsub:has(> .tqp) > .tqo{margin-left:var(--ind2)}
