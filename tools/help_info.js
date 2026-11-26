@@ -122,6 +122,9 @@ const FIG = {
   "HP-B-07": shot("mine", `ການຮຽນຂອງຂ້ອຍ ${K("내 학습")}`) + shots(shot("result", `ຜົນແບບທົດສອບ ${K("퀴즈 결과")}`), shot("prefs", `ໜ້າຈໍ · ຂະໜາດຕົວໜັງສື ${K("화면 · 글자 크기")}`))
 };
 for (const p of P) if (FIG[p.code]) p.info += FIG[p.code];
+/* app poster at the top of 이 앱은 (like KoJey, RYU 2026-11-26, v2.71); the A4 poster lives in /mnt/project-files/kor-app/poster */
+{ const p = P.find(p => p.code === "HP-A-01"), i = p.info.indexOf("</div>") + 6;
+  p.info = p.info.slice(0, i) + `<figure class="shot poster"><a href="img/help/poster-lo.webp" target="_blank" rel="noopener"><img src="img/help/poster-lo.webp" width="1240" height="1754" loading="lazy" alt="poster"></a><figcaption>ໂປສເຕີ: ແອັບນີ້ ແລະ ວິທີຕິດຕັ້ງ. ກົດເພື່ອເບິ່ງຮູບໃຫຍ່. ${K("포스터")}</figcaption></figure>` + p.info.slice(i); }
 
 fs.writeFileSync(path.join(root, "data/HP.json"), JSON.stringify(P.map(p => ({code: p.code, t: p.t, lv: 0, type: "정보", info: p.info}))));
 const tf = path.join(root, "src/titles-lo.txt");
