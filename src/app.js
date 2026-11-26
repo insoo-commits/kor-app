@@ -622,9 +622,11 @@ function render(){
   /* 대한민국 pages: the page itself and the prev / next buttons; no play controls (RYU 2026-11-20, v2.19) */
   if (b.info){ $("controls").hidden = true; $("ctlrep").hidden = true;
     const art = h("article", {class: "info"}); art.innerHTML = b.info;
-    view.replaceChildren(art, b.tq ? tqView(b) : "", pnRow(b.code));
     { const sp = art.querySelector("#statsPage"); if (sp) STP.page(sp); const sv = art.querySelector("#surveyPage"); if (sv) SV.form(sv, true); }   // 학습 통계 · 의견 보내기 pages (src/stats.js, v2.68)
-    return; }
+    { const tr = art.querySelector("#tpRandom"); if (tr) tprMount(tr); }   // TOPIK random practice (as KoJey, v2.70)
+    if (b.code.startsWith("TP-") && !art.querySelector(".ib")) ibGroup(art);   // TOPIK guide pages, each group in a box (as KoJey)
+    const bq = !b.tq ? b : MOCK[b.code] ? mockBundle(b) : isPage(b.code) ? pageBundle(b) : b;   // mock tests and 5-question pages (as KoJey)
+    view.replaceChildren(art, bq.tq ? tqView(bq) : "", pnRow(b.code)); return; }
   /* the two repeat buttons sit in the control bar above its bottom line, learn tab only (RYU 2026-11-16, v1.67) */
   $("ctlrep").replaceChildren(...(S.mode !== "quiz" ? [
     h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll, h("kbd", {class: "kc"}, "C")),
@@ -644,30 +646,49 @@ const TQ = {}, NUM = "①②③④", WHO = {m: "남자: ", f: "여자: ", n: ""}
 /* v2.34: a set (one script or text, two or more questions) shows the script or text once; a score line counts the answers on this page */
 const tqList = b => b.tq.flatMap((q, i) => q.qs ? q.qs.map((s, j) => [b.code + "#" + i + "." + j, s]) : [[b.code + "#" + i, q]]);
 function tqScore(b){ const L = tqList(b), done = L.filter(([k]) => TQ[k] != null), ok = done.filter(([k, q]) => TQ[k] === q.a).length;
-  return done.length ? "ຖືກ " + ok + " / " + done.length + " (ທັງໝົດ " + L.length + " ຂໍ້)" : "ທັງໝົດ " + L.length + " ຂໍ້"; }
+  return done.length ? "ຖືກ " + ok + " / " + done.length + " (ທັງໝົດ " + L.length + " ຂໍ້)" : ""; }   // v1.18.2: nothing until the first answer (RYU)
 const TQB = {};
 function tqDone(k){ const code = k.split("#")[0], b = TQB[code]; if (!b) return; const L = tqList(b); if (L.every(([x]) => TQ[x] != null)) ST.log("topik", code, L.filter(([x, q]) => TQ[x] === q.a).length, L.length); }   // usage statistics: TOPIK set finished
-function tqView(b){ TQB[b.code] = b;
-  const sc = h("div", {class: "tqsc"}, tqScore(b));
-  return h("section", {class: "tq"}, h("h3", null, "ລອງເຮັດຂໍ້ສອບ ", h("span", {class: "ko"}, "연습 문제")), b.tq.map((q, i) => tqItem(b, q, i, () => sc.textContent = tqScore(b))), sc,
-    h("div", {class: "rowbtns", style: "justify-content:center"}, h("button", {class: "btn", type: "button", onclick: () => { tqList(b).forEach(([k]) => delete TQ[k]); render(); }}, "ເລີ່ມໃໝ່ທັງໝົດ ", h("span", {class: "ko"}, "처음부터"))));
+function tqView(b, bare){ TQB[b.code] = b;
+  const sc = h("div", {class: "tqsc"}, tqScore(b)), again = h("div", {class: "rowbtns", style: "justify-content:center"}, h("button", {class: "btn", type: "button", onclick: () => { tqList(b).forEach(([k]) => delete TQ[k]); render(); }}, "ເລີ່ມໃໝ່ທັງໝົດ ", h("span", {class: "ko"}, "다시 풀기")));
+  const upd = () => { sc.textContent = tqScore(b); again.hidden = !sc.textContent; }; upd();
+  return h("section", {class: "tq"}, bare ? null : h("h3", null, MOCK[b.code] ? "ຂໍ້ສອບຈຳລອງ " : "ລອງເຮັດຂໍ້ສອບ ", h("span", {class: "ko"}, MOCK[b.code] ? "시험지" : "연습 문제"),
+      MOCK[b.code] ? h("button", {class: "btn tqnew", type: "button", onclick: () => newMock(b.code)}, "ຂໍ້ສອບຊຸດໃໝ່ ", h("span", {class: "ko"}, "새 시험지"))
+        : isPage(b.code) ? h("button", {class: "btn tqnew", type: "button", onclick: () => newPage(b.code)}, "ຄຳຖາມໃໝ່ ", h("span", {class: "ko"}, "새 문제")) : null), b.tq.map((q, i) => tqItem(b, q, i, upd)), sc, again);
 }
 const tqScript = au => h("div", {class: "tqs ko"}, au.map(l => h("div", null, WHO[l[0]] ? h("b", null, WHO[l[0]]) : null, l[1])));
-function tqChoices(q, k, redo){ const st = TQ[k];
-  return [h("div", {class: "choices tqo" + (q.o.length < 3 ? " two" : "")}, q.o.map((o, j) => h("button", {class: "choice" + (q.lo ? "" : " ko") + (st != null ? (j === q.a ? " right" : j === st ? " wrong" : "") : ""), type: "button", disabled: st != null,
-      onclick: () => { TQ[k] = j; redo(); tqDone(k); }}, h("span", {class: "n"}, NUM[j]), " " + o))),
+/* picture questions (v1.18.11, RYU): the four pictures themselves are the answer buttons */
+/* v1.19.18: wrap each h3 and what follows it (up to the next h3 or h2) in the .ib box used on the 대한민국 pages */
+function ibGroup(art){
+  const box = (h3, items) => { const ib = h("div", {class: "ib"}), bb = h("div", {class: "ibb"}); h3.replaceWith(ib); ib.append(h3, bb); bb.append(...items); return ib; };
+  art.querySelectorAll(".two > div").forEach(d => { const f = d.firstElementChild; if (f && f.tagName === "H3") { const rest = [...d.childNodes].filter(n => n !== f); box(f, rest); } });
+  [...art.children].filter(e => e.tagName === "H3").forEach(h3 => { const items = []; let n = h3.nextSibling;
+    while (n && !(n.nodeType === 1 && /^H[23]$/.test(n.tagName)) && !(n.id === "tpRandom")) { items.push(n); n = n.nextSibling; }
+    box(h3, items); });
+}
+function tqPics(q){ if (!q.p || !q.o || q.o.join("") !== "①②③④" || !q.p.includes('class="pics"')) return null;
+  const t = document.createElement("template"); t.innerHTML = q.p; const ds = [...t.content.querySelectorAll(".pics > div")];
+  return ds.length === 4 ? ds.map(d => { d.querySelector("b")?.remove();
+    const sp = d.querySelector("span:not(.tx)");   /* v1.18.13: Korean words in a picture (graph labels) at text size, the icon stays big */
+    if (sp && /[가-힣0-9]/.test(sp.textContent)) { const m = sp.textContent.match(/^([^가-힣A-Za-z0-9]*)(.*)$/s);   /* v1.19.18: numbers too (300 → 600) */
+      sp.className = "tx kt"; sp.textContent = m[2].trim(); if (m[1].trim()) { const em = document.createElement("i"); em.className = "em"; em.textContent = m[1].trim(); d.insertBefore(em, sp); } }
+    return d.innerHTML; }) : null; }
+function tqChoices(q, k, redo, pics){ const st = TQ[k];
+  return [h("div", {class: "choices tqo" + (pics ? " picgrid" : q.o.length < 3 ? " two" : "")}, q.o.map((o, j) => h("button", {class: "choice" + (pics ? " picch" : "") + (q.lo ? "" : " ko") + (st != null ? (j === q.a ? " right" : j === st ? " wrong" : "") : ""), type: "button", disabled: st != null,
+      onclick: () => { TQ[k] = j; tpMark(k, j === q.a); redo(); tqDone(k); }}, h("span", {class: "n"}, NUM[j]), ...(pics ? [(() => { const d = h("div", {class: "pic"}); d.innerHTML = pics[j]; return d; })()] : [" " + o])))),
     st != null ? h("div", {class: "tqx"}, h("div", {class: "res " + (st === q.a ? "ok" : "no")}, st === q.a ? "✓ ຖືກ" : "✗ ຍັງບໍ່ຖືກ · ຄຳຕອບ " + NUM[q.a]), h("p", null, koMix(q.x)),
       h("button", {class: "btn", type: "button", onclick: () => { delete TQ[k]; redo(); }}, "ລອງໃໝ່ ", h("span", {class: "ko"}, "다시"))) : null]; }
 function tqItem(b, q, i, upd){
   const k = b.code + "#" + i, redo = () => { el.replaceWith(tqItem(b, q, i, upd)); upd(); };
+  const pics = tqPics(q);
   const answered = q.qs ? q.qs.some((s, j) => TQ[k + "." + j] != null) : TQ[k] != null;
   const el = h("div", {class: "tqi" + (q.qs ? " set" : "")},
-    h("div", {class: "tqd"}, h("b", null, (i + 1) + ". "), h("span", {class: "ko"}, q.d)),
-    q.dl ? h("div", {class: "tqdl"}, q.dl) : null,
-    q.au ? h("div", {class: "tqa"}, h("button", {class: "wrep tbtn tqplay", type: "button", onclick: ev => tqPlay(q, ev.currentTarget)}, ico("spk"), "ຟັງ ", h("span", {class: "ko"}, "듣기"))) : null,
-    q.p ? (() => { const d = h("div", {class: "tqp ko"}); d.innerHTML = q.p; return d; })() : null,
+    h("div", {class: "tqd"}, h("b", {class: "tqn"}, String(i + 1)),   // RYU v1.18.2: listen button on the right; the English line starts under the Korean
+      h("div", {class: "tqdt"}, h("span", {class: "ko"}, q.d), q.dl ? h("div", {class: "tqdl"}, q.dl) : null),
+      q.au ? h("button", {class: "wrep tbtn tqplay", type: "button", onclick: ev => tqPlay(q, ev.currentTarget)}, ico("spk"), "ຟັງ ", h("span", {class: "ko"}, "듣기")) : null),
+    q.p && !pics ? (() => { const d = h("div", {class: "tqp ko"}); d.innerHTML = q.p; return d; })() : null,
     q.au && answered ? h("details", {class: "tqsd"}, h("summary", null, "ເບິ່ງບົດ ", h("span", {class: "ko"}, "대본")), tqScript(q.au)) : null,
-    q.qs ? q.qs.map((s, j) => h("div", {class: "tqsub"}, h("div", {class: "tqq ko"}, h("b", null, "(" + (j + 1) + ") "), s.q), ...tqChoices(s, k + "." + j, redo))) : tqChoices(q, k, redo));
+    q.qs ? q.qs.map((s, j) => h("div", {class: "tqsub"}, h("div", {class: "tqq ko"}, h("b", {class: "tqn"}, "(" + (j + 1) + ")"), h("span", null, s.q)), ...tqChoices(s, k + "." + j, redo))) : tqChoices(q, k, redo, pics));
   return el;
 }
 /* the script once, line by line (남자 in a man's voice); the same button stops it */
@@ -681,6 +702,91 @@ async function tqPlay(q, btn){
     await gap(500);
   }
   if (tok === P.tok) stopPlay();
+}
+/* TOPIK question bank (v1.17, RYU 2026-11-25): random practice (TP-H-00) and random mock tests (TP-H-01, TP-H-02).
+   A "unit" is one question of a page, or a whole set (one script, two questions). Random practice draws units of one area
+   without repeats until the area is used up; the mock tests take one question of each type in the order of the real test.
+   Wrong answers anywhere in TOPIK are kept in S.tpWrong (by their page key), and "ຂໍ້ທີ່ຂ້ອຍຜິດ" asks them again. */
+const TPA = {all: ["TP-B", "TP-C", "TP-D", "TP-F", "TP-G"], "TP-B": ["TP-B"], "TP-C": ["TP-C"], "TP-D": ["TP-D"], "TP-F": ["TP-F"], "TP-G": ["TP-G"]};
+const TPN = [["all", "ທຸກພາກ", "전체"], ["TP-B", "TOPIK I ຟັງ", "Ⅰ 듣기"], ["TP-C", "TOPIK I ອ່ານ", "Ⅰ 읽기"], ["TP-D", "TOPIK II ຟັງ", "Ⅱ 듣기"], ["TP-F", "TOPIK II ອ່ານ", "Ⅱ 읽기"], ["TP-G", "ຄຳສັບ ແລະ ໄວຍາກອນ", "어휘·문법"], ["wrong", "ຂໍ້ທີ່ຂ້ອຍຜິດ", "틀린 문제"]];
+const MOCK = {
+  "TP-H-01": ["TP-B-01", "TP-B-02", "TP-B-03", "TP-B-04", "TP-B-05", "TP-B-06", "TP-B-07", "TP-B-08", "TP-B-09", ["TP-B-10", "TP-B-11"],
+              "TP-C-01", "TP-C-02", "TP-C-02", "TP-C-03", "TP-C-04", "TP-C-05", "TP-C-06", "TP-C-07", ["TP-C-08", "TP-C-09"], "TP-C-10"],
+  "TP-H-02": ["TP-D-01", "TP-D-02", "TP-D-03", "TP-D-04", "TP-D-05", "TP-D-06", "TP-D-07", "TP-D-08", "TP-D-09", "TP-D-10",
+              "TP-F-01", "TP-F-02", "TP-F-03", "TP-F-04", "TP-F-05", "TP-F-06", "TP-F-07", "TP-F-08", "TP-F-09", ["TP-F-10", "TP-F-11"]]};
+const tpTitle = code => { const b = bundle(code), m = b && /<h2>(.*?)<\/h2>/.exec(b.info || ""); return m ? m[1] : code; };
+const tpBundles = subs => (cache.get("TP") || []).filter(b => subs.includes(b.code.slice(0, 4)) && b.tq);
+/* one question from a page: [code, i] = the whole unit, [code, i, j] = only question j of a set (as a single question) */
+function tpQ(ref, here){ const [code, i, j] = ref, b = bundle(code), q = b && b.tq[i]; if (!q) return null;
+  const c = JSON.parse(JSON.stringify(j == null ? q : {...q.qs[j], d: q.d + " " + q.qs[j].q, dl: q.dl, au: q.au, p: q.p}));
+  if (ref[3] && !c.qs){ const o = c.o; c.o = ref[3].map(x => o[x]); c.a = ref[3].indexOf(c.a); }   // choices in a new order (kept with the sheet)
+  const back = " → ທົບທວນ: " + tpTitle(code);
+  if (here) return c;
+  if (c.qs) c.qs.forEach(s => s.x += back); else c.x += back;
+  return c; }
+/* the page key a question of a random sheet stands for, so that a wrong answer is remembered under the page's own key */
+const TPREF = {};
+function tpSrc(k){ const [code, rest] = k.split("#"), refs = TPREF[code]; if (!refs) return k;
+  const [i, j] = rest.split(".").map(Number), r = refs[i]; if (!r) return k;
+  return r[0] + "#" + r[1] + (r[2] != null ? "." + r[2] : j != null && !isNaN(j) ? "." + j : ""); }
+function tpMark(k, ok){ if (!k.startsWith("TP-")) return; const src = tpSrc(k); S.tpWrong = S.tpWrong || {};
+  if (ok) delete S.tpWrong[src]; else S.tpWrong[src] = 1; save(); }
+const tpClear = code => Object.keys(TQ).forEach(k => { if (k.startsWith(code + "#")) delete TQ[k]; });
+/* a new order of the choices for a single question (not for picture choices ①②③④ or places in a text ㉠㉡㉢㉣) */
+function tpPerm(ref){ const b = bundle(ref[0]), q = b.tq[ref[1]], s = ref[2] != null ? q.qs[ref[2]] : q;
+  return s.qs || /^(①②③④|㉠㉡㉢㉣)$/.test(s.o.join("")) ? ref : [ref[0], ref[1], ref[2] ?? null, shuffle(s.o.map((_, i) => i))]; }
+function tpSheet(code, refs){ TPREF[code] = refs;
+  return {code, t: "", info: "", tq: refs.map(tpQ).filter(Boolean)}; }
+/* mock test: the same sheet until "New test" (S.mock), so a reload does not change it */
+function mockRefs(code){ S.mock = S.mock || {};
+  if (!S.mock[code]){ S.mock[code] = MOCK[code].map(slot => { const c = Array.isArray(slot) ? slot[Math.floor(Math.random() * slot.length)] : slot, b = bundle(c);
+    const all = b.tq.flatMap((q, i) => q.qs ? q.qs.map((s, j) => [c, i, j]) : [[c, i]]); return tpPerm(all[Math.floor(Math.random() * all.length)]); }); save(); }
+  return S.mock[code]; }
+function mockBundle(b){ const refs = mockRefs(b.code); TPREF[b.code] = refs; return {...b, tq: refs.map(tpQ).filter(Boolean)}; }
+function newMock(code){ delete S.mock[code]; tpClear(code); save(); render(); }
+/* lesson pages (RYU 2026-11-25, v1.18): 5 questions at a time from the page's own bank, no repeats until all were shown */
+const PAGE_N = 5, isPage = code => /^TP-[BCDFG]-/.test(code);
+function pageRefs(code){ S.tpPage = S.tpPage || {}; S.tpSeen = S.tpSeen || {};
+  if (!S.tpPage[code]){ const b = bundle(code), units = b.tq.map((q, i) => [code, i]), size = r => b.tq[r[1]].qs ? b.tq[r[1]].qs.length : 1;
+    let seen = new Set(S.tpSeen[code] || []), fresh = units.filter(r => !seen.has(r[1]));
+    if (!fresh.length){ seen = new Set(); fresh = units; }
+    const picked = []; let n = 0;
+    for (const r of shuffle(fresh)){ if (n >= PAGE_N) break; picked.push(r); n += size(r); }
+    if (n < PAGE_N) for (const r of shuffle(units.filter(x => !picked.includes(x)))){ if (n >= PAGE_N) break; picked.push(r); n += size(r); }
+    picked.forEach(r => seen.add(r[1])); S.tpSeen[code] = [...seen];
+    S.tpPage[code] = picked.map(tpPerm); save(); }
+  return S.tpPage[code]; }
+function pageBundle(b){ const refs = pageRefs(b.code); TPREF[b.code] = refs;
+  return {...b, tq: refs.map(r => tpQ(r, true))}; }
+function newPage(code){ delete S.tpPage[code]; tpClear(code); save(); render(); }
+/* random practice page */
+function tprMount(box){
+  const st = S.tpr = S.tpr || {area: "all", n: 10};
+  const units = a => a === "wrong" ? Object.keys(S.tpWrong || {}).map(k => { const [c, r] = k.split("#"), [i, j] = r.split(".").map(Number); return [c, i, isNaN(j) ? undefined : j]; }).filter(r => bundle(r[0]))
+    : tpBundles(TPA[a]).flatMap(b => b.tq.map((q, i) => [b.code, i]));
+  const size = r => { const q = bundle(r[0]).tq[r[1]]; return r[2] == null && q.qs ? q.qs.length : 1; };
+  const draw = () => { const pool = units(st.area); if (!pool.length) return;
+    S.tpSeen = S.tpSeen || {}; let seen = new Set(S.tpSeen[st.area] || []);
+    let fresh = pool.filter(r => !seen.has(r.join(":")));
+    if (fresh.length < 1){ seen = new Set(); fresh = pool; }
+    const picked = []; let n = 0;
+    for (const r of shuffle(fresh)){ if (n >= st.n) break; picked.push(r); n += size(r); }
+    if (n < st.n) for (const r of shuffle(pool.filter(x => !picked.includes(x)))){ if (n >= st.n) break; picked.push(r); n += size(r); }
+    picked.forEach(r => seen.add(r.join(":"))); S.tpSeen[st.area] = [...seen];
+    st.refs = shuffle(picked).map(tpPerm); tpClear("TP-R"); save(); paint(); };
+  const sheet = h("div", {class: "tprsheet"});
+  const paint = () => {
+    const pool = units(st.area), left = st.area === "wrong" ? pool.length : pool.filter(r => !new Set((S.tpSeen || {})[st.area] || []).has(r.join(":"))).reduce((t, r) => t + size(r), 0);
+    box.replaceChildren(
+      h("div", {class: "tprrow"}, ...TPN.map(([k, en, ko]) => { const c = k === "wrong" ? Object.keys(S.tpWrong || {}).length : null;
+        return h("button", {class: "seg" + (st.area === k ? " on" : ""), type: "button", disabled: k === "wrong" && !c, onclick: () => { st.area = k; st.refs = null; tpClear("TP-R"); save(); paint(); }}, en + " ", h("span", {class: "ko"}, ko), c != null ? " · " + c : ""); })),
+      h("div", {class: "tprrow"}, ...[10, 20].map(n => h("button", {class: "seg" + (st.n === n ? " on" : ""), type: "button", onclick: () => { st.n = n; save(); paint(); }}, n + " ຂໍ້")),
+        h("button", {class: "btn primary", type: "button", onclick: draw}, st.refs ? "ຄຳຖາມໃໝ່ " : "ເລີ່ມ ", h("span", {class: "ko"}, st.refs ? "새 문제" : "시작"))),
+      h("p", {class: "tprinfo"}, st.area === "wrong" ? "ຂໍ້ທີ່ຕອບຜິດ " + pool.length + " ຂໍ້. ຕອບຖືກແລ້ວ ຂໍ້ນັ້ນຈະອອກຈາກລາຍການ." :
+        "ພາກນີ້ມີ " + pool.reduce((s, r) => s + size(r), 0) + " ຂໍ້ · ຍັງບໍ່ທັນເຫັນໃນຮອບນີ້ " + left + " ຂໍ້"),
+      sheet);
+    sheet.replaceChildren(st.refs && st.refs.length ? tqView(tpSheet("TP-R", st.refs), true) : ""); };
+  paint();
 }
 /* word cards: a word that does not fit its line is shrunk until it does, so every word stays on one line at the same height */
 function fitWords(){ document.querySelectorAll(".wcard .k").forEach(k => { let fs = parseFloat(getComputedStyle(k).fontSize);
