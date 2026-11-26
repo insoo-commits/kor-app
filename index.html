@@ -1214,6 +1214,9 @@ html.tab .kbinfo>span{display:inline-flex}
 :root[data-theme="dark"] .info.hpinfo .ib.hc3{--hc:#E0A84A}
 .info.hpinfo .ib.ib-lead{counter-increment:none;border-top-width:1px;background:color-mix(in srgb,var(--accent-soft) 45%,var(--sheet))}
 .info.hpinfo>figure.poster{margin-bottom:14px}
+/* v2.78 (RYU): app name as a small badge on the first line, like KoJey; big title 한국어 배우기 */
+#app .top .eyebrow .logo{display:inline-block;font:700 12px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.6px;padding:3px 7px 2px;border-radius:6px;background:#fff;color:#1A3F86;margin-right:6px;vertical-align:1px;opacity:1}
+@media (max-width:600px){#app .top .eyebrow .logo{font-size:11px;padding:2px 6px 1px}}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -1436,6 +1439,7 @@ html.tab .tqx .res{font-size:19.2px}
 html.tab .info .elerow figcaption{font-size:15px}
 html.tab .info.hpinfo .ib>h3{font-size:20.4px}
 html.tab .info.hpinfo .ib>h3::before{font-size:16.8px}
+@media (max-width:600px){html.tab #app .top .eyebrow .logo{font-size:13.2px}}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -1752,8 +1756,8 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
     </svg>
     <img class="elehd" src="img/ele/main.webp" width="268" height="290" alt="">
     <div class="brand">
-      <span class="eyebrow">ຮຽນພາສາເກົາຫຼີຕາມຫົວຂໍ້ · <span class="ko">한국어 배우기</span></span>
-      <h1 class="ko">phasaKAO</h1>
+      <span class="eyebrow"><span class="logo">phasaKAO</span> ຮຽນພາສາເກົາຫຼີຕາມຫົວຂໍ້</span>
+      <h1 class="ko">한국어 배우기</h1>
     </div>
     <div class="stats" id="stats"></div>
   </header>
@@ -1794,6 +1798,6 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-26%20v2.77"></script>
-<script src="app.js?v=2026-11-26%20v2.77"></script>
+<script src="audio/index.js?v=2026-11-26%20v2.78"></script>
+<script src="app.js?v=2026-11-26%20v2.78"></script>
 </body></html>
