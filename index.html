@@ -1057,6 +1057,43 @@ html.tab .kbinfo>span{display:inline-flex}
 .pb{border:0;background:none;padding:5px 11px;font:inherit;font-size:12px;color:var(--ink);cursor:pointer}
 .pb+.pb{border-left:1px solid var(--line)}
 .pb.on{background:var(--accent);color:#fff;font-weight:600}
+/* ---------- 사용 통계 page (src/stats.js, v1.3) ---------- */
+.stwrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:6px}
+.sttiles{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px}
+.sttile{display:flex;flex-direction:column;gap:1px;padding:12px 14px;border-radius:14px;background:var(--raise);border:1px solid var(--line);position:relative;overflow:hidden}
+.sttile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+.sttile b{font:700 28px/1.15 var(--display);color:var(--ink);letter-spacing:-.5px}
+.sttile span{font-size:13px;color:var(--ink)} .sttile span.ko{font-size:12px;color:var(--muted)} .sttile small{font-size:11px;color:var(--muted)}
+.stcard{padding:14px 14px 10px;border-radius:14px;background:var(--sheet);border:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.05);min-width:0}
+.stcard.wide{grid-column:1/-1}
+.info .stcard h3{margin:0 0 8px;font-size:15px} .info .stcard h3 .ko{font-weight:400;color:var(--muted);font-size:13px}
+.stsvg{width:100%;height:auto;display:block;overflow:visible}
+.stgrid{stroke:var(--line);stroke-width:1} .stax{fill:var(--muted);font-size:11px;font-family:var(--lao)}
+.stline{fill:none;stroke:var(--k3);stroke-width:2.2;stroke-linejoin:round} .stdot{fill:var(--sheet);stroke:var(--k3);stroke-width:2}
+.stleg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-top:4px;flex-wrap:wrap}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:6px} .sw.ln{height:3px;background:var(--k3);border-radius:2px}
+.sthb{display:flex;flex-direction:column;gap:7px}
+.sthr{display:grid;grid-template-columns:minmax(90px,38%) 1fr auto;align-items:center;gap:8px;font-size:13px}
+.sthl{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .sthl small{display:block;font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.stht{height:12px;border-radius:6px;background:var(--line);overflow:hidden} .stht i{display:block;height:100%;border-radius:6px;transition:width .6s ease}
+.sthr b{font-variant-numeric:tabular-nums;font-size:13px}
+.stdnw{display:flex;align-items:center;gap:14px;flex-wrap:wrap} .stdnw .stsvg{width:150px;flex:none}
+.stdn{fill:none;stroke-width:26} .stdc{fill:var(--ink);font:700 30px var(--display)}
+.stdl{list-style:none;margin:0;padding:0;font-size:13px;display:flex;flex-direction:column;gap:6px} .stdl .sw{margin:0 6px 0 0}
+.stnote{grid-column:1/-1;font-size:12px;color:var(--muted);margin:2px 0 0}
+/* satisfaction survey (like KoJey, v2.68) */
+.svbox:empty{display:none}
+.svcard{position:relative;margin:10px 0 4px;padding:14px 16px;border-radius:16px;background:var(--card,#fff);border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,40,90,.06)}
+.svq{margin:10px 0 6px;font-size:15px}.svhead .svq{margin:0}
+.svstars{display:flex;gap:4px;margin:6px 0 2px}
+.svstar{font-size:30px;line-height:1;background:none;border:0;color:var(--line2,#ccd);cursor:pointer;padding:2px 3px}.svstar.on{color:#F2B705}
+.svchips{display:flex;flex-wrap:wrap;gap:6px}
+.svchip{border:1px solid var(--line);background:var(--sheet,#fff);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:14px;cursor:pointer}
+.svchip.on{background:var(--accent);border-color:transparent;color:#fff}
+.svtext{width:100%;box-sizing:border-box;margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;font:inherit;font-size:14px;background:var(--sheet,#fff);color:var(--ink)}
+.svbtns{display:flex;justify-content:flex-end;margin-top:8px}
+.svx{position:absolute;right:8px;top:6px;border:0;background:none;font-size:22px;color:var(--muted);cursor:pointer}
+.svdone p{margin:0}
 
 /* tablet text (generated) */
 html.tab{zoom:1}
@@ -1241,6 +1278,23 @@ html.tab .qwrong h3{font-size:16.8px}
 html.tab .qw{font-size:16.8px}
 html.tab .prefs{font-size:14.4px}
 html.tab .pb{font-size:14.4px}
+html.tab .sttile span{font-size:15.6px}
+html.tab .sttile span.ko{font-size:14.4px}
+html.tab .sttile small{font-size:13.2px}
+html.tab .info .stcard h3{font-size:18px}
+html.tab .info .stcard h3 .ko{font-size:15.6px}
+html.tab .stax{font-size:13.2px}
+html.tab .stleg{font-size:14.4px}
+html.tab .sthr{font-size:15.6px}
+html.tab .sthl small{font-size:13.2px}
+html.tab .sthr b{font-size:15.6px}
+html.tab .stdl{font-size:15.6px}
+html.tab .stnote{font-size:14.4px}
+html.tab .svq{font-size:18px}
+html.tab .svstar{font-size:36px}
+html.tab .svchip{font-size:16.8px}
+html.tab .svtext{font-size:16.8px}
+html.tab .svx{font-size:26.4px}
 /* iPad control row: kept on one line, boxes a bit taller (RYU 2026-11-14, v0.96; text 1.2x from v0.97) */
 html.tab .controls .seg button{font-size:18px;height:36px}
 html.tab .controls .bsel{font-size:18px;height:38px}
@@ -1521,6 +1575,7 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
     <input id="q" type="search" placeholder="ຄົ້ນຫາດ້ວຍພາສາເກົາຫຼີ ຫຼື ພາສາລາວ (ຕົວຢ່າງ: 밥, ເຂົ້າ)" autocomplete="off">
   </label>
   <div class="mine" id="mine"></div>
+  <div class="svbox" id="svbox"></div>
   <div class="menubox">
     <nav class="groups" id="groups" aria-label="ໝວດໃຫຍ່"></nav>
     <nav class="subs" id="subs" role="tablist" aria-label="ໝວດຍ່ອຍ"></nav>
@@ -1545,13 +1600,13 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
   </section>
   <div class="player" id="player" hidden><span class="t ko" id="pt"></span><button id="ppause" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5.5" y="4.5" width="4.5" height="15" rx="1"/><rect x="14" y="4.5" width="4.5" height="15" rx="1"/></svg></span><span class="bt">ຢຸດຊົ່ວຄາວ</span></button><button id="pstop" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5.5" y="5.5" width="13" height="13" rx="1.5"/></svg></span><span class="bt">ຍົກເລີກ</span></button></div>
   <p class="foot" id="voiceNote"></p>
-  <p class="foot"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></span>ຟັງສຽງ · <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>ຟັງຊ້ຳ (1–5 ເທື່ອ) ຈົນກວ່າຈະກົດອີກເທື່ອ. ບັນທຶກການຮຽນໄວ້ໃນອຸປະກອນນີ້ເທົ່ານັ້ນ.</p>
+  <p class="foot"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></span>ຟັງສຽງ · <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>ຟັງຊ້ຳ (1–5 ເທື່ອ) ຈົນກວ່າຈະກົດອີກເທື່ອ. ບັນທຶກການຮຽນໄວ້ໃນອຸປະກອນນີ້. ເພື່ອປັບປຸງແອັບ, ສົ່ງພຽງຈຳນວນການໃຊ້ແບບບໍ່ລະບຸຊື່ (ບໍ່ມີຊື່ ຫຼື ອີເມວ).</p>
   <p class="dlline" id="dlbox"><a href="#" id="dlAll">⤓ ບັນທຶກສຽງໄວ້ໃນແອັບ · <span class="ko">음성 앱에 저장</span></a> <span class="count" id="dlMsg"></span></p>
   <p class="dlnote" id="dlNote" hidden>ບັນທຶກສຽງທັງໝົດໄວ້ໃນແອັບນີ້ແລ້ວ. ຟັງໄດ້ໂດຍບໍ່ມີອິນເຕີເນັດ.<br><span class="ko">모든 음성을 이 앱 안에 저장했습니다. 인터넷 없이 들을 수 있습니다.</span></p>
   <div class="prefs" id="prefs"></div>
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-26%20v2.67"></script>
-<script src="app.js?v=2026-11-26%20v2.67"></script>
+<script src="audio/index.js?v=2026-11-26%20v2.68"></script>
+<script src="app.js?v=2026-11-26%20v2.68"></script>
 </body></html>

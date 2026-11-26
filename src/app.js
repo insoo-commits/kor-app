@@ -196,7 +196,7 @@ async function playSingle(el){
     await gap(500);
   }
 }
-async function playBundle(chain){
+async function playBundle(chain){ ST.log("play", S.code, chain ? "all" : "lesson");   // usage statistics (src/stats.js, v2.68)
   if (P.mode === (chain ? "chain" : "bundle")) return stopPlay();   // same button again stops it (RYU 2026-11-19, v2.15)
   stopPlay();
   const tok = ++P.tok; P.mode = chain ? "chain" : "bundle"; markMode(); P.paused = false; P.round = 1;
@@ -308,6 +308,7 @@ function streak(){
 }
 function drawMine(){
   const box = $("mine"); if (!box) return;
+  SV.offer($("svbox"), Object.keys(S.seen || {}).length, (S.days || []).length);   // satisfaction survey card after 5 lessons on 2 days (v2.68)
   const L = IDX.filter(r => r[3] !== "info"), seen = S.seen || {}, n = L.filter(r => seen[r[0]]).length, pct = L.length ? Math.round(1000 * n / L.length) / 10 : 0;
   const at = L.findIndex(r => r[0] === S.code), nx = L.slice(at + 1).concat(L.slice(0, at + 1)).find(r => !seen[r[0]]) || L[(at + 1) % L.length];
   const td = S.td && S.td.d === dayStr(new Date()) ? S.td : {l: 0, q: 0}, st = streak();
@@ -575,7 +576,7 @@ function renderQuiz(b){
     q.say && q.kind === "mean" || q.picked != null && q.say ? h("div", {class: "rowbtns", style: "justify-content:center", "data-say": q.say}, spk()) : null,
     h("div", {class: "choices"}, q.opts.map(o => h("button", {class: "choice" + (q.toLo ? "" : " ko") + (q.picked != null ? (o === q.a ? " right" : o === q.picked ? " wrong" : "") : ""), type: "button", disabled: q.picked != null,
       onclick: () => { q.picked = o; if (o === q.a){ quiz.right++; if (quiz.review) wbDrop(q); } render(); if (!q.toLo){ stopPlay(); const tok = ++P.tok; say(tok, q.kind === "blank" ? q.blank.full : q.a); } }}, o))),
-    q.picked != null ? h("div", {class: "rowbtns", style: "justify-content:flex-end"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz.at++; if (quiz.at === quiz.qs.length){ if (!quiz.review){ wbAdd(quiz); const t = dayStr(new Date()); if (!S.td || S.td.d !== t) S.td = {d: t, l: 0, q: 0}; S.td.q++; } save(); drawMine(); } render(); const nq = quiz.qs[quiz.at], el = document.querySelector(".quizq.listen"); if (nq && nq.kind === "listen" && el) playSingle(el); }}, T.nextCard)) : null];
+    q.picked != null ? h("div", {class: "rowbtns", style: "justify-content:flex-end"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz.at++; if (quiz.at === quiz.qs.length){ if (!quiz.review){ ST.log("quiz", quiz.code, quiz.right, quiz.qs.length); wbAdd(quiz); const t = dayStr(new Date()); if (!S.td || S.td.d !== t) S.td = {d: t, l: 0, q: 0}; S.td.q++; } save(); drawMine(); } render(); const nq = quiz.qs[quiz.at], el = document.querySelector(".quizq.listen"); if (nq && nq.kind === "listen" && el) playSingle(el); }}, T.nextCard)) : null];
 }
 
 /* ---------- search ---------- */
@@ -619,7 +620,9 @@ function render(){
   /* 대한민국 pages: the page itself and the prev / next buttons; no play controls (RYU 2026-11-20, v2.19) */
   if (b.info){ $("controls").hidden = true; $("ctlrep").hidden = true;
     const art = h("article", {class: "info"}); art.innerHTML = b.info;
-    view.replaceChildren(art, b.tq ? tqView(b) : "", pnRow(b.code)); return; }
+    view.replaceChildren(art, b.tq ? tqView(b) : "", pnRow(b.code));
+    { const sp = art.querySelector("#statsPage"); if (sp) STP.page(sp); const sv = art.querySelector("#surveyPage"); if (sv) SV.form(sv, true); }   // 학습 통계 · 의견 보내기 pages (src/stats.js, v2.68)
+    return; }
   /* the two repeat buttons sit in the control bar above its bottom line, learn tab only (RYU 2026-11-16, v1.67) */
   $("ctlrep").replaceChildren(...(S.mode !== "quiz" ? [
     h("button", {class: "wrep tbtn", type: "button", onclick: () => playBundle(true)}, ico("rep"), T.repAll, h("kbd", {class: "kc"}, "C")),
@@ -640,7 +643,9 @@ const TQ = {}, NUM = "①②③④", WHO = {m: "남자: ", f: "여자: ", n: ""}
 const tqList = b => b.tq.flatMap((q, i) => q.qs ? q.qs.map((s, j) => [b.code + "#" + i + "." + j, s]) : [[b.code + "#" + i, q]]);
 function tqScore(b){ const L = tqList(b), done = L.filter(([k]) => TQ[k] != null), ok = done.filter(([k, q]) => TQ[k] === q.a).length;
   return done.length ? "ຖືກ " + ok + " / " + done.length + " (ທັງໝົດ " + L.length + " ຂໍ້)" : "ທັງໝົດ " + L.length + " ຂໍ້"; }
-function tqView(b){
+const TQB = {};
+function tqDone(k){ const code = k.split("#")[0], b = TQB[code]; if (!b) return; const L = tqList(b); if (L.every(([x]) => TQ[x] != null)) ST.log("topik", code, L.filter(([x, q]) => TQ[x] === q.a).length, L.length); }   // usage statistics: TOPIK set finished
+function tqView(b){ TQB[b.code] = b;
   const sc = h("div", {class: "tqsc"}, tqScore(b));
   return h("section", {class: "tq"}, h("h3", null, "ລອງເຮັດຂໍ້ສອບ ", h("span", {class: "ko"}, "연습 문제")), b.tq.map((q, i) => tqItem(b, q, i, () => sc.textContent = tqScore(b))), sc,
     h("div", {class: "rowbtns", style: "justify-content:center"}, h("button", {class: "btn", type: "button", onclick: () => { tqList(b).forEach(([k]) => delete TQ[k]); render(); }}, "ເລີ່ມໃໝ່ທັງໝົດ ", h("span", {class: "ko"}, "처음부터"))));
@@ -648,7 +653,7 @@ function tqView(b){
 const tqScript = au => h("div", {class: "tqs ko"}, au.map(l => h("div", null, WHO[l[0]] ? h("b", null, WHO[l[0]]) : null, l[1])));
 function tqChoices(q, k, redo){ const st = TQ[k];
   return [h("div", {class: "choices tqo" + (q.o.length < 3 ? " two" : "")}, q.o.map((o, j) => h("button", {class: "choice" + (q.lo ? "" : " ko") + (st != null ? (j === q.a ? " right" : j === st ? " wrong" : "") : ""), type: "button", disabled: st != null,
-      onclick: () => { TQ[k] = j; redo(); }}, h("span", {class: "n"}, NUM[j]), " " + o))),
+      onclick: () => { TQ[k] = j; redo(); tqDone(k); }}, h("span", {class: "n"}, NUM[j]), " " + o))),
     st != null ? h("div", {class: "tqx"}, h("div", {class: "res " + (st === q.a ? "ok" : "no")}, st === q.a ? "✓ ຖືກ" : "✗ ຍັງບໍ່ຖືກ · ຄຳຕອບ " + NUM[q.a]), h("p", null, koMix(q.x)),
       h("button", {class: "btn", type: "button", onclick: () => { delete TQ[k]; redo(); }}, "ລອງໃໝ່ ", h("span", {class: "ko"}, "다시"))) : null]; }
 function tqItem(b, q, i, upd){
@@ -688,7 +693,7 @@ async function route(){
   if (byCode.has(name)) S.code = name;
   (S.lastA = S.lastA || {})[areaOf(S.code)] = S.code; (S.lastS = S.lastS || {})[subOf(S.code)] = S.code;
   if (P.nav) P.nav = false; else stopPlay();
-  track(S.code); quiz = null; save(); drawAll(); drawMine();
+  track(S.code); quiz = null; save(); drawAll(); drawMine(); ST.lesson(S.code);   // usage statistics: lesson opened (src/stats.js)
   { const c = S.code, i = IDX.findIndex(x => x[0] === c); AP.warm(c).then(() => { const n = IDX[i + 1]; if (n && S.code === c) AP.warm(n[0]); }); }   // this lesson's sound, then the next one's (for 연속 재생)
   const a = areaOf(S.code);
   if (!cache.has(a)){
