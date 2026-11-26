@@ -206,8 +206,8 @@
 #app .top h1.ko{color:#fff}
 #app .groups::before,#app .groups::after{display:none!important;content:none!important}
 #app .groups .group+.group::before{display:none!important;content:none!important}
-#app .groups .group[data-g="KR"],#app .groups .group[data-g="HP"]{margin-left:9px}
-#app .groups .group[data-g="KR"]::before,#app .groups .group[data-g="HP"]::before{content:""!important;display:block!important;position:absolute;left:-5px;top:50%;width:1px;height:16px;transform:translateY(-50%);background:var(--line2);opacity:1!important}
+#app .groups .group.msep{margin-left:9px}
+#app .groups .group.msep::before{content:""!important;display:block!important;position:absolute;left:-5px;top:50%;width:1px;height:16px;transform:translateY(-50%);background:var(--line2);opacity:1!important}
 #app .groups .group[aria-pressed="true"] .gn{color:#fff}
 #app .top .eyebrow{line-height:1.6!important;font-family:"Noto Sans Lao Looped",var(--ko),sans-serif}
 

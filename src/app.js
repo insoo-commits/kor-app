@@ -4,7 +4,8 @@
 const META = window.KO_META, AREAS = META.areas, SUBS = META.subs, IDX = META.idx;
 const byCode = new Map(IDX.map((r, i) => [r[0], i]));
 const $ = id => document.getElementById(id);
-const areaOf = c => c.slice(0, 2), subOf = c => c.slice(0, 4);
+const AL = META.alias || {}, SAL = META.subAlias || {}, SAR = META.subArea || {}, subOf = c => SAL[c.slice(0, 4)] || c.slice(0, 4),
+  areaOf = c => SAR[subOf(c)] || AL[c.slice(0, 2)] || c.slice(0, 2);   // like KoJey: K8 · K9 live in menu K7 어휘, merged subs, 조사·말끝·높임말 in 문장규칙 (v2.69)
 const T = {
   sec: {m: "ວິທີສ້າງປະໂຫຍກ", l: "ຕົວອັກສອນ", x: "ຕາຕະລາງ", w: "ຄຳສັບ", f: "ສຳນວນທີ່ໃຊ້ເລື້ອຍໆ", c: "ການປ່ຽນຮູບຄຳ", e: "ປະໂຫຍກຕົວຢ່າງ", tp: "ຂໍ້ແນະນຳ", pr: "ຄຳຄູ່", dl: "ບົດສົນທະນາ", sm: "ສະຫຼຸບ", rel: "ບົດທີ່ກ່ຽວຂ້ອງ", qz: "ຄຳຖາມທວນຄືນ"},
   level: "ລະດັບ", repBundle: "ຟັງບົດນີ້", repDlg: "ຊ້ຳບົດສົນທະນາ", repWord: "ຊ້ຳຄຳນີ້", repGroup: "ຊ້ຳກຸ່ມນີ້", example: "ຕົວຢ່າງ", repLetters: "ຟັງທຸກຕົວ", repAll: "ຟັງຕໍ່ເນື່ອງ", pause: "ຢຸດຊົ່ວຄາວ", resume: "ສືບຕໍ່", stop: "ຍົກເລີກ", hideLo: "ເຊື່ອງຄຳແປ", done: "ຮຽນຈົບແລ້ວ", markDone: "ໝາຍວ່າຮຽນຈົບແລ້ວ", next: "ບົດຕໍ່ໄປ →", prev: "← ກ່ອນໜ້າ", nextCard: "ຕໍ່ໄປ →",
@@ -332,34 +333,35 @@ function drawGroups(){
   const cur = areaOf(S.code);
   $("app").setAttribute("data-g", cur);
   $("groups").replaceChildren(...AREAS.map(a => {
-    const rows = IDX.filter(r => r[0].startsWith(a[0] + "-"));
-    return h("button", {class: "group", type: "button", "data-g": a[0], "aria-pressed": a[0] === cur ? "true" : "false", onclick: () => go(lastIn(S.lastA, a[0], rows))},
+    const rows = IDX.filter(r => areaOf(r[0]) === a[0]);
+    return h("button", {class: "group" + ((META.seps || []).includes(a[0]) ? " msep" : ""), type: "button", "data-g": a[0], "aria-pressed": a[0] === cur ? "true" : "false", onclick: () => go(lastIn(S.lastA, a[0], rows))},
       h("span", {class: "gn ko"}, a[1].replace(/\s+/g, "")));   // menus in Korean, no spaces, like lao-app (RYU 2026-11-19, v2.13)
   }));
   const on = $("groups").querySelector('[aria-pressed="true"]'); if (on && on.scrollIntoView) on.scrollIntoView({block: "nearest", inline: "nearest"});
 }
 function drawSubs(){
   const a = areaOf(S.code), cur = subOf(S.code);
-  const ids = [...new Set(IDX.filter(r => r[0].startsWith(a + "-")).map(r => subOf(r[0])))];
-  $("subs").replaceChildren(...ids.map(s => {
-    const rows = IDX.filter(r => r[0].startsWith(s + "-")), n = SUBS[s] || [s, s];
-    return h("button", {class: "sub", type: "button", role: "tab", "aria-selected": s === cur ? "true" : "false", onclick: () => go(lastIn(S.lastS, s, rows))},
-      h("span", {class: "code"}, String(ids.indexOf(s) + 1).padStart(2, "0")), h("span", {class: "name ko"}, n[0].replace(/\s+/g, "")), subProg(rows));
+  const ids = [...new Set(IDX.filter(r => areaOf(r[0]) === a).map(r => subOf(r[0])))], PT = META.parts || {};
+  $("subs").replaceChildren(...ids.flatMap((s, k) => {
+    const pt = a === "K7" && PT[s.slice(0, 2)] && (k === 0 || ids[k - 1].slice(0, 2) !== s.slice(0, 2)) ? h("span", {class: "subpart ko", title: PT[s.slice(0, 2)][1]}, PT[s.slice(0, 2)][0]) : null;   // 어휘: 짝말 · 비슷한 말 · 단어 가족 labels (v2.69)
+    const rows = IDX.filter(r => subOf(r[0]) === s), n = SUBS[s] || [s, s];
+    return [pt, h("button", {class: "sub", type: "button", role: "tab", "aria-selected": s === cur ? "true" : "false", onclick: () => go(lastIn(S.lastS, s, rows))},
+      h("span", {class: "code"}, String(ids.indexOf(s) + 1).padStart(2, "0")), h("span", {class: "name ko"}, n[0].replace(/\s+/g, "")), subProg(rows))].filter(Boolean);
   }));
   /* line under the sub tabs, like lao-app: [1-01] name · N묶음 N단어 N문장 */
-  const sr = IDX.filter(r => r[0].startsWith(cur + "-")), ai = AREAS.findIndex(x => x[0] === a) + 1, sn = SUBS[cur] || [cur];
+  const sr = IDX.filter(r => subOf(r[0]) === cur), ai = AREAS.findIndex(x => x[0] === a) + 1, sn = SUBS[cur] || [cur];
   $("sinfo").replaceChildren(h("b", {class: "ko"}, "[" + ai + "-" + String(ids.indexOf(cur) + 1).padStart(2, "0") + "]"), h("span", {class: "ko"}, " " + sn[0] + " · " + sr.length + "묶음" + (sr[0] && sr[0][3] === "info" ? "" : " " + sr.reduce((t, r) => t + (r[5] || 0), 0) + "단어 " + sr.reduce((t, r) => t + (r[6] || 0), 0) + "문장")));
   const on = $("subs").querySelector('[aria-selected="true"]'); if (on && on.scrollIntoView) on.scrollIntoView({block: "nearest", inline: "nearest"});
 }
 /* lesson order number in app order: ["7-01-", "02"] for [7-01-02] */
 const ordTag = code => { const [o, l] = ordParts(code); return ["[", h("span", {class: "ord-ab"}, o), l + "]"]; };   // phones show only [01] (RYU 2026-11-19, v2.04)
 function ordParts(code){
-  const a = areaOf(code), sb = subOf(code), subsA = [...new Set(IDX.filter(r => r[0].startsWith(a + "-")).map(r => subOf(r[0])))];
-  const rows = IDX.filter(r => r[0].startsWith(sb + "-")), pad = n => String(n).padStart(2, "0");
+  const a = areaOf(code), sb = subOf(code), subsA = [...new Set(IDX.filter(r => areaOf(r[0]) === a).map(r => subOf(r[0])))];
+  const rows = IDX.filter(r => subOf(r[0]) === sb), pad = n => String(n).padStart(2, "0");
   return [(AREAS.findIndex(x => x[0] === a) + 1) + "-" + pad(subsA.indexOf(sb) + 1) + "-", pad(rows.findIndex(r => r[0] === code) + 1)];
 }
 function drawControls(){
-  const s = subOf(S.code), rows = IDX.filter(r => r[0].startsWith(s + "-"));
+  const s = subOf(S.code), rows = IDX.filter(r => subOf(r[0]) === s);
   /* lesson picker: own list instead of the phone's native one, so each lesson stays on one line inside the box (RYU 2026-11-14) */
   const lab = (r, btn) => [h("span", {class: "ddk"}, r[1])   /* no check mark in the list either (RYU 2026-11-19, v2.06) */, r[4] ? h("span", {class: "ddo"}, r[4]) : ""];
   const curRow = rows.find(r => r[0] === S.code) || rows[0];
@@ -686,7 +688,7 @@ function fitWords(){ document.querySelectorAll(".wcard .k").forEach(k => { let f
 addEventListener("resize", () => { if (S.mode === "cards"){ document.querySelectorAll(".wcard .k").forEach(k => k.style.fontSize = ""); fitWords(); } });
 function drawAll(){ drawStats(); drawGroups(); drawSubs(); drawControls(); render(); }
 /* RYU 2026-11-14: coming back to an area or sub-group reopens the lesson last opened there */
-function lastIn(m, k, rows){ const c = m && m[k]; return c && byCode.has(c) && c.startsWith(k + "-") ? c : rows[0][0]; }
+function lastIn(m, k, rows){ const c = m && m[k]; return c && byCode.has(c) && rows.some(r => r[0] === c) ? c : rows[0][0]; }
 function go(code){ if (!byCode.has(code)) return; if (location.hash === "#" + code) route(); else location.hash = code; }
 async function route(){
   const name = decodeURIComponent(location.hash.replace(/^#/, ""));
@@ -816,9 +818,15 @@ function dlState(){
 }
 dlState();
 window.addEventListener("hashchange", route);
-$("ver").textContent = META.ver + " · ສ້າງດ້ວຍ Claude AI · Claude AI로 제작";
+$("ver").replaceChildren(META.ver + " · ", h("span", {class: "cl", "aria-hidden": "true"}, "©"), " Copyleft · ແບ່ງປັນ ແລະ ດັດແປງໄດ້ເສລີ");   // copyleft line like KoJey (RYU 2026-11-26, v2.69): a mirrored ©, since 🄯 is missing on older phones
 route();
 if ("serviceWorker" in navigator && window.KO_SW) navigator.serviceWorker.register("sw.js").catch(() => {});
+/* tapping the title at the top left (or 한국어 배우기 in the sticky bar) goes back to the first menu's first lesson, at the top (like KoJey v1.21.12, RYU 2026-11-26, v2.69) */
+(() => { const home = () => { const g = document.querySelector("#groups .group"), r = g && IDX.find(r => areaOf(r[0]) === g.dataset.g);
+    if (r) go(r[0]); setTimeout(() => scrollTo(0, 0), 80); };
+  for (const e of [document.querySelector(".top .brand"), document.querySelector("#stick .strow > b")]) if (e){
+    e.style.cursor = "pointer"; e.setAttribute("role", "link"); e.setAttribute("tabindex", "0"); e.title = "ໜ້າຫຼັກ 처음으로";
+    e.addEventListener("click", home); e.addEventListener("keydown", ev => { if (ev.key === "Enter") home(); }); } })();
 })();
 /* phone swipe left / right = next / previous bundle, like the 다음 묶음 / 이전 묶음 buttons (lao-app v3.23, RYU 2026-11-23, v2.49).
    Ignored: screen edges (browser back gesture), menus, pickers, tables that scroll sideways (v2.50: plain tables on 대한민국 pages swipe), the player bar, anything that scrolls sideways,
