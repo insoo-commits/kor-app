@@ -232,3 +232,6 @@ html.introon,html.introon body{overflow:hidden}
 #intro .brand{flex-direction:row;gap:10px;min-width:0}
 #intro .passhead .pid{white-space:nowrap}
 #intro.D .band{align-items:start}
+/* v2.82 (RYU): the elephant at the bottom right about as tall as the name and text beside it */
+#intro .frow .frpic{height:86px;width:auto;display:block}
+#intro .frow{align-items:center}
