@@ -120,7 +120,7 @@ function phone(){ return `
  ${foot(true)}
  <div class="sticky">${cta()}</div>`; }
 function pad(){ return `
- <div class="hero"><img class="bg" src="img/kr/seoul.jpg" alt="">
+ <div class="hero"><img class="bg" src="img/intro/jeonju.jpg" alt="">
   <div class="top">${brand()}${free(true)}</div>
   <div class="copy">${heroCopy()}</div></div>
  <div class="wrap">
@@ -137,16 +137,16 @@ function pad(){ return `
  </div>
  <div class="frow">${foot(false)}<img src="img/ele/happy.webp" alt="" class="frpic"></div>`; }
 function pc(){ return `
- <div class="hero"><span class="glow1"></span><span class="glow2"></span>
+ <div class="hero"><img class="bg" src="img/intro/gyeongbokgung.jpg" alt=""><span class="glow2"></span>
   <div class="nav">${brand()}${[0, 5, 7, 9].map(i => `<a href="#" data-area="${MENUS[i][0]}">${esc(MENUS[i][3])}</a>`).join("")}<span class="sp"></span>${free(true)}${cta()}</div>
   <div class="hgrid">
    <div class="copy">${heroCopy()}<div class="cta">${cta()}${howBtn("ghost")}</div>
-    <div class="strip"><img src="img/kr/gyeongbokgung.jpg" alt="경복궁"><img src="img/kr/jeonju.jpg" alt="전주 한옥마을"><img src="img/kr/lanterns.jpg" alt="연등"><img src="img/kr/busan.jpg" alt="부산"></div></div>
+    <div class="strip"><img src="img/kr/seoul.jpg" alt="서울"><img src="img/kr/jeonju.jpg" alt="전주 한옥마을"><img src="img/kr/lanterns.jpg" alt="연등"><img src="img/kr/busan.jpg" alt="부산"></div></div>
    <div class="passwrap"><img class="elep" src="img/ele/main.webp" alt="">${pass(true)}</div>
   </div></div>
  <div class="band">
   <div style="display:grid;gap:14px;align-content:start"><h2>${esc(x.s2)} <span class="kosub">${KO.s2}</span></h2><p style="margin:0;color:var(--mm);font-size:.92em">${esc(x.s2n)} ${esc(x.s1n)}</p>${how3()}</div>
-  <div><h2 style="margin-bottom:12px">${esc(x.inside)} <span class="kosub">${KO.inside}</span></h2>${menus()}<div class="gal"><img src="img/kr/seoul.jpg" alt="서울"><img src="img/kr/bulguksa.jpg" alt="불국사"><img src="img/kr/hanbok.jpg" alt="한복" style="object-position:center 25%"></div></div>
+  <div><h2 style="margin-bottom:12px">${esc(x.inside)} <span class="kosub">${KO.inside}</span></h2>${menus()}<div class="gal"><img src="img/kr/gyeongbokgung.jpg" alt="경복궁"><img src="img/kr/bulguksa.jpg" alt="불국사"><img src="img/kr/hanbok.jpg" alt="한복" style="object-position:center 25%"></div></div>
  </div>
  <div class="inst"><img class="bg" src="img/kr/lanterns.jpg" alt="">
   <div style="display:grid;gap:14px;align-content:start">${detectChip("pc")}<h2 style="font-size:1.5em">${esc(x.it)}</h2><p style="margin:0;opacity:.85;font-size:.92em">${esc(x.itn)}</p>${osTabs("pc")}${steps("pc")}</div>
