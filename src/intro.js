@@ -13,7 +13,7 @@ const LEARN = 6;
 const x = {
  hello:"ສະບາຍດີ! 안녕하세요!", losub:"ຮຽນພາສາເກົາຫຼີຕາມຫົວຂໍ້ ງ່າຍໆ ທຸກມື້",
  lead:"ຮຽນການສົນທະນາ, ຕົວອັກສອນ, ໄວຍາກອນ, ຄຳສັບ, ການຟັງ ແລະ TOPIK ດ້ວຍສຽງເກົາຫຼີ ແລະ ຄຳອະທິບາຍເປັນພາສາລາວ, ພ້ອມຊີວິດມະຫາວິທະຍາໄລ, ບ່ອນເຮັດວຽກ ແລະ ປະເທດເກົາຫຼີ.",
- st:["ບົດ","ຄຳສັບ","ປະໂຫຍກ","ເມນູ"], free:"ຟຣີ",
+ st:["ບົດ","ຄຳສັບ","ປະໂຫຍກ","ຜູ້ຮຽນ"], free:"ຟຣີ",
  s1:"ຕັ້ງຄ່າການຟັງ", s1n:"ປ່ຽນໄດ້ທຸກເວລາໃນບົດຮຽນ. ແອັບຈື່ໄວ້ໃຫ້.",
  pass:"ການຕັ້ງຄ່າການຮຽນຂອງຂ້ອຍ", rep:"ຈຳນວນເທື່ອ", spd:"ຄວາມໄວ", vol:"ລະດັບສຽງ", voice:"ສຽງລາວ", voiceN:"ເກົາຫຼີ → ລາວ → ເກົາຫຼີ",
  theme:"ໜ້າຈໍ", th:["ອັດຕະໂນມັດ","ແຈ້ງ","ມືດ"], fz:"ຂະໜາດຕົວໜັງສື", listen:"ຟັງຕົວຢ່າງ",
@@ -66,7 +66,15 @@ function heroCopy(){ return `
   <h1 class="ko">한국어 배우기</h1>
   <p class="losub">${esc(x.losub)}</p>
   <p class="lead">${esc(x.lead)}</p>
-  <div class="stats"><div><b>${fmt(PK.nLessons)}</b><span>${x.st[0]}</span></div><div><b>${fmt(PK.nWords)}</b><span>${x.st[1]}</span></div><div><b>${fmt(PK.nSents)}</b><span>${x.st[2]}</span></div><div><b>${PK.nAreas}</b><span>${x.st[3]}</span></div></div>`; }
+  <div class="stats"><div><b>${fmt(PK.nLessons)}</b><span>${x.st[0]}</span></div><div><b>${fmt(PK.nWords)}</b><span>${x.st[1]}</span></div><div><b>${fmt(PK.nSents)}</b><span>${x.st[2]}</span></div><div><b data-learners>${learners()}</b><span>${x.st[3]}</span></div></div>`; }
+
+/* RYU 2026-11-28: "메뉴" out, "학습자" last = devices counted by the anonymous stats (same number as 도움말 > 통계), from the saved copy at once, then refreshed once per visit */
+let LRN = null, LRNF = false;
+const lfmt = n => Number(n).toLocaleString("en-US");
+function learners(){ if (LRN == null){ try { const d = JSON.parse(localStorage.getItem("kolearn-lo-statspage") || "null"); if (d && d.totals && d.totals.devices) LRN = +d.totals.devices; } catch (e) {} getLearners(); } return LRN ? lfmt(LRN) : "–"; }
+function getLearners(){ if (LRNF) return; LRNF = true; try { if (typeof STATS_URL === "undefined" || !STATS_URL || !navigator.onLine) return;
+  fetch(STATS_URL + "?stats=1", {cache: "no-store"}).then(r => r.json()).then(d => { if (!d || !d.totals) return; try { localStorage.setItem("kolearn-lo-statspage", JSON.stringify(d)); } catch (e) {}
+    if (d.totals.devices){ LRN = +d.totals.devices; document.querySelectorAll("#intro [data-learners]").forEach(b => { b.textContent = lfmt(LRN); }); } }).catch(() => {}); } catch (e) {} }
 function brand(){ return `<div class="brand"><img src="icon-192.png" alt=""><div><b>PhasaKAO</b><span>ພາສາເກົາຫຼີ · 한국어</span></div></div>`; }
 function free(long){ return `<span class="freepill"><i></i>${x.free}${long ? " · " + esc(x.hello) : ""}</span>`; }
 function step(n, k, note){ return `<div class="sh">${n ? `<span class="n">${n}</span>` : ""}<div><h2>${esc(x[k])} <span class="kosub">${KO[k]}</span></h2>${note ? `<p>${esc(x[note])}</p>` : ""}</div></div>`; }
