@@ -939,10 +939,13 @@ $("ver").replaceChildren("PhasaKAO " + META.ver + " · ", h("span", {class: "cl"
 route();
 if ("serviceWorker" in navigator && window.KO_SW) navigator.serviceWorker.register("sw.js").catch(() => {});
 /* tapping the title at the top left (or PhasaKAO in the sticky bar; app renamed from 한국어 배우기 / KOR Lang by RYU 2026-11-26, v2.75) goes back to the first menu's first lesson, at the top (like KoJey v1.21.12, RYU 2026-11-26, v2.69) */
-(() => { const home = () => { const g = document.querySelector("#groups .group"), r = g && IDX.find(r => areaOf(r[0]) === g.dataset.g);
+/* v2.81 (RYU 2026-11-27): the intro page (src/intro.js, like JeyCampus) reads and sets these; the title now opens it, the old jump stays as the fallback */
+window.PK = {S, save, applyPrefs, setSayLo, speak: speakOne, quiet, ver: META.ver, nLessons: IDX.filter(r => r[3] !== "info").length, nWords: META.nWords, nSents: META.nSents, nAreas: AREAS.length};
+(() => { const home = () => { if (window.PK && window.PK.intro){ window.PK.intro(); return; }
+    const g = document.querySelector("#groups .group"), r = g && IDX.find(r => areaOf(r[0]) === g.dataset.g);
     if (r) go(r[0]); setTimeout(() => scrollTo(0, 0), 80); };
   for (const e of [document.querySelector(".top .brand"), document.querySelector("#stick .strow > b")]) if (e){
-    e.style.cursor = "pointer"; e.setAttribute("role", "link"); e.setAttribute("tabindex", "0"); e.title = "ໜ້າຫຼັກ 처음으로";
+    e.style.cursor = "pointer"; e.setAttribute("role", "link"); e.setAttribute("tabindex", "0"); e.title = "PhasaKAO";
     e.addEventListener("click", home); e.addEventListener("keydown", ev => { if (ev.key === "Enter") home(); }); } })();
 })();
 /* phone swipe left / right = next / previous bundle, like the 다음 묶음 / 이전 묶음 buttons (lao-app v3.23, RYU 2026-11-23, v2.49).
