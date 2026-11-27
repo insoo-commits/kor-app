@@ -141,7 +141,7 @@ function pc(){ return `
   <div class="nav">${brand()}${[0, 5, 7, 9].map(i => `<a href="#" data-area="${MENUS[i][0]}">${esc(MENUS[i][3])}</a>`).join("")}<span class="sp"></span>${free(true)}${cta()}</div>
   <div class="hgrid">
    <div class="copy">${heroCopy()}<div class="cta">${cta()}${howBtn("ghost")}</div>
-    <div class="strip"><img src="img/kr/seoul.jpg" alt="서울"><img src="img/kr/jeonju.jpg" alt="전주 한옥마을"><img src="img/kr/lanterns.jpg" alt="연등"><img src="img/kr/busan.jpg" alt="부산"></div></div>
+    <div class="strip"><img src="img/kr/seoul.jpg" alt="서울"><img src="img/kr/jeonju.jpg" alt="전주 한옥마을"><img src="img/kr/busan.jpg" alt="부산"></div></div>
    <div class="passwrap"><img class="elep" src="img/ele/main.webp" alt="">${pass(true)}</div>
   </div></div>
  <div class="band">
