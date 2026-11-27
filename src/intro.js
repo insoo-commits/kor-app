@@ -187,17 +187,19 @@ function setRate(v){ S.rate = String(v); PK.save(); const e = document.getElemen
 
 /* sample: the first sentence of K2-A-01 with the app's own recorded voices: Korean (repeat × at the chosen speed), the Lao meaning once after the first when the Lao voice is on */
 const SAMPLE_KO = "안녕하세요? 캄이에요.", SAMPLE_LO = "ສະບາຍດີ. ຂ້ອຍຊື່ຄຳ.";
+let RUN = 0;   // each play has its own number: a stopped play never wakes up and talks over a new one (RYU 2026-11-27, as JeyCampus v1.30.6)
 let playing = false;
-function stopSample(){ if (playing){ playing = false; try { PK.quiet(); } catch (e) {} } }
+function stopSample(){ RUN++; if (playing){ playing = false; try { PK.quiet(); } catch (e) {} } }
 async function sample(){
   if (playing){ stopSample(); render(); return; }
+  const me = ++RUN, on = () => playing && RUN === me;
   playing = true; render(); const n = +rep() || 1;
-  for (let i = 0; i < n && playing; i++){
+  for (let i = 0; i < n && on(); i++){
     await PK.speak(SAMPLE_KO, false);
-    if (i === 0 && voice() && playing) await PK.speak(SAMPLE_LO, true);
-    if (playing) await new Promise(r => setTimeout(r, 350));
+    if (i === 0 && voice() && on()) await PK.speak(SAMPLE_LO, true);
+    if (on()) await new Promise(r => setTimeout(r, 350));
   }
-  playing = false; render();
+  if (RUN === me){ playing = false; render(); }
 }
 function toast(msg){ if (!box) return; const el = document.createElement("div"); el.className = "toast"; el.textContent = msg; box.appendChild(el); setTimeout(() => el.remove(), 2200); }
 /* the app's own "save audio" link does the work; its progress text is copied here */
