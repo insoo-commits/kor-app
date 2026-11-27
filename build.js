@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-28 v2.94";
+const VER = "2026-11-28 v2.95";
 const STATS_PUBLIC = /const STATS_PUBLIC = true;/.test(fs.readFileSync(path.join(src, "stats.js"), "utf8"));
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
@@ -71,7 +71,7 @@ function tabCss(src){
   while (i < s.length){ const r = block(); out.push(...r); }
   return "\n/* tablet text (generated) */\nhtml.tab{zoom:1}\n" + out.join("\n");
 }
-const css = read("app.css") + tabCss(read("app.css")) + "\n" + read("tab.css") + "\n" + read("skin.css") + "\n" + read("intro.css"), body = read("body.html"), clip = read("clip.js"), js = clip + "\n" + read("audiopack.js") + "\n" + read("stats.js") + "\n" + read("app.js") + "\n" + read("intro.js");
+const css = read("app.css") + tabCss(read("app.css")) + "\n" + read("tab.css") + "\n" + read("skin.css") + "\n" + read("intro.css"), body = read("body.html"), clip = read("clip.js"), js = read("vol.js") + "\n" + clip + "\n" + read("audiopack.js") + "\n" + read("stats.js") + "\n" + read("app.js") + "\n" + read("intro.js");
 
 // audio: audio/list.json = every clip the app can use; audio/index.js = the clips that exist as mp3 in audio/
 const {cleanKo, cleanLo, clipKey} = new Function(clip + "; return {cleanKo, cleanLo, clipKey};")();

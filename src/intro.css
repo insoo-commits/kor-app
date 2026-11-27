@@ -247,3 +247,6 @@ html.introon,html.introon body{overflow:hidden}
 #intro.D .strip img{width:100%;height:92px}
 #intro.D .hero .stats,#intro.D .copy .cta,#intro.D .strip{max-width:560px;width:100%;box-sizing:border-box}
 #intro.D .copy .cta{display:grid;grid-template-columns:3fr 2fr;gap:10px}
+
+/* volume row (2026-11-27) */
+#intro .rate.vol .ticks{margin:0 9px}
