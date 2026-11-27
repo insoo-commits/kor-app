@@ -1,4 +1,4 @@
-const SHELL="ko-shell-2026-11-28-v2.96";
+const SHELL="ko-shell-2026-11-28-v2.97";
 const FILES=["./","index.html","app.js","audio/index.js","manifest.webmanifest","icon.svg","data/K2.json","data/K1.json","data/K6.json","data/K7.json","data/LS.json","data/TP.json","data/K4.json","data/K3.json","data/KR.json","data/HP.json"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(SHELL).then(c=>Promise.all(FILES.map(f=>fetch(new Request(f,{cache:"reload"})).then(r=>{if(r.ok)return c.put(f,r)}).catch(()=>{})))).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith("ko-shell-")&&k!==SHELL).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
@@ -12,5 +12,11 @@ self.addEventListener("fetch",e=>{const u=new URL(e.request.url);if(e.request.me
   if(u.pathname.includes("/audio/p/"))return;   /* lesson packs: the app keeps them in IndexedDB itself (v2.65) */
   if(u.pathname.includes("/audio/")&&u.pathname.endsWith(".mp3")){const k=u.pathname.split("/").pop().slice(0,-4);
     e.respondWith(aget(k).then(b=>b?mp3(b):fetch(e.request.url).then(r=>{if(r.ok){const cl=r.clone();e.waitUntil(cl.arrayBuffer().then(b=>aput(k,b)).catch(()=>{}))}return r})));return}
-  e.respondWith(fetch(e.request,{cache:"no-cache"}).then(r=>{if(r.ok){const cl=r.clone();caches.open(SHELL).then(c=>c.put(e.request.mode==="navigate"?"index.html":e.request,cl))}return r})
-    .catch(()=>caches.open(SHELL).then(c=>c.match(e.request.mode==="navigate"?"index.html":e.request,{ignoreSearch:true}).then(m=>m||c.match("index.html")))))});
+  /* v2.97 (RYU 2026-11-28: the app sometimes froze on "Loading…"): a slow network no longer holds the page; after 5 s the saved copy
+     is used, and a script or data file is never answered with the page itself (that stopped app.js from running) */
+  const nav=e.request.mode==="navigate",key=nav?"index.html":e.request;
+  const saved=()=>caches.match(key,{ignoreSearch:true}).then(m=>m||(nav?caches.match("index.html",{ignoreSearch:true}):null));
+  const net=fetch(e.request,{cache:"no-cache"}).then(r=>{if(r.ok){const cl=r.clone();e.waitUntil(caches.open(SHELL).then(c=>c.put(key,cl)).catch(()=>{}))}return r});
+  e.respondWith(new Promise(res=>{let done=false;const give=r=>{if(!done&&r){done=true;res(r)}};
+    net.then(give,()=>saved().then(m=>{if(m)give(m);else if(!done){done=true;res(Response.error())}}));
+    setTimeout(()=>{if(!done)saved().then(give)},5000)}))});

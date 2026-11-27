@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-28 v2.96";
+const VER = "2026-11-28 v2.97";
 const STATS_PUBLIC = /const STATS_PUBLIC = true;/.test(fs.readFileSync(path.join(src, "stats.js"), "utf8"));
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
@@ -118,6 +118,7 @@ ${css}</style></head>
 ${body}
 <script src="audio/index.js?v=${encodeURIComponent(VER)}"></script>
 <script src="app.js?v=${encodeURIComponent(VER)}"></script>
+<script>/* v2.97: if the app has not started after 12 s (a file did not arrive), reload once by itself, then offer a button */(function(){setTimeout(function(){if(window.PK)return;var k="pk-reload",n=0;try{n=+sessionStorage.getItem(k)||0}catch(e){}if(n<1){try{sessionStorage.setItem(k,n+1)}catch(e){}location.reload();return}var v=document.getElementById("view");if(v)v.innerHTML='<p class="empty">Could not load. Check the internet connection. · 불러오지 못했어요.<br><br><button type="button" onclick="try{sessionStorage.removeItem(&quot;pk-reload&quot;)}catch(e){}location.reload()" style="font:inherit;padding:10px 22px;border-radius:999px;border:0;background:#2E5AAC;color:#fff">Try again · 다시 시도</button></p>'},12000);window.addEventListener("load",function(){setTimeout(function(){if(window.PK)try{sessionStorage.removeItem("pk-reload")}catch(e){}},1000)})})()</script>
 </body></html>
 `);
 fs.writeFileSync(path.join(root, "manifest.webmanifest"), JSON.stringify({
@@ -140,8 +141,14 @@ self.addEventListener("fetch",e=>{const u=new URL(e.request.url);if(e.request.me
   if(u.pathname.includes("/audio/p/"))return;   /* lesson packs: the app keeps them in IndexedDB itself (v2.65) */
   if(u.pathname.includes("/audio/")&&u.pathname.endsWith(".mp3")){const k=u.pathname.split("/").pop().slice(0,-4);
     e.respondWith(aget(k).then(b=>b?mp3(b):fetch(e.request.url).then(r=>{if(r.ok){const cl=r.clone();e.waitUntil(cl.arrayBuffer().then(b=>aput(k,b)).catch(()=>{}))}return r})));return}
-  e.respondWith(fetch(e.request,{cache:"no-cache"}).then(r=>{if(r.ok){const cl=r.clone();caches.open(SHELL).then(c=>c.put(e.request.mode==="navigate"?"index.html":e.request,cl))}return r})
-    .catch(()=>caches.open(SHELL).then(c=>c.match(e.request.mode==="navigate"?"index.html":e.request,{ignoreSearch:true}).then(m=>m||c.match("index.html")))))});
+  /* v2.97 (RYU 2026-11-28: the app sometimes froze on "Loading…"): a slow network no longer holds the page; after 5 s the saved copy
+     is used, and a script or data file is never answered with the page itself (that stopped app.js from running) */
+  const nav=e.request.mode==="navigate",key=nav?"index.html":e.request;
+  const saved=()=>caches.match(key,{ignoreSearch:true}).then(m=>m||(nav?caches.match("index.html",{ignoreSearch:true}):null));
+  const net=fetch(e.request,{cache:"no-cache"}).then(r=>{if(r.ok){const cl=r.clone();e.waitUntil(caches.open(SHELL).then(c=>c.put(key,cl)).catch(()=>{}))}return r});
+  e.respondWith(new Promise(res=>{let done=false;const give=r=>{if(!done&&r){done=true;res(r)}};
+    net.then(give,()=>saved().then(m=>{if(m)give(m);else if(!done){done=true;res(Response.error())}}));
+    setTimeout(()=>{if(!done)saved().then(give)},5000)}))});
 `);
 
 // preview page (same app, one file plus data/)
