@@ -1744,6 +1744,9 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
   .stick .stin{padding-left:30px;padding-right:30px;flex-direction:column-reverse;padding-top:8px;padding-bottom:6px}
   .stick .strow{padding:0 0 0 14px}
   .stick .hs{align-self:stretch}
+  /* v2.90 (RYU): no line under the menu, the stuck bar is just the page menu */
+  .stick .strow{display:none}
+  .stick .stin{padding-bottom:8px}
 }
 
 /* PhasaKAO intro page (v2.81, RYU 2026-11-27; design = approved mockup /mnt/project-files/kor-app/mockup/intro/, structure from JeyCampus v1.25).
@@ -2067,6 +2070,6 @@ html.introon,html.introon body{overflow:hidden}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-27%20v2.89"></script>
-<script src="app.js?v=2026-11-27%20v2.89"></script>
+<script src="audio/index.js?v=2026-11-27%20v2.90"></script>
+<script src="app.js?v=2026-11-27%20v2.90"></script>
 </body></html>
