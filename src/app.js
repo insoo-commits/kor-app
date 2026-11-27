@@ -988,7 +988,7 @@ window.PK = {S, save, applyPrefs, setSayLo, speak: speakOne, quiet, ver: META.ve
 (function(){
   const st = $("stick"), mb = document.querySelector(".menubox"), sg = $("stickG"), g = $("groups");
   if (!st || !mb || !("IntersectionObserver" in window)) return;
-  const sync = () => { sg.innerHTML = g.innerHTML; sg.querySelectorAll(".glide").forEach(x => x.remove()); $("stickT").textContent = $("bselBtn").textContent.trim(); const on = sg.querySelector('[aria-pressed="true"]'); if (on && !st.hidden) on.scrollIntoView({block: "nearest", inline: "center"}); };
+  const sync = () => { sg.innerHTML = g.innerHTML; sg.querySelectorAll(".glide").forEach(x => x.remove()); { const B = $("bselBtn"), q = c => (B.querySelector(c) || {}).textContent || ""; $("stickT").textContent = B.querySelector(".ddk") ? (q(".ddn") + " " + q(".ddk") + (q(".ddo") ? " (" + q(".ddo") + ")" : "")).trim() : B.textContent.trim(); } const on = sg.querySelector('[aria-pressed="true"]'); if (on && !st.hidden) on.scrollIntoView({block: "nearest", inline: "center"}); };
   new IntersectionObserver(es => { const e = es[0]; const show = !e.isIntersecting && e.boundingClientRect.bottom < 0; if (show === !st.hidden) return; st.hidden = !show; if (show) sync(); }).observe(mb);
   new MutationObserver(() => { if (!st.hidden) sync(); }).observe(g, {childList: true, subtree: true, attributes: true});
   new MutationObserver(() => { if (!st.hidden) sync(); }).observe($("bselBtn"), {childList: true, subtree: true, characterData: true});

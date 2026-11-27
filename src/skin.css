@@ -289,6 +289,11 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
   .stick .strow{font-size:14.8px}
   .stick .strow b{font-size:16px}
   .stick .strow svg{width:20px;height:20px}
-  #app .stick .groups{padding:3.5px!important}
-  #app .stick .group{padding:6px 14px!important;font-size:16px!important}
+  #app .stick .groups{padding:4px!important;align-self:stretch}
+  #app .stick .group{padding:7px 14px!important;font-size:15px!important}
+  /* v2.89 (RYU, = JeyCampus v1.31.15-17): the stuck menu sits exactly where the page menu was (wrap 16px + menu card 14px), same size;
+     menu on top, the app name and lesson line under it */
+  .stick .stin{padding-left:30px;padding-right:30px;flex-direction:column-reverse;padding-top:8px;padding-bottom:6px}
+  .stick .strow{padding:0 0 0 14px}
+  .stick .hs{align-self:stretch}
 }
