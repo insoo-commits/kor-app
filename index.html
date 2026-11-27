@@ -1732,7 +1732,8 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
 
 /* v2.88 (RYU 2026-11-27): the bar that sticks to the top on PC = PhasaLAO in screen px (LAO zooms 1.3, here 1.1, so x1.18) and as wide as the page */
 .stick .stin{max-width:1176px}
-@media (hover:hover) and (pointer:fine) and (min-width:900px){
+/* (RYU 2026-11-27) these now apply to iPad and every screen wider than a phone, not only PC */
+@media (min-width:601px){
   .stick .stin{padding-top:7px;padding-bottom:8px;gap:6px}
   .stick .strow{font-size:14.8px}
   .stick .strow b{font-size:16px}
@@ -1748,6 +1749,11 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
   .stick .strow{display:none}
   .stick .stin{padding-bottom:8px}
 }
+
+/* (RYU 2026-11-27): phones too: the stuck bar is just the menu, no lesson / search line */
+.stick .strow{display:none}
+/* (RYU 2026-11-27): iPad: the stuck bar is solid, no blur */
+html.tab .stick{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:var(--sheet)!important}
 
 /* PhasaKAO intro page (v2.81, RYU 2026-11-27; design = approved mockup /mnt/project-files/kor-app/mockup/intro/, structure from JeyCampus v1.25).
    Generated from the mockup's styles, every selector under #intro. Layout class on #intro: P phone, T tablet, D desktop. */
@@ -2070,6 +2076,6 @@ html.introon,html.introon body{overflow:hidden}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-27%20v2.90"></script>
-<script src="app.js?v=2026-11-27%20v2.90"></script>
+<script src="audio/index.js?v=2026-11-27%20v2.91"></script>
+<script src="app.js?v=2026-11-27%20v2.91"></script>
 </body></html>
