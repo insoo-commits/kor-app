@@ -150,7 +150,12 @@ function msSync(title){
   } catch (e) {}
 }
 /* previous / next line during a repeat (lock screen, ← →); a single 🔊 loop has nothing to move to */
-function skipBy(d){ if (!P.mode || P.mode === "single") return; P.hold = false; P.skip = d; if (P.paused) togglePause(); quiet(); }
+function skipBy(d){ if (!P.mode) return;
+  /* v2.86 (RYU): while one line repeats (🔊 or a tap), ← → move to the line before / after and repeat that one */
+  if (P.mode === "single"){ const cur = document.querySelector("#view .now"); if (!cur) return;
+    const all = [...document.querySelectorAll("#view .line[data-say], #view .wcard[data-say]")], i = all.indexOf(cur), nx = all[i + d];
+    if (i < 0 || !nx) return; if (nx.classList.contains("wcard")) playCard(nx); else playSingle(nx); return; }
+  P.hold = false; P.skip = d; if (P.paused) togglePause(); quiet(); }
 async function hold(tok){ while (P.paused && tok === P.tok) await gap(150); return tok === P.tok; }
 /* says one piece; if paused in the middle, says it again after resuming */
 async function say(tok, text, lao, male){
