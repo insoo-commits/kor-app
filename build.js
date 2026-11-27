@@ -110,6 +110,7 @@ fs.writeFileSync(path.join(root, "index.html"), `<!doctype html>
 <meta name="description" content="ແອັບຮຽນພາສາເກົາຫຼີສຳລັບຄົນລາວ">
 <link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="PhasaKAO"><meta name="application-name" content="PhasaKAO"><meta name="theme-color" content="#1F5F8F">
 <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icon-180.png">
+<!-- link preview (RYU 2026-11-28) --><meta property="og:type" content="website"><meta property="og:site_name" content="PhasaKAO"><meta property="og:url" content="https://phasakao.pages.dev/"><meta property="og:title" content="PhasaKAO · 한국어 배우기"><meta property="og:description" content="ຮຽນພາສາເກົາຫຼີຕາມຫົວຂໍ້ ງ່າຍໆ ທຸກມື້ · 라오스 학습자를 위한 한국어"><meta property="og:image" content="https://phasakao.pages.dev/og.jpg?v=1"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://phasakao.pages.dev/og.jpg?v=1"><!-- /link preview -->
 <link rel="preconnect" href="https://fonts.googleapis.com">${fonts}
 <script>(function(){var n=navigator,t=n.maxTouchPoints>0||"ontouchstart" in window;if((/iPad/.test(n.userAgent)||(/Macintosh/.test(n.userAgent)&&t))||(t&&Math.min(screen.width,screen.height)>=700))document.documentElement.classList.add("tab")})()</script>
 <style>body{margin:0}
