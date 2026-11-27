@@ -1754,6 +1754,9 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
 .stick .strow{display:none}
 /* (RYU 2026-11-27): iPad: the stuck bar is solid, no blur */
 html.tab .stick{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:var(--sheet)!important}
+/* v2.93 (RYU): no blur or soft shadow on iPad, also when not detected as html.tab */
+html.tab .stick{box-shadow:0 1px 0 var(--line)!important}
+@media (min-width:601px) and (any-pointer:coarse){.stick{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:var(--sheet)!important;box-shadow:0 1px 0 var(--line)!important}}
 
 /* PhasaKAO intro page (v2.81, RYU 2026-11-27; design = approved mockup /mnt/project-files/kor-app/mockup/intro/, structure from JeyCampus v1.25).
    Generated from the mockup's styles, every selector under #intro. Layout class on #intro: P phone, T tablet, D desktop. */
@@ -2076,6 +2079,6 @@ html.introon,html.introon body{overflow:hidden}
   <p class="ver" id="ver"></p>
 </div>
 
-<script src="audio/index.js?v=2026-11-27%20v2.92"></script>
-<script src="app.js?v=2026-11-27%20v2.92"></script>
+<script src="audio/index.js?v=2026-11-27%20v2.93"></script>
+<script src="app.js?v=2026-11-27%20v2.93"></script>
 </body></html>

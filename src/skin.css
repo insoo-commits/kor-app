@@ -306,3 +306,6 @@ html.tab #app .band .bandtxt .tipbox{font-size:16.2px!important}
 .stick .strow{display:none}
 /* (RYU 2026-11-27): iPad: the stuck bar is solid, no blur */
 html.tab .stick{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:var(--sheet)!important}
+/* v2.93 (RYU): no blur or soft shadow on iPad, also when not detected as html.tab */
+html.tab .stick{box-shadow:0 1px 0 var(--line)!important}
+@media (min-width:601px) and (any-pointer:coarse){.stick{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:var(--sheet)!important;box-shadow:0 1px 0 var(--line)!important}}
