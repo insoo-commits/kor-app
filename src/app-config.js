@@ -2,6 +2,20 @@
 window.APPCFG = {
   app: "PhasaKAO",
   store: "pk-",                 /* this app's storage prefix (pk-intro …); core parts that save new things use it */
+  statsPublic: true,            /* build.js: show 도움말 > 학습 통계 (RYU 2026-11-25) */
+  stats: {                      /* core stats: usage statistics, the 학습 통계 page and the survey */
+    url: "https://script.google.com/macros/s/AKfycbzWGHS_COZ7w2fJ02L6mzJ_jfhOekECXCmB5E03Fja3ozVJ2tq3NLEfv_dWorpfcXWO/exec",   // RYU 2026-11-26: own sheet (a copy of the KoJey sheet)
+    key: "kolearn-lo",          /* storage: kolearn-lo-stats, -id, -statspage, -survey, -svq (unchanged) */
+    AC: {K1: "var(--k1)", K2: "var(--k2)", K3: "var(--k3)", K4: "var(--k4)", K5: "var(--k5)", K6: "var(--k6)", K7: "var(--k7)", K8: "var(--k8)", K9: "var(--k9)", LS: "var(--k7)", TP: "var(--k3)", KR: "var(--k5)", JB: "var(--k4)", HP: "var(--muted)"},
+    t: { scale: "ແກນຂວາ, ສູງສຸດ", learners: "ຜູ້ຮຽນ", tDevices: "ຜູ້ຮຽນ", tDevicesSub: "ອຸປະກອນ", tBack: "ກັບມາອີກ", tBackSub: "2 ມື້ຂຶ້ນໄປ",
+      tLessons: "ບົດທີ່ເປີດ", tPer: "ບົດຕໍ່ຜູ້ຮຽນ", tQuiz: "ແບບທົດສອບທີ່ເຮັດແລ້ວ", tQuizAvg: "ຄະແນນສະເລ່ຍ", tTopik: "ຊຸດ TOPIK", tPlays: "ການຫຼິ້ນສຽງ",
+      tSpeak: "ຝຶກເວົ້າ", avg: "ສະເລ່ຍ", daily: "ທຸກມື້", monthly: "ທຸກເດືອນ", cLearners: "ຜູ້ຮຽນ", cLessons: "ບົດທີ່ເປີດ", top: "ບົດທີ່ເປີດຫຼາຍທີ່ສຸດ",
+      areas: "ຕາມໝວດ", devices: "ອຸປະກອນ", os: "ລະບົບປະຕິບັດການ", survey: "ຄວາມພໍໃຈ", sAnswers: "ຄຳຕອບ", sAvg: "ດາວສະເລ່ຍ", sRec: "ຈະແນະນຳ",
+      quizHist: "ຄະແນນແບບທົດສອບ", hours: "ເວລາຮຽນ (ເວລາເກົາຫຼີ)", updated: "ອັບເດດ", since: "ນັບຕັ້ງແຕ່", totals: "ສະເພາະຍອດລວມ: ບໍ່ມີຊື່ ແລະ ບໍ່ມີຜົນຂອງຄົນໃດຄົນໜຶ່ງ.",
+      loading: "ກຳລັງໂຫຼດສະຖິຕິ…", loadFail: "ໂຫຼດສະຖິຕິບໍ່ໄດ້. ກະລຸນາລອງໃໝ່ເມື່ອມີອິນເຕີເນັດ.",
+      thanks: "ຂອບໃຈສຳລັບຄຳຕອບ!", stars: "ດາວ", nStars: "ດາວ", yes: "ແມ່ນ", maybe: "ບໍ່ແນ່ໃຈ", no: "ບໍ່", wish: "ຢາກໃຫ້ແອັບດີຂຶ້ນແນວໃດ? (ບໍ່ບັງຄັບ)",
+      qMenu: "ໝວດໃດຊ່ວຍໄດ້ຫຼາຍທີ່ສຸດ?", qRec: "ຈະແນະນຳແອັບນີ້ໃຫ້ໝູ່ບໍ່?", send: "ສົ່ງ", later: "ພາຍຫຼັງ", how: "ແອັບນີ້ເປັນແນວໃດ?", howKo: "이 앱 어때요?" }
+  },
   prefs: { theme: "ໜ້າຈໍ 화면", themes: ["ອັດຕະໂນມັດ", "☀ ແຈ້ງ", "☾ ມືດ"], fz: "ຂະໜາດຕົວໜັງສື 글자 크기" },   /* core prefs: labels of the theme / text size buttons */
   ptr: { bg: "rgba(40,44,52,.88)", go: "rgba(26,115,232,.95)" },   /* core ptr: pull-to-refresh button colour, and once far enough */
   stick: { title: function(){ var B = document.getElementById("bselBtn"), q = function(c){ return (B.querySelector(c) || {}).textContent || ""; };

@@ -22,11 +22,14 @@ const parts = fs.readdirSync(core).filter(f => f.endsWith(".js")).sort().map(f =
 const verOf = t => { const m = t && t.match(/core (\S+) (v[\d.]+) \(from kor-app/); return m ? m[2] : "none"; };
 const BEGIN = "/* core BEGIN: written by kor-app tools/core-copy.js from tools/core/app-config.js + tools/core/*.js; do not edit between BEGIN and END */";
 const END = "/* core END */";
+/* parts an app does not take (RYU 2026-11-28): PhasaLAO keeps its own statistics, so its sheet's columns stay as they are */
+const SKIP = {"lao-app": ["stats"]};
 let behind = 0;
 for (const t of targets){
   const app = path.basename(path.resolve(t)), lao = !fs.existsSync(path.join(t, "build.js"));
   const dir = lao ? path.join(t, "tools", "core") : path.join(t, "src", "core");
-  for (const p of parts){
+  const mine = parts.filter(p => !(SKIP[app] || []).includes(p.name));
+  for (const p of mine){
     const f = path.join(dir, p.file), old = fs.existsSync(f) ? fs.readFileSync(f, "utf8") : null;
     const same = old === p.text;
     if (!same) behind++;
@@ -39,7 +42,7 @@ for (const t of targets){
     const appjs = path.join(t, "app.js"), src = fs.readFileSync(appjs, "utf8");
     const a = src.indexOf(BEGIN), b = src.indexOf(END);
     if (a < 0 || b < a) throw new Error(app + ": app.js has no core BEGIN / END lines");
-    const block = BEGIN + "\n" + [fs.readFileSync(cfg, "utf8")].concat(parts.map(p => check ? p.text : fs.readFileSync(path.join(dir, p.file), "utf8"))).map(s => s.trimEnd()).join("\n") + "\n" + END;
+    const block = BEGIN + "\n" + [fs.readFileSync(cfg, "utf8")].concat(mine.map(p => check ? p.text : fs.readFileSync(path.join(dir, p.file), "utf8"))).map(s => s.trimEnd()).join("\n") + "\n" + END;
     const out = src.slice(0, a) + block + src.slice(b + END.length);
     if (out !== src){ behind++; console.log(app + ": app.js core block " + (check ? "is behind" : "rewritten")); if (!check) fs.writeFileSync(appjs, out); }
   }
