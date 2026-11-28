@@ -1,0 +1,56 @@
+# TOPIK comes from JeyCampus (RYU 2026-11-28: "jey가 바뀌면 받아오는 것으로 함"). Every day, and when started by hand
+# (Actions → TOPIK from JeyCampus → Run workflow), this checks JeyCampus main; when its TOPIK changed, PhasaKAO takes it,
+# raises the version, builds and pushes main, which Cloudflare deploys. Nothing happens when nothing changed.
+name: TOPIK from JeyCampus
+on:
+  schedule:
+    - cron: "17 18 * * *"   # 03:17 in Korea
+  workflow_dispatch:
+  repository_dispatch:
+    types: [jeycampus-topik]
+permissions:
+  contents: write
+concurrency: topik-sync
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4   # whole repository: build.js joins the mp3 clips into the lesson packs
+      - uses: actions/checkout@v4
+        with:
+          repository: insoo-commits/kor-app-en
+          path: jey
+          sparse-checkout: |
+            data/TP.json
+            tools/i18n.js
+            src/i18n/lo
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Is PhasaKAO behind?
+        id: check
+        run: |
+          if node tools/topik_lo.js jey --check; then echo "behind=no" >> "$GITHUB_OUTPUT"; else echo "behind=yes" >> "$GITHUB_OUTPUT"; fi
+        env:
+          TOPIK_CLIP_URL: https://raw.githubusercontent.com/insoo-commits/kor-app-en/main/audio/
+      - name: Take TOPIK, raise the version, build
+        if: steps.check.outputs.behind == 'yes'
+        env:
+          TOPIK_CLIP_URL: https://raw.githubusercontent.com/insoo-commits/kor-app-en/main/audio/
+        run: |
+          node tools/topik_lo.js jey
+          node -e '
+            const fs = require("fs"), f = "build.js", s = fs.readFileSync(f, "utf8");
+            const day = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+            const t = s.replace(/const VER = "[\d-]+ v(\d+)\.(\d+)";/, (a, x, y) => `const VER = "${day} v${x}.${String(+y + 1).padStart(y.length, "0")}";`);
+            if (t === s) throw new Error("VER not found"); fs.writeFileSync(f, t);'
+          node build.js
+      - name: Push
+        if: steps.check.outputs.behind == 'yes'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "$(grep -o 'const VER = "[^"]*"' build.js | cut -d'"' -f2): TOPIK from JeyCampus"
+          git push

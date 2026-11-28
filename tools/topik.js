@@ -5,7 +5,8 @@
 // TP-I 말하기 (TP-S), TP-J EPS-TOPIK (TP-E). The content of each sub-group is in tools/topik/<letter>.js.
 // Every page: what the question type is and how to solve it (Lao), key words, then practice questions (field tq).
 // All questions are new ones written in the style of the test, never copied from past papers. Lao text is a draft for review.
-// Writes data/TP.json and the TP lines of src/titles-lo.txt. Run: node tools/topik.js && node build.js
+// v3.17 (RYU 2026-11-28): TOPIK TP-A…TP-I are taken from JeyCampus by tools/topik_lo.js. This script now makes only TP-J EPS-TOPIK
+// (tools/topik/J.js) into tools/topik/eps.json. Run: node tools/topik.js && node tools/topik_lo.js ../kor-app-en && node build.js
 // Lao-script readings of the key words come from ko2lao.js (path in KO2LAO, default the project copy).
 const fs = require("fs"), path = require("path"), {execFileSync} = require("child_process");
 const root = path.join(__dirname, "..");
@@ -58,7 +59,8 @@ T.pick = (code, i, j) => { const p = P.find(x => x.code === code); if (!p) throw
   const q = p.tq[i], src = j == null ? q : {...q.qs[j], d: q.d, dl: q.dl, au: q.au, p: q.p, qs: undefined};
   const c = JSON.parse(JSON.stringify(src)); if (j != null) c.d = q.d + " " + q.qs[j].q;
   c.x += " → ທົບທວນ: " + p.lo; return c; };
-for (const part of "ABCDEFGHIJ") require(path.join(__dirname, "topik", part + ".js"))(T);
+for (const part of "J")   // v3.17: TP-A…TP-I now come from JeyCampus (tools/topik_lo.js); only EPS-TOPIK is made here
+ require(path.join(__dirname, "topik", part + ".js"))(T);
 
 /* ---------- readings, checks, write ---------- */
 const words = [...new Set(TERMS.flat().map(r => r[0]))];
@@ -74,11 +76,7 @@ for (const p of P){
     if (q.qs) q.qs.forEach((s, j) => check(p.code, (i + 1) + "." + (j + 1), s)); else check(p.code, i + 1, q); });
 }
 const res = P.map(p => ({code: p.code, t: p.t, lv: 0, type: "시험", info: p.info, tq: p.tq}));
-fs.writeFileSync(path.join(root, "data/TP.json"), JSON.stringify(res));
-const tf = path.join(root, "src/titles-lo.txt");
-const lines = fs.readFileSync(tf, "utf8").split("\n").filter(l => !l.startsWith("TP-"));
-while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
-fs.writeFileSync(tf, lines.concat(P.map(p => p.code + " | " + p.lo)).join("\n") + "\n");
+fs.writeFileSync(path.join(root, "tools/topik/eps.json"), JSON.stringify(res));   // read by tools/topik_lo.js
 const flat = P.flatMap(p => p.tq.flatMap(q => q.qs ? q.qs.map(s => ({...s, au: q.au})) : [q]));
 const bySub = {}; P.forEach(p => { const s = p.code.slice(0, 4); bySub[s] = (bySub[s] || 0) + 1; });
 console.log(P.length + " pages, " + flat.length + " questions (" + flat.filter(q => q.au).length + " listening)", JSON.stringify(bySub));
