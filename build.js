@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-28 v2.98";
+const VER = "2026-11-28 v2.99";
 const STATS_PUBLIC = /const STATS_PUBLIC = true;/.test(fs.readFileSync(path.join(src, "stats.js"), "utf8"));
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
@@ -117,9 +117,16 @@ fs.writeFileSync(path.join(root, "index.html"), `<!doctype html>
 ${css}</style></head>
 <body>
 ${body}
-<script src="audio/index.js?v=${encodeURIComponent(VER)}"></script>
-<script src="app.js?v=${encodeURIComponent(VER)}"></script>
-<script>/* v2.97: if the app has not started after 12 s (a file did not arrive), reload once by itself, then offer a button */(function(){setTimeout(function(){if(window.PK)return;var k="pk-reload",n=0;try{n=+sessionStorage.getItem(k)||0}catch(e){}if(n<1){try{sessionStorage.setItem(k,n+1)}catch(e){}location.reload();return}var v=document.getElementById("view");if(v)v.innerHTML='<p class="empty">Could not load. Check the internet connection. · 불러오지 못했어요.<br><br><button type="button" onclick="try{sessionStorage.removeItem(&quot;pk-reload&quot;)}catch(e){}location.reload()" style="font:inherit;padding:10px 22px;border-radius:999px;border:0;background:#2E5AAC;color:#fff">Try again · 다시 시도</button></p>'},12000);window.addEventListener("load",function(){setTimeout(function(){if(window.PK)try{sessionStorage.removeItem("pk-reload")}catch(e){}},1000)})})()</script>
+<div id="boot" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;background:#1F5F8F;color:#fff;font:600 14px 'Noto Sans Lao Looped','IBM Plex Sans KR',system-ui,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.25);white-space:nowrap;max-width:calc(100vw - 32px);box-sizing:border-box"><div style="flex:none;width:16px;height:16px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:bootspin .9s linear infinite"></div><span style="overflow:hidden;text-overflow:ellipsis">ກຳລັງໂຫຼດ… ກະລຸນາລໍຖ້າ <span style="font-family:'IBM Plex Sans KR',sans-serif">불러오는 중</span> <span id="bootsec"></span></span><style>@keyframes bootspin{to{transform:rotate(360deg)}}</style></div>
+<script>/* v2.99 (RYU 2026-11-28, as PhasaLAO): settings and the last screen at once from this device, before app.js (600 KB) and the lesson data arrive.
+   app.js keeps the copy ("kolearn-snap") and takes it away with the pill at its first full render. The two scripts load after this first paint. */
+(function(){var t=Date.now(),iv=setInterval(function(){var b=document.getElementById("bootsec");if(!b){clearInterval(iv);return}var s=Math.floor((Date.now()-t)/1000);if(s>=2)b.textContent="("+s+" ວິ · "+s+"초)"},500);
+try{var S=JSON.parse(localStorage.getItem("kolearn-v1")||"null")||{},r=document.documentElement;if(S.theme==="light"||S.theme==="dark")r.setAttribute("data-theme",S.theme);if(S.fz)r.style.setProperty("--fz",String(S.fz));
+var h=decodeURIComponent(location.hash.replace(/^#/,""))||S.code,sn=JSON.parse(localStorage.getItem("kolearn-snap")||"null");
+if(sn&&sn.h&&sn.sig===[${JSON.stringify(VER)},h,S.mode||"learn",innerWidth].join("|")){sn.h.forEach(function(x){var e=document.getElementById(x[0]);if(e){e.innerHTML=x[1];e.hidden=(sn.hid||[]).indexOf(x[0])>=0}});document.getElementById("app").setAttribute("data-g",sn.g);r.classList.add("snap")}}catch(e){}
+var done=0;function go(){if(done)return;done=1;["audio/index.js?v=${encodeURIComponent(VER)}","app.js?v=${encodeURIComponent(VER)}"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})}
+requestAnimationFrame(function(){setTimeout(go,60)});setTimeout(go,400)})()</script>
+<script>/* v2.97: if the app has not started after 12 s (a file did not arrive), reload once by itself, then offer a button */(function(){setTimeout(function(){if(window.PK)return;var k="pk-reload",n=0;try{n=+sessionStorage.getItem(k)||0}catch(e){}if(n<1){try{sessionStorage.setItem(k,n+1)}catch(e){}location.reload();return}var bt=document.getElementById("boot");if(bt)bt.remove();document.documentElement.classList.remove("snap");var v=document.getElementById("view");if(v)v.innerHTML='<p class="empty">Could not load. Check the internet connection. · 불러오지 못했어요.<br><br><button type="button" onclick="try{sessionStorage.removeItem(&quot;pk-reload&quot;)}catch(e){}location.reload()" style="font:inherit;padding:10px 22px;border-radius:999px;border:0;background:#2E5AAC;color:#fff">Try again · 다시 시도</button></p>'},12000);window.addEventListener("load",function(){setTimeout(function(){if(window.PK)try{sessionStorage.removeItem("pk-reload")}catch(e){}},1000)})})()</script>
 </body></html>
 `);
 fs.writeFileSync(path.join(root, "manifest.webmanifest"), JSON.stringify({
