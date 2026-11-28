@@ -662,18 +662,9 @@ function renderSearch(){
 }
 
 /* theme and text size (like KoJey v1.4, RYU 2026-11-26, v2.67): a row under the audio-save line; saved on this device */
-function applyPrefs(){
-  const r = document.documentElement;
-  if (S.theme === "light" || S.theme === "dark") r.setAttribute("data-theme", S.theme); else r.removeAttribute("data-theme");
-  r.style.setProperty("--fz", String(S.fz || 1));
-  const box = $("prefs"); if (!box) return;
-  const seg = (label, opts, cur, set) => h("div", {class: "pseg", role: "group", "aria-label": label, title: label},
-    h("div", {class: "pbtns"}, opts.map(([v, t]) => h("button", {type: "button", class: "pb" + (String(cur) === String(v) ? " on" : ""), "aria-pressed": String(cur) === String(v) ? "true" : "false", onclick: () => { set(v); save(); applyPrefs(); if (S.mode === "cards") fitWords(); }}, t))));
-  box.replaceChildren(
-    seg("ໜ້າຈໍ 화면", [["auto", "ອັດຕະໂນມັດ"], ["light", "☀ ແຈ້ງ"], ["dark", "☾ ມືດ"]], S.theme || "auto", v => S.theme = v),
-    seg("ຂະໜາດຕົວໜັງສື 글자 크기", [[0.9, "A−"], [1, "A"], [1.15, "A+"], [1.3, "A++"]], S.fz || 1, v => S.fz = v));
-}
-applyPrefs();
+/* now the shared part src/core/prefs.js (2026-11-28); labels in src/app-config.js */
+function applyPrefs(){ PREFS.apply(); }
+PREFS.init({get: () => ({theme: S.theme, fz: S.fz}), set: (k, v) => { S[k] = v; save(); }, box: () => $("prefs"), after: () => { if (S.mode === "cards") fitWords(); }});
 
 /* ---------- render and routing ---------- */
 function render(){
