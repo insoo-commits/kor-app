@@ -32,7 +32,7 @@ const x = {
   chrome:["ໃນ Chrome ຫຼື Edge, ຄລິກໄອຄອນຕິດຕັ້ງ {inst} ຢູ່ທ້າຍແຖບທີ່ຢູ່.","ຄລິກ “Install”. PhasaKAO ຈະເປີດໃນໜ້າຕ່າງຂອງມັນເອງ ແລະ ມີທາງລັດໃນ desktop."],
   safari:["ໃນ Safari ຂອງ Mac, ເປີດເມນູ File.","ເລືອກ “Add to Dock”, ແລ້ວ “Add”."]}
 };
-const KO = {s1:"재생 설정",s2:"공부 방법",inside:"메뉴",rep:"횟수",spd:"속도",vol:"음량",voice:"라오어 음성",theme:"화면",fz:"글자 크기",pass:"학습 설정",start:"시작하기",how:"사용법"};
+const KO = {s1:"재생 설정",s2:"공부 방법",inside:"메뉴",rep:"횟수",spd:"속도",voice:"라오어 음성",theme:"화면",fz:"글자 크기",pass:"학습 설정",start:"시작하기",how:"사용법"};
 const ICON = {
  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>',
  stop:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>',
@@ -86,7 +86,7 @@ function pass(withCta){
   <div class="passbody">
    <div class="row"><div class="lab">${esc(x.rep)}<small>${KO.rep}</small></div>${seg("rep", [1,2,3,4,5].map(n => [n, n + "×"]), rep())}</div>
    <div class="row full"><div class="rate"><div class="lab">${esc(x.spd)}<small>${KO.spd}</small></div><div class="rtrack"><input type="range" min="0.7" max="2" step="0.1" value="${rate()}" data-rate aria-label="${esc(x.spd)}"><div class="ticks" aria-hidden="true">${[0.7, 1, 1.5, 2].map(v => `<span style="left:${((v - 0.7) / 1.3 * 100).toFixed(2)}%">${v.toFixed(1)}</span>`).join("")}</div></div><output>×${(+rate()).toFixed(1)}</output></div></div>
-   <div class="row full"><div class="rate vol"><div class="lab">${esc(x.vol)}<small>${KO.vol}</small></div><div class="rtrack"><input type="range" min="0" max="100" step="5" value="${volP()}" data-vol aria-label="${esc(x.vol)}"><div class="ticks" aria-hidden="true">${[0, 50, 100].map(v => `<span style="left:${v}%">${v}</span>`).join("")}</div></div><output>${volP()}%</output></div></div>
+   <div class="row full">${window.AVOL && AVOL.row ? AVOL.row(x.vol) : ""}</div>
    <div class="row"><div class="lab">${esc(x.voice)}<small>${KO.voice} · ${esc(x.voiceN)}</small></div><button type="button" class="sw${voice() ? " on" : ""}" data-voice role="switch" aria-checked="${voice()}" aria-label="${esc(x.voice)}"></button></div>
    <div class="row"><div class="lab">${esc(x.theme)}<small>${KO.theme}</small></div>${seg("theme", [["auto", x.th[0]], ["light", x.th[1]], ["dark", x.th[2]]], theme(), "txt")}</div>
    <div class="row"><div class="lab">${esc(x.fz)}<small>${KO.fz}</small></div>${seg("fz", [[0.9, "A−"], [1, "A"], [1.15, "A+"], [1.3, "A++"]], fz())}</div>
@@ -234,9 +234,7 @@ document.addEventListener("click", ev => {
   else if (a === "audio"){ const d = document.getElementById("dlAll"); if (d) d.click(); }
   else if (a === "how"){ const el = box.querySelector(".steps"); if (el) el.scrollIntoView({behavior: "smooth", block: "center"}); }
 });
-/* volume (RYU 2026-11-27): vol.js (window.AVOL) sets one level for all app sound; iPhone/iPad included */
-function volP(){ try { return window.AVOL ? AVOL.pct() : 100; } catch (e) { return 100; } }
-document.addEventListener("input", ev => { if (box && ev.target.matches("#intro [data-vol]")){ const v = +ev.target.value; try { if (window.AVOL) AVOL.set(v / 100); } catch (e) {} const o = ev.target.closest(".rate").querySelector("output"); if (o) o.textContent = v + "%"; } });
+/* volume (RYU 2026-11-27): the slider row and its handler are the shared part core/vol.js (window.AVOL.row) */
 document.addEventListener("input", ev => { if (box && ev.target.matches("#intro [data-rate]")){ const v = (+ev.target.value).toFixed(1).replace(/\.0$/, ""); setRate(v); const o = ev.target.closest(".rate").querySelector("output"); if (o) o.textContent = "×" + (+v).toFixed(1); } });
 document.addEventListener("change", ev => { if (box && ev.target.matches("#intro [data-rate]")) render(); });
 /* while the intro is open, the app's keys stay off; Esc closes it */
