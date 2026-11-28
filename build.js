@@ -7,8 +7,8 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-28 v3.04";
-const STATS_PUBLIC = /const STATS_PUBLIC = true;/.test(fs.readFileSync(path.join(src, "stats.js"), "utf8"));
+const VER = "2026-11-28 v3.05";
+const STATS_PUBLIC = /^\s*statsPublic: true,/m.test(fs.readFileSync(path.join(src, "app-config.js"), "utf8"));   // core stats (2026-11-28): the switch is in app-config.js
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
 fs.mkdirSync(path.join(root, "preview"), {recursive: true});
@@ -20,7 +20,7 @@ const idx = [], ALL = [];
 const wordSet = new Set(), sentSet = new Set();
 for (const [a] of M.areas){
   const list = JSON.parse(fs.readFileSync(path.join(bundles, a + ".json"), "utf8"));
-  /* 도움말 > 학습 통계 · 의견 보내기 (src/statspage.json, like KoJey; RYU 2026-11-26, v2.68): HP-C pages only when src/stats.js has STATS_PUBLIC = true */
+  /* 도움말 > 학습 통계 · 의견 보내기 (src/statspage.json, like KoJey; RYU 2026-11-26, v2.68): HP-C pages only when src/app-config.js has statsPublic: true */
   if (a === "HP"){ for (let i = list.length - 1; i >= 0; i--) if (list[i].code.startsWith("HP-C-")) list.splice(i, 1); if (STATS_PUBLIC) list.push(...JSON.parse(read("statspage.json"))); }
   for (const b of list){
     idx.push([b.code, b.t, b.lv, b.info ? "info" : b.type, tlo.get(b.code) || "", (b.w || []).length + (b.f || []).length, [].concat(b.w || [], b.f || []).reduce((t, w) => t + ((w[3] || []).length), 0) + (b.dl || []).length + (b.e || []).length]);
@@ -71,7 +71,7 @@ function tabCss(src){
   while (i < s.length){ const r = block(); out.push(...r); }
   return "\n/* tablet text (generated) */\nhtml.tab{zoom:1}\n" + out.join("\n");
 }
-const css = read("app.css") + tabCss(read("app.css")) + "\n" + read("tab.css") + "\n" + read("skin.css") + "\n" + read("intro.css"), body = read("body.html"), clip = read("clip.js"), js = read("app-config.js") + "\n" + fs.readdirSync(path.join(src, "core")).filter(f => f.endsWith(".js")).sort().map(f => read("core/" + f)).join("\n") + "\n" + clip + "\n" + read("audiopack.js") + "\n" + read("stats.js") + "\n" + read("app.js") + "\n" + read("intro.js");
+const css = read("app.css") + tabCss(read("app.css")) + "\n" + read("tab.css") + "\n" + read("skin.css") + "\n" + read("intro.css"), body = read("body.html"), clip = read("clip.js"), js = read("app-config.js") + "\n" + fs.readdirSync(path.join(src, "core")).filter(f => f.endsWith(".js")).sort().map(f => read("core/" + f)).join("\n") + "\n" + clip + "\n" + read("audiopack.js") + "\n" + read("app.js") + "\n" + read("intro.js");
 
 // audio: audio/list.json = every clip the app can use; audio/index.js = the clips that exist as mp3 in audio/
 const {cleanKo, cleanLo, clipKey} = new Function(clip + "; return {cleanKo, cleanLo, clipKey};")();
