@@ -1,9 +1,15 @@
+/* core vol v1.0 (master: kor-app src/core/vol.js). Shared by PhasaKAO, JeyCampus, PhasaLAO.
+   Edit only this master, raise the version, then run  node tools/core-copy.js  to copy it to the other apps.
+   Per-app values come from window.APPCFG (src/app-config.js, loaded first): APPCFG.vol.sub = the small second label.
+   No app names, labels, keys or colours are written here (the slider colour is the app's own CSS). */
 /* app volume (2026-11-27, RYU): one level for every sound the app makes, saved per app.
    iPhone/iPad ignore audio.volume, so there the <audio> elements are routed through a Web Audio GainNode
    (only once the level is set below 100%, so normal playback stays untouched). Elsewhere audio.volume is used.
-   Spoken TTS fallback gets utterance.volume. API: window.AVOL.get() 0..1, AVOL.set(v), AVOL.pct(). */
+   Spoken TTS fallback gets utterance.volume. API: window.AVOL.get() 0..1, AVOL.set(v), AVOL.pct(), AVOL.row(label) = slider HTML;
+   any <input data-vol> is wired here. Saved under "vol:<first path part>" (unchanged since 2026-11-27, so saved levels stay). */
 (function(){
   if (window.AVOL) return;
+  var CFG = (window.APPCFG && window.APPCFG.vol) || {};
   var KEY = "vol:" + (location.pathname.split("/")[1] || "app"), V = 1;
   try { var s = localStorage.getItem(KEY); if (s !== null && !isNaN(+s)) V = Math.max(0, Math.min(1, +s)); } catch (e) {}
   var FIXED = false;                       /* true where element volume is read-only (iOS) */
@@ -47,6 +53,17 @@
       if (gain) try { gain.gain.value = V; } catch (e) {}
       wake();
       seen.forEach(apply);
+    },
+    /* the slider row (intro settings card): label in the learner's language + CFG.sub under it */
+    row: function(label){
+      var p = Math.round(V * 100), l = esc(label);
+      return '<div class="rate vol"><div class="lab">' + l + '<small>' + esc(CFG.sub || "") + '</small></div><div class="rtrack"><input type="range" min="0" max="100" step="5" value="' + p + '" data-vol aria-label="' + l + '"><div class="ticks" aria-hidden="true">' + [0, 50, 100].map(function(v){ return '<span style="left:' + v + '%">' + v + '</span>'; }).join("") + '</div></div><output>' + p + '%</output></div>';
     }
   };
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  document.addEventListener("input", function(ev){
+    var t = ev.target; if (!t || !t.matches || !t.matches("[data-vol]")) return;
+    var v = +t.value; window.AVOL.set(v / 100);
+    var o = t.closest(".rate") && t.closest(".rate").querySelector("output"); if (o) o.textContent = v + "%";
+  });
 })();
