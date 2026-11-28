@@ -22,8 +22,8 @@ const parts = fs.readdirSync(core).filter(f => f.endsWith(".js")).sort().map(f =
 const verOf = t => { const m = t && t.match(/core (\S+) (v[\d.]+) \(from kor-app/); return m ? m[2] : "none"; };
 const BEGIN = "/* core BEGIN: written by kor-app tools/core-copy.js from tools/core/app-config.js + tools/core/*.js; do not edit between BEGIN and END */";
 const END = "/* core END */";
-/* parts an app does not take (RYU 2026-11-28): PhasaLAO keeps its own statistics (so its sheet columns stay) , its own keys (its player works differently) and its own last-screen copy (other fields) */
-const SKIP = {"lao-app": ["keys", "snap", "stats"]};
+/* parts an app does not take (RYU 2026-11-28): PhasaLAO keeps its own statistics (so its sheet columns stay) , its own keys (its player works differently) , its own last-screen copy (other fields) and its own ☆ / 오답 노트 data (other format) */
+const SKIP = {"lao-app": ["keys", "snap", "stats", "wbook"]};
 let behind = 0;
 for (const t of targets){
   const app = path.basename(path.resolve(t)), lao = !fs.existsSync(path.join(t, "build.js"));

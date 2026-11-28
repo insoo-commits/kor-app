@@ -548,30 +548,21 @@ function makeQuiz(b){
 }
 /* mistake notebook (like KoJey v1.12): wrong quiz answers are kept on this device (up to 80);
    "ທວນຂໍ້ທີ່ຜິດ 오답 복습" asks them again in one quiz; a right answer there takes the question out of the list. */
-const wbKey = q => q.kind + "|" + q.a + "|" + (q.q || q.say || "");
-function wbAdd(qz){
-  const bank = S.wb = (S.wb || []).filter(x => x && x.q), have = new Set(bank.map(x => wbKey(x.q)));
-  qz.qs.filter(q => q.picked !== q.a).forEach(q => { const c = Object.assign({}, q, {picked: null}); if (!have.has(wbKey(c))){ have.add(wbKey(c)); bank.unshift({q: c, code: qz.code}); } });
-  S.wb = bank.slice(0, 80);
-}
-function wbDrop(q){ S.wb = (S.wb || []).filter(x => wbKey(x.q) !== wbKey(q)); }
+/* the saved data rules: the shared part src/core/wbook.js (2026-11-28) */
+const wbKey = WB.key;
+function wbAdd(qz){ WB.add(S, qz); }
+function wbDrop(q){ WB.drop(S, q); }
 /* ☆ 단어 담기 and the 오답 노트 list, as PhasaLAO (RYU 2026-11-28, v2.99): a ☆ on each word card keeps the word (S.star: key -> [ko, reading, lo, lesson]);
    the review shows one list of the wrong words and the ☆ words, each with a ✕ to take it out. Review quiz = the wrong questions + a meaning question per ☆ word;
    a right answer takes a wrong question out, a ☆ word stays until its ✕ (or ★) is pressed. */
-const nbKey = (code, ko) => code + "::" + ko;
-function wbWord(x){ const q = x.q; if (q.w) return q.w; return [q.toLo ? q.q : q.a, "", q.toLo ? q.a : q.kind === "ko" ? q.q : ""]; }   // entries saved before v2.99 have no w
+const nbKey = WB.nbKey;
+const wbWord = WB.word;
 function nbRows(){
-  const m = new Map();
-  for (const x of S.wb || []){ if (!x || !x.q) continue; const w = wbWord(x), k = nbKey(x.code, w[0]), r = m.get(k);
-    if (r){ r.pr = r.pr || w[1]; r.lo = r.lo || w[2]; } else m.set(k, {k, code: x.code, ko: w[0], pr: w[1], lo: w[2], wrong: 1}); }
-  for (const k in S.star || {}){ const st = S.star[k], r = m.get(k);
-    if (r){ r.star = 1; r.pr = r.pr || st[1]; r.lo = r.lo || st[2]; } else m.set(k, {k, code: st[3], ko: st[0], pr: st[1], lo: st[2], star: 1}); }
-  return [...m.values()];
+  const rows = WB.rows(S);
+  return rows;
 }
 function starToggle(code, it, btn){
-  const k = nbKey(code, it.ko); S.star = S.star || {};
-  if (S.star[k]) delete S.star[k]; else S.star[k] = [it.ko, it.pr || "", it.lo, code];
-  const on = !!S.star[k]; save(); drawMine();
+  const on = WB.star(S, code, it); save(); drawMine();
   btn.classList.toggle("on", on); btn.textContent = on ? "★" : "☆"; btn.setAttribute("aria-pressed", on ? "true" : "false");
 }
 async function wbReview(stay){
@@ -593,7 +584,7 @@ async function wbReview(stay){
   save(); drawControls(); render(); const v = $("view"); if (v && stay !== true) v.scrollIntoView({behavior: "smooth", block: "start"});
 }
 function wbDel(k){
-  S.wb = (S.wb || []).filter(x => !(x && x.q && nbKey(x.code, wbWord(x)[0]) === k)); if (S.star) delete S.star[k];
+  WB.del(S, k);
   save(); drawMine(); if (nbRows().length) wbReview(true); else { quiz = null; render(); }
 }
 let WBOPEN = false;
