@@ -1,0 +1,1121 @@
+/* core look v1.0 (master: kor-app src/core/look.css). Shared by PhasaKAO and JeyCampus (not PhasaLAO: its screens are built differently).
+   Edit only this master, raise the version, then run  node tools/core-copy.js  to copy it to the other apps.
+   The look of the lesson screens that both apps share rule for rule (word cards, sentence lines, dialogues, quizzes, player, info pages …),
+   taken out of each app's src/app.css on 2026-11-28 (RYU: "메인 콘텐츠에서도 동일한 유형으로 보여주는 방법 등은 공통으로").
+   build.js puts it right before the app's own src/app.css, which keeps only what differs (colours in :root, rules only one app has),
+   and makes the iPad text sizes (html.tab) from both together. */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111514; --sheet:#191E1D; --ink:#E8EDEB; --muted:#9BA7A4; --line:#2C3533; --raise:#202725;
+  --k1:#78B4E6; --k1-soft:#1C2E3E; --k2:#7CC795; --k2-soft:#1C3024; --k3:#EE8AA5; --k3-soft:#3A1E27;
+  --k4:#F0A070; --k4-soft:#3A2618; --k5:#E2B25A; --k5-soft:#352A15; --k6:#B79CEB; --k6-soft:#2A2238;
+  --k7:#6CCACD; --k7-soft:#173032; --k8:#9DB0F0; --k8-soft:#20273D; --k9:#D2AE86; --k9-soft:#30271C;
+  --good:#5FCB8E; --good-soft:#1B3327; --bad:#F08080; --bad-soft:#3B2020; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111514; --sheet:#191E1D; --ink:#E8EDEB; --muted:#9BA7A4; --line:#2C3533; --raise:#202725;
+  --k1:#78B4E6; --k1-soft:#1C2E3E; --k2:#7CC795; --k2-soft:#1C3024; --k3:#EE8AA5; --k3-soft:#3A1E27;
+  --k4:#F0A070; --k4-soft:#3A2618; --k5:#E2B25A; --k5-soft:#352A15; --k6:#B79CEB; --k6-soft:#2A2238;
+  --k7:#6CCACD; --k7-soft:#173032; --k8:#9DB0F0; --k8-soft:#20273D; --k9:#D2AE86; --k9-soft:#30271C;
+  --good:#5FCB8E; --good-soft:#1B3327; --bad:#F08080; --bad-soft:#3B2020; color-scheme:dark}
+[data-g="K1"]{--accent:var(--k1);--accent-soft:var(--k1-soft)} [data-g="K2"]{--accent:var(--k2);--accent-soft:var(--k2-soft)}
+[data-g="K3"]{--accent:var(--k3);--accent-soft:var(--k3-soft)} [data-g="K4"]{--accent:var(--k4);--accent-soft:var(--k4-soft)}
+[data-g="K5"]{--accent:var(--k5);--accent-soft:var(--k5-soft)} [data-g="K6"]{--accent:var(--k6);--accent-soft:var(--k6-soft)}
+[data-g="K7"]{--accent:var(--k7);--accent-soft:var(--k7-soft)} [data-g="K8"]{--accent:var(--k8);--accent-soft:var(--k8-soft)}
+[data-g="K9"]{--accent:var(--k9);--accent-soft:var(--k9-soft)} [data-g="KR"]{--accent:var(--k5);--accent-soft:var(--k5-soft)}
+[data-g="TP"]{--accent:#A33A6B;--accent-soft:#F8E6EF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) [data-g="TP"]{--accent:#EC93BD;--accent-soft:#3A1E2C}}
+:root[data-theme="dark"] [data-g="TP"]{--accent:#EC93BD;--accent-soft:#3A1E2C}
+[data-g="HP"]{--accent:#5E6E1F;--accent-soft:#EEF1DD}   /* 도움말: calm olive, dark values too (v2.38) */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) [data-g="HP"]{--accent:#BFD07A;--accent-soft:#2A2F17}}
+:root[data-theme="dark"] [data-g="HP"]{--accent:#BFD07A;--accent-soft:#2A2F17}
+
+/* wide screens: 115% from 900px (RYU asked for slightly smaller text on PC, was 125% like the Lao app); on bigger
+   screens or windows the page grows with the width so the text does not look tiny (RYU 2026-11-14, v0.88; any pointer) */
+/* PC zoom like lao-app: one step only, mouse screens 900px+ (lao-app 15px x 1.25; here 17px x 1.1 gives the same text size) (RYU 2026-11-15, v1.42) */
+@media (hover:hover) and (pointer:fine) and (min-width:900px){html{zoom:1.1}}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--lao);font-size:17px;line-height:1.7}
+.ko{font-family:var(--ko);line-height:1.5}
+button,select,input{font:inherit;color:inherit}
+button,select{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 56px;display:flex;flex-direction:column;gap:14px}
+
+.top{position:relative;overflow:hidden;isolation:isolate;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;padding:18px 20px;min-height:150px;border-radius:16px;background:var(--accent-soft);border:1px solid var(--line);
+  --sky1:#CFE4F3;--sky2:#F7EBDD;--sun:#F3B98A;--m1:#A9C3CF;--m2:#7FA39A;--m3:#5F8A79;--ink2:#3C4A52;--wall:#F4EEE4;--wood:#6B4A35;--roof:#3D4650;--pine:#3F6B4E}
+.top .scene{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.top .brand,.top .stats{background:color-mix(in srgb,var(--sheet) 72%,transparent);border-radius:12px;padding:6px 12px;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.brand{display:flex;flex-direction:column;gap:2px;min-width:0}
+.eyebrow{font-size:14px;color:var(--muted);font-weight:600}
+h1{font-family:var(--display);font-size:clamp(30px,7vw,48px);line-height:1.1;margin:0;font-weight:700;color:var(--accent);letter-spacing:-.01em}
+.stats{display:flex;gap:16px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.stats b{display:block;font-family:var(--display);font-size:17px;color:var(--ink);line-height:1.2}
+
+.search{position:relative}
+.search input{width:100%;border:1px solid var(--line);background:var(--sheet);border-radius:8px;padding:7px 10px 7px 32px;font-size:16px}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted)}
+
+.groups,.subs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+/* area button: Lao name on the first line, Korean name and progress on a second, right-aligned line (keeps each button narrow) */
+.group{flex:0 0 auto;display:flex;flex-direction:column;align-items:stretch;gap:0;border:1px solid var(--line);background:var(--sheet);border-radius:14px;padding:5px 14px 5px 10px;font-weight:600;font-size:16px;white-space:nowrap;line-height:1.4}
+.group .gn{display:flex;align-items:center;gap:8px}
+.group small{text-align:right;font-size:13px}
+.group i{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.group small{font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.group[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--sheet)}
+.group[aria-pressed="true"] i{background:var(--sheet)}
+.group[aria-pressed="true"] small{color:var(--sheet);opacity:.85}
+.sub{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:0;border:1px solid var(--line);border-top:4px solid var(--accent);background:var(--sheet);border-radius:4px 4px 12px 12px;padding:6px 14px 8px;min-width:120px;text-align:left}
+.sub .code{font-family:var(--display);font-size:13px;letter-spacing:.08em;color:var(--accent);font-weight:600}
+.sub .name{font-weight:600;font-size:16px;white-space:nowrap}
+.sub .kn{font-size:13px;color:var(--muted);white-space:nowrap}
+.sub .prog{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.sub[aria-selected="true"]{background:var(--accent-soft);border-color:var(--accent)}
+
+.sheet{background:var(--sheet);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.band{background:var(--accent-soft);padding:16px 20px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 16px;align-items:flex-end;justify-content:space-between}
+.band .code{font-family:var(--display);font-size:14px;letter-spacing:.08em;color:var(--accent);font-weight:600}
+.band h2{margin:0;font-size:28px;line-height:1.25;font-weight:600;text-wrap:balance}
+.band .tlo{font-size:17px;color:var(--muted);margin-top:2px}
+.band p{margin:4px 0 0;color:var(--ink)}
+.band p.sub-ko{font-size:15px;color:var(--muted)}
+.band .tags{display:flex;gap:6px;flex-wrap:wrap;font-size:14px}
+.tag{border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:1px 10px;color:var(--muted);white-space:nowrap}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--line);background:var(--raise)}
+.ctl select{text-align:center;text-align-last:center}
+.ctl{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted,inherit);white-space:nowrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--sheet)}
+.seg button{border:0;background:none;padding:6px 14px;font-weight:600;font-size:16px}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--sheet)}
+.bsel{border:1px solid var(--line);background:var(--sheet);border-radius:8px;padding:6px 8px;font-size:16px;min-width:0;max-width:100%}
+#bsel{flex:1 1 200px}
+.dd{position:relative;min-width:0}
+.ddb{width:100%;display:flex;align-items:baseline;justify-content:center;gap:6px;text-align:center;cursor:pointer;padding-left:28px;padding-right:28px;position:relative;color:inherit;white-space:nowrap;overflow:hidden}
+.ddb::after{content:"";position:absolute;right:11px;top:50%;width:7px;height:7px;border:solid var(--muted);border-width:0 2px 2px 0;transform:translateY(-70%) rotate(45deg)}
+.ddk{flex:none;white-space:nowrap}
+.ddo{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:.88em}
+.ddo::before{content:"("}.ddo::after{content:")"}
+.ddl{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;max-height:min(60vh,420px);overflow:auto;background:var(--sheet);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:4px}
+.ddi{display:flex;align-items:baseline;justify-content:center;gap:6px;width:100%;border:0;background:none;color:inherit;text-align:center;padding:9px 10px;border-radius:7px;font-size:15px;white-space:nowrap;overflow:hidden;cursor:pointer}
+.ddi:hover{background:var(--raise)}
+.ddi[aria-selected="true"]{background:var(--accent);color:var(--sheet)}
+.ddi[aria-selected="true"] .ddo{color:inherit;opacity:.85}
+.body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:22px}
+
+.sec>h3{margin:0 0 10px;font-size:18px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:10px}
+.sec>h3::after{content:"";flex:1;height:1px;background:var(--line)}
+.note-lo{margin:0}
+.note-ko{margin:2px 0 0;font-size:15px;color:var(--muted)}
+.tip{border-left:3px solid var(--accent);background:var(--raise);padding:8px 12px;border-radius:0 8px 8px 0}
+.tip+.tip{margin-top:8px}
+.spk{flex:none;border:1px solid var(--line);background:var(--sheet);border-radius:50%;width:38px;height:38px;line-height:1;font-size:16px;display:inline-grid;place-items:center}
+.spk:hover,.spk.on{border-color:var(--accent);background:var(--accent-soft)}
+.word{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.word+.word{margin-top:10px}
+.line{display:grid;grid-template-columns:38px minmax(0,1fr);gap:12px;padding:12px 14px;align-items:center}
+.line+.line{border-top:1px solid var(--line)}
+.line[data-say]{cursor:pointer}
+@media (hover:hover){.line[data-say]:hover{background:color-mix(in srgb,var(--accent-soft) 55%,transparent)}}
+.line.ex{background:var(--raise);padding-left:24px}
+.word .exs{display:flex;flex-direction:column}
+.word .exs .line{border-top:1px solid var(--line)}
+.line .k{font-size:18px;font-weight:500}
+.line.head .k{font-size:clamp(26px,6vw,32px);font-weight:700;line-height:1.3}
+.line.head .m{font-size:17px}
+.line .p{font-size:15px;color:var(--accent)}
+.line .m{color:var(--ink)}
+.line .from{font-size:15px;color:var(--muted)}
+.line.now,.letter.now{background:var(--accent-soft)}
+.rowbtns.now .spk,.now>.spk{border-color:var(--accent);background:var(--accent-soft)}
+.rows{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.letter{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;text-align:left;background:var(--sheet);color:var(--ink);font:inherit;cursor:pointer}
+.letter .lt{display:grid;gap:2px}
+.letter b{font-size:34px;line-height:1.1;font-weight:600;color:var(--accent)}
+/* big for a single letter or syllable, smaller for a phrase such as "자음 + 모음(오른쪽)" */
+.letter b.mid{font-size:26px}
+.letter b.long{font-size:19px;line-height:1.35;word-break:keep-all}
+.letter .llo{font-size:17px;color:var(--ink)}
+.letter .lsay{font-size:16px;color:var(--muted)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:17px}
+th,td{padding:10px 14px;text-align:left;border-top:1px solid var(--line);vertical-align:top}
+th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);font-weight:700;white-space:nowrap}
+.pairs{display:flex;flex-wrap:wrap;gap:8px}
+.pair{border:1px solid var(--line);border-radius:10px;padding:8px 14px;background:var(--raise);font-size:17px}
+.pair i{font-style:normal;color:var(--accent);margin:0 8px}
+.dlg .who{font-size:15px;color:var(--muted);font-weight:600}
+.btn{border:1px solid var(--line);background:var(--sheet);border-radius:8px;padding:6px 14px;font-weight:600;font-size:16px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--sheet)}
+.btn.good{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.rowbtns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.check{display:inline-flex;align-items:center;gap:6px;font-size:15px;color:var(--muted)}
+.qa{border:1px solid var(--line);border-radius:10px;padding:9px 12px;display:grid;gap:4px}
+.qa+.qa{margin-top:8px}
+.qa .a{color:var(--good);font-weight:600}
+.qa button{justify-self:start}
+
+.card{border:1px solid var(--line);border-radius:16px;min-height:230px;padding:24px 20px;display:grid;place-items:center;text-align:center;background:var(--raise);width:100%}
+.card .k{font-size:clamp(28px,7vw,44px);font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+.card .p{color:var(--accent);margin-top:6px}
+.card .m{font-size:clamp(20px,5vw,28px);margin-top:10px}
+.card .hint{font-size:14px;color:var(--muted);margin-top:14px}
+.card.known{border-color:var(--good)}
+.count{font-size:15px;color:var(--muted);font-variant-numeric:tabular-nums}
+.quizq{font-size:clamp(24px,6vw,36px);font-weight:600;text-align:center;padding:18px 8px 6px;overflow-wrap:anywhere}
+.quizp{text-align:center;color:var(--muted);font-size:15px;margin:0 0 8px}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.choice{border:1px solid var(--line);border-radius:12px;background:var(--sheet);padding:14px 16px;text-align:left;font-size:19px;overflow-wrap:anywhere}
+.choice:hover{border-color:var(--accent)}
+.choice.right{background:var(--good-soft);border-color:var(--good)}
+.choice.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.score{text-align:center;font-family:var(--display);font-size:40px;font-weight:700;color:var(--accent)}
+.hit{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:9px 4px}
+.hit:first-child{border-top:0}
+.hit .k{font-size:18px;font-weight:600}
+.hit .where{font-size:14px;color:var(--muted);grid-row:1 / span 2;grid-column:2;align-self:center;text-align:right}
+.empty{color:var(--muted);padding:20px 0;text-align:center}
+.player{position:sticky;bottom:12px;z-index:5;align-self:center;display:flex;gap:10px;align-items:center;background:var(--ink);color:var(--bg);border-radius:999px;padding:8px 10px 8px 18px;font-size:16px;max-width:100%}
+.player[hidden]{display:none}
+.player .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.player button{border:0;border-radius:999px;background:var(--bg);color:var(--ink);padding:4px 14px;font-weight:600;flex:none}
+.dlline{margin:14px 0 0;text-align:center;font-size:15px}
+.dlline[hidden]{display:none}
+.dlline a{color:var(--accent);font-weight:600;text-decoration:none}
+.dlline a:hover{text-decoration:underline}
+.dlline .count{color:var(--muted);margin-left:6px}
+.foot{font-size:14px;color:var(--muted);margin:0;text-align:center}
+.ver{text-align:center;font-size:12px;color:var(--muted)}
+/* word-card buttons: ← | 🔊 1/13 | remembered | → on one line; on a phone "remembered" gets its own full-width line */
+.cardnav{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center}
+.cardnav .mid{display:flex;gap:10px;align-items:center;justify-content:center}
+@media (max-width:560px){
+  .body{padding:14px 12px 18px} .band{padding:14px 14px}
+  .band h2{font-size:20px} .seg button{flex:1;padding:8px 4px}
+  /* controls: tabs, then the lesson list, then times + speed side by side */
+  .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px}
+  .controls .seg,#bsel{grid-column:1 / -1;width:100%}
+  .ctl{min-width:0;flex-direction:column;align-items:stretch;gap:2px;text-align:center} .ctl select{width:100%}
+  .cardnav{grid-template-columns:1fr auto 1fr}
+  .cardnav .prev{grid-column:1;grid-row:1}
+  .cardnav .mid{grid-column:2;grid-row:1}
+  .cardnav .next{grid-column:3;grid-row:1}
+  .cardnav .knownbtn{grid-column:1 / -1;grid-row:2;padding:10px}
+  .cardnav .btn{white-space:nowrap}
+  .line.ex{padding-left:14px}
+}
+@media (prefers-reduced-motion:no-preference){.btn,.choice,.spk,.group,.sub{transition:border-color .12s,background-color .12s}}
+
+/* Word + example sentences on a wide screen: the word sits in its own column on the left and its sentences fill the right,
+   so a card uses the whole width instead of leaving the right half empty. */
+@media (min-width:760px){
+  /* every row (headword, example sentence, dialogue, conjugation): speaker button on the left at the top, level with
+     the Korean line, and the Lao meaning left-aligned, the same as on the phone (RYU 2026-11-14, PC and tablet) */
+  .line{align-items:start}
+  .line>.spk{margin-top:-4px}
+  /* quiz item: one row, question in the left half and the answer (or the show-answer button) in the right half,
+     with a thin line down the middle, so the list takes about half the height (RYU 2026-11-14) */
+  .qa{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:28px;row-gap:0;align-items:center;min-height:62px;
+    background:linear-gradient(var(--line),var(--line)) center / 1px 100% no-repeat}
+  /* conjugation and example rows: two per row */
+  .rows.grid2{display:grid;grid-template-columns:1fr 1fr}
+  .rows.grid2>.line{border-top:0;border-bottom:1px solid var(--line);margin-bottom:-1px}
+  .rows.grid2>.line:nth-child(odd){border-right:1px solid var(--line)}
+}
+
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .top{--sky1:#1C2A3A;--sky2:#3A2F3A;--sun:#E7C27A;--m1:#2E4250;--m2:#28403A;--m3:#22382F;--ink2:#C9D3D8;--wall:#4A443C;--wood:#8A6A52;--roof:#1A1F25;--pine:#2C4A36}}
+:root[data-theme="dark"] .top{--sky1:#1C2A3A;--sky2:#3A2F3A;--sun:#E7C27A;--m1:#2E4250;--m2:#28403A;--m3:#22382F;--ink2:#C9D3D8;--wall:#4A443C;--wood:#8A6A52;--roof:#1A1F25;--pine:#2C4A36}
+
+/* phone: Korean in word and sentence rows one step smaller (RYU, 2026-11-14) */
+@media (max-width:759px){
+  body{font-size:15px;line-height:1.6}
+  .line{grid-template-columns:34px minmax(0,1fr);gap:10px;padding:10px 12px}
+  .spk{width:34px;height:34px;font-size:14px}
+  .line .k{font-size:16px}
+  .line.head .k{font-size:20px}
+  .line.head .m{font-size:15px}
+  .line .p{font-size:13.5px}
+  .line .from{font-size:13.5px}
+  .gl{font-size:13px}
+  .gl .p{font-size:12.5px}
+  table{font-size:12.5px}
+  th{font-size:12px}
+  th,td{padding:7px 5px}
+  .tablewrap td,.tablewrap th{word-break:keep-all}   /* phone tables a step smaller, words not split (RYU 2026-11-18, v1.90) */
+  td:first-child{white-space:nowrap}
+  .pair{font-size:15px}
+  .band .tlo{font-size:15px}
+  .sec>h3{font-size:16px}
+  .wrep{font-size:12px;padding:2px 8px}
+  /* speaker button at the top, in front of the Korean line */
+  .line{align-items:start}
+  .line>.spk{margin-top:-4px}
+  .line.head>.spk{margin-top:0}
+  .letter{padding:8px 10px;gap:8px}
+  .letter b{font-size:28px}
+  .letter b.mid{font-size:22px}
+  .letter b.long{font-size:16px}
+  .letter .llo{font-size:15px}
+  .letter .lsay{font-size:14px}
+}
+
+/* ※ key words under a sentence */
+.gl{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);font-size:14.5px;color:var(--muted);line-height:1.6;text-align:right}
+.gl .ko{color:var(--ink);font-weight:500}
+.gl .p{font-size:14px}
+/* word repeat button: top-right corner of each word box */
+.word{position:relative}
+.wrep{position:absolute;top:8px;right:8px;z-index:1;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:3px 10px;font:inherit;font-size:13px;cursor:pointer}
+.wrep:hover,.word.playing .wrep{border-color:var(--accent);background:var(--accent-soft)}
+
+.wrep.hrep{position:static;order:2;flex:none;font-weight:400}
+.sec>h3::after{order:1}
+.sec:has(.letters.playing) .hrep,.sec:has(.rows.playing) .hrep{border-color:var(--accent);background:var(--accent-soft)}
+.wrep.tbtn{position:static;flex:none}
+.ico{display:inline-flex;vertical-align:-0.2em;margin-right:.35em}
+.ico svg{width:1.15em;height:1.15em}
+.spk .ico{margin:0;color:var(--ink)}
+.spk .ico svg{width:18px;height:18px}
+.wrep{color:var(--accent);border-color:var(--accent);font-weight:600}
+#pt .ico{color:var(--accent)}
+#dlAll{white-space:nowrap}
+@media (max-width:759px){ .dlline{font-size:14px} }
+
+/* repeat buttons look raised, so they stand apart from the flat chips around them (RYU 2026-11-14):
+   light-to-tinted gradient, a thin darker bottom edge (1px; 2px looked too heavy to RYU) and a soft drop shadow;
+   pushed in while pressed or playing */
+:root{--rep-hi:rgba(255,255,255,.9);--rep-sh:rgba(20,30,28,.22)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--rep-hi:rgba(255,255,255,.14);--rep-sh:rgba(0,0,0,.6)}}
+:root[data-theme="dark"]{--rep-hi:rgba(255,255,255,.14);--rep-sh:rgba(0,0,0,.6)}
+.wrep,.wrep:hover{background:linear-gradient(180deg,var(--sheet) 0%,var(--accent-soft) 100%);
+  box-shadow:0 1px 0 var(--accent),0 5px 9px var(--rep-sh),inset 0 1px 0 var(--rep-hi);transition:transform .08s,box-shadow .08s}
+.wrep:active,.word.playing .wrep,.sec:has(.letters.playing) .hrep,.sec:has(.rows.playing) .hrep,.sec.playing>h3 .hrep{
+  transform:translateY(1px);background:var(--accent-soft);box-shadow:0 0 0 var(--accent),inset 0 2px 4px var(--rep-sh)}
+
+/* all repeat buttons end on one line at the right: the word button sits 8px inside its card (+1px border),
+   so the section and lesson buttons above it move in by the same amount (RYU 2026-11-14) */
+.wrep.hrep,.wrep.tbtn:last-child{margin-right:9px}
+
+/* the line being played: a warm highlighter colour with a bar on the left, so it never blends with the
+   tinted headword column or the grey example rows (RYU 2026-11-14) */
+:root{--now:#FFF1BF;--now-bar:#E0A100}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--now:#3D3418;--now-bar:#E2B25A}}
+:root[data-theme="dark"]{--now:#3D3418;--now-bar:#E2B25A}
+.line.now,.letter.now,.sec .word>.line.head.now{background:var(--now);box-shadow:inset 4px 0 0 var(--now-bar)}
+.now>.spk,.rowbtns.now .spk{border-color:var(--now-bar);background:var(--now)}
+@media (hover:hover){.line.now[data-say]:hover{background:var(--now)}}
+
+/* tables (대조·뜻 가르기·낱말 풀이): headers and cells centred (RYU 2026-11-14) */
+.tablewrap th,.tablewrap td{text-align:center}
+.dlline .dlok{color:var(--good)}
+.dlline .dlnew{color:var(--bad)}
+
+/* ---------- word group (RYU 2026-11-14, modelled on the lao-app word entry RYU pointed to) ----------
+   head line: coloured bar on the left, the word large, its reading and meaning on the same line, the word-repeat
+   button on the right; under a thin line, one rounded card per example sentence, full width, with "ຕົວຢ່າງ 1, 2"
+   in a narrow left column and the word underlined in the sentence. The speaker button stays left of the Korean
+   (RYU's earlier rule); the line being played turns warm yellow. */
+.sec .word{border:0;border-radius:0;overflow:visible}
+.sec .word+.word{margin-top:28px}
+.sec .word>.line.head{grid-template-columns:38px minmax(0,1fr) auto;background:none;padding:6px 0 14px 18px;align-items:center;
+  box-shadow:inset 4px 0 0 var(--accent);border-bottom:1px solid var(--line);border-radius:0}
+.sec .word>.line.head>div{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:14px;row-gap:2px}
+.sec .word>.line.head .k{font-size:28px;font-weight:700;line-height:1.3}
+.sec .word>.line.head .p{font-size:18px;font-weight:600}
+.sec .word>.line.head .m{font-size:18px;color:var(--muted)}
+.sec .word>.line.head>.spk{margin-top:0}
+.sec .word>.line.head.now{background:var(--now);box-shadow:inset 4px 0 0 var(--now-bar)}
+.sec .word .wrep{position:static;align-self:center;margin:0}
+.sec .word .exs{display:grid;gap:12px;margin-top:14px}
+.sec .word .exs .line.ex{grid-template-columns:60px 38px minmax(0,1fr);border:0;border-radius:18px;background:var(--raise);padding:16px 18px;align-items:start}
+.sec .word .exs .line.ex>.spk{margin-top:-4px}
+.sec .word .exs .line.ex.now{background:var(--now);box-shadow:none}
+.exn{font-size:13px;font-weight:700;color:var(--muted);padding-top:3px;white-space:nowrap}
+.now>.exn{color:var(--now-bar)}
+.hw{color:var(--accent);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px;font-weight:700}
+@media (max-width:759px){
+  .sec .word>.line.head{padding-left:12px}
+  .sec .word>.line.head .k{font-size:24px}
+  .sec .word>.line.head .p,.sec .word>.line.head .m{font-size:15px}
+  /* phone: the label gets its own short line on top, so the sentence keeps the full width */
+  .sec .word .exs .line.ex{grid-template-columns:34px minmax(0,1fr);padding:10px 12px 12px;row-gap:4px}
+  .exn{grid-column:1 / -1;font-size:12px;padding-top:0}
+}
+
+/* word group, round 2 (RYU 2026-11-14): smaller headword so long expressions fit, no "ຕົວຢ່າງ N" line on phones,
+   and the speaker button on the right of the word and of each example card, as in lao-app */
+.sec .word>.line.head{grid-template-columns:minmax(0,1fr) 38px auto;column-gap:12px}
+.sec .word>.line.head>div{grid-column:1;grid-row:1}
+.sec .word>.line.head>.spk{grid-column:2;grid-row:1}
+.sec .word>.line.head>.wrep{grid-column:3;grid-row:1}
+.sec .word>.line.head .k{font-size:24px;word-break:keep-all}
+.sec .word .exs .line.ex{grid-template-columns:60px minmax(0,1fr) 38px}
+.sec .word .exs .line.ex>.exn{grid-column:1;grid-row:1}
+.sec .word .exs .line.ex>div:not(.exn){grid-column:2;grid-row:1}
+.sec .word .exs .line.ex>.spk{grid-column:3;grid-row:1;margin-top:-2px}
+@media (max-width:759px){
+  .sec .word>.line.head{grid-template-columns:minmax(0,1fr) 34px auto;column-gap:8px}
+  .sec .word>.line.head .k{font-size:20px}
+  .sec .word .exs .line.ex{grid-template-columns:minmax(0,1fr) 34px;padding:12px}
+  .sec .word .exs .line.ex>.exn{display:none}
+  .sec .word .exs .line.ex>div:not(.exn){grid-column:1}
+  .sec .word .exs .line.ex>.spk{grid-column:2}
+}
+/* the word line itself has no speaker button: the word is heard through "ຟັງຊ້ຳຄຳນີ້" on the right (RYU 2026-11-14) */
+.sec .word>.line.head>.spk{display:none}
+.sec .word>.line.head,.sec .word>.line.head{grid-template-columns:minmax(0,1fr) auto}
+.sec .word>.line.head>.wrep{grid-column:2}
+
+/* every speaker button on the right (RYU 2026-11-14): dialogue, conjugation and example rows, letter cards */
+.line{grid-template-columns:minmax(0,1fr) 38px}
+.line>.spk{grid-column:2;grid-row:1}
+.line>div{grid-column:1;grid-row:1}
+.letter{grid-template-columns:minmax(0,1fr) auto}
+.letter>.spk{grid-column:2;grid-row:1}
+.letter>.lt{grid-column:1;grid-row:1}
+@media (max-width:759px){ .line{grid-template-columns:minmax(0,1fr) 34px} }
+/* the word-repeat button sits at the top of the word line, level with the word (RYU 2026-11-14) */
+.sec .word>.line.head{align-items:start}
+.sec .word>.line.head>.wrep{align-self:start;margin-top:2px}
+
+/* example number: a small round badge in a narrow left column instead of the "ຕົວຢ່າງ N" text, on every screen,
+   so the sentences are set in a little from the left without losing width (RYU 2026-11-14) */
+.sec .word .exs .line.ex{grid-template-columns:24px minmax(0,1fr) 38px;column-gap:12px}
+.sec .word .exs .line.ex>.exn{display:grid;grid-column:1;grid-row:1;place-items:center;width:22px;height:22px;margin-top:3px;padding:0;
+  border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;line-height:1}
+.sec .word .exs .line.ex.now>.exn{background:var(--now-bar);color:var(--sheet)}
+@media (max-width:759px){
+  .sec .word .exs .line.ex{grid-template-columns:22px minmax(0,1fr) 34px;column-gap:10px}
+  .sec .word .exs .line.ex>div:not(.exn){grid-column:2}
+  .sec .word .exs .line.ex>.spk{grid-column:3}
+  .sec .word .exs .line.ex>.exn{width:20px;height:20px;font-size:11px;margin-top:2px}
+}
+/* the word-repeat button now sits flush with the right edge, so the lesson and section buttons drop their
+   9px inset and all repeat buttons end on the same right edge again (RYU 2026-11-14) */
+.wrep.hrep,.wrep.tbtn:last-child{margin-right:0}
+
+/* compact word block (RYU 2026-11-14): less space between the word line and its examples, between the example
+   cards and inside each card, so one word and its sentences read as one block; the gap between words stays larger */
+.sec .word>.line.head{padding:2px 0 8px 14px}
+.sec .word .exs{gap:6px;margin-top:8px}
+.sec .word .exs .line.ex{padding:10px 12px;border-radius:14px;row-gap:0}
+.sec .word .exs .line.ex .k{line-height:1.45}
+.sec .word .exs .line.ex .p,.sec .word .exs .line.ex .m{line-height:1.5}
+.sec .word .exs .line.ex .gl{margin-top:4px;padding-top:4px}
+.sec .word .exs .line.ex>.spk{margin-top:-2px}
+.sec .word+.word{margin-top:20px}
+@media (max-width:759px){
+  .sec .word>.line.head{padding:2px 0 6px 12px}
+  .sec .word .exs .line.ex{padding:8px 10px}
+  .sec .word .exs{margin-top:6px}
+}
+/* dialogue lines carry the same round number badge as the example cards (RYU 2026-11-14) */
+.dlg .line{grid-template-columns:24px minmax(0,1fr) 38px;column-gap:12px}
+.dlg .line>.exn{display:grid;grid-column:1;grid-row:1;place-items:center;width:22px;height:22px;margin-top:3px;padding:0;
+  border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;line-height:1}
+.dlg .line>div:not(.exn){grid-column:2}
+.dlg .line>.spk{grid-column:3}
+.dlg .line.now>.exn{background:var(--now-bar);color:var(--sheet)}
+@media (max-width:759px){
+  .dlg .line{grid-template-columns:22px minmax(0,1fr) 34px;column-gap:10px}
+  .dlg .line>.exn{width:20px;height:20px;font-size:11px;margin-top:2px}
+}
+/* review-quiz questions carry the same round number badge as examples and dialogue lines (RYU 2026-11-14) */
+.qa .qq{display:flex;align-items:flex-start;gap:12px;min-width:0}
+.qa .qq>.ko{min-width:0}
+.qa .qq>.exn{flex:none;display:grid;place-items:center;width:22px;height:22px;margin-top:2px;padding:0;border-radius:50%;
+  background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;line-height:1}
+.qa .qq~.a,.qa .qq~button{margin-left:34px}
+@media (min-width:760px){.qa .qq~.a,.qa .qq~button{margin-left:0}}
+@media (max-width:759px){.qa .qq{gap:10px}.qa .qq>.exn{width:20px;height:20px;font-size:11px}.qa .qq~.a,.qa .qq~button{margin-left:30px}}
+/* lesson title: Korean title with its Lao title right after it on the same line (wraps only when too long) (RYU 2026-11-14) */
+.band .ttl{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:14px;row-gap:2px}
+.band .ttl .tlo{margin-top:0}
+/* lesson intro: Lao sentence and Korean sentence run on in one paragraph; the band is one full-width column now that the tags are gone (RYU 2026-11-14) */
+.band>div{flex:1 1 100%}
+.band p.intro .sub-ko{font-size:15px;color:var(--muted);word-break:keep-all}
+/* lower control row (문장/단어/퀴즈, lesson picker, count, speed): about the height of the repeat buttons below,
+   and tighter lines in the lesson list (RYU 2026-11-14) */
+.controls .seg button{height:30px;padding-top:0;padding-bottom:0;line-height:1}
+.controls .bsel{height:32px;padding-top:0;padding-bottom:0}
+.controls .ddb{align-items:center}
+.ddi{padding:5px 10px;line-height:1.35}
+@media (max-width:759px){
+  .controls .seg button{height:30px}
+  .controls .bsel{height:32px}
+}
+/* Korean explanation under each tip: marked with ※ and right-aligned, like the ※ word notes (RYU 2026-11-14) */
+.note-ko{text-align:right;word-break:keep-all}
+.note-ko::before{content:"※ "}
+/* ※ note line runs to the right edge of the card, under the speaker column (speaker 38px + 12px gap; phone 34 + 10) (RYU 2026-11-14) */
+.line .gl{margin-right:-50px}
+@media (max-width:759px){ .line .gl{margin-right:-44px} }
+/* ※ note line: Korean words in grey instead of full black/white (dark grey on light, light grey on dark);
+   (speaker tint tried in v0.89 and reverted at RYU's request) (RYU 2026-11-14) */
+:root{--gl-ko:#4A5351}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--gl-ko:#B4BEBB}}
+:root[data-theme="dark"]{--gl-ko:#B4BEBB}
+.gl .ko{color:var(--gl-ko)}
+/* repeat buttons: clearer 3D (light top, deeper bottom tint, 1px edge kept) with a weak, short shadow (RYU 2026-11-14, v0.90) */
+:root{--rep-sh2:rgba(20,30,28,.13)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--rep-sh2:rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--rep-sh2:rgba(0,0,0,.4)}
+.wrep,.wrep:hover{background:linear-gradient(180deg,var(--sheet) 0%,var(--accent-soft) 55%,color-mix(in srgb,var(--accent) 22%,var(--accent-soft)) 100%);
+  box-shadow:0 1px 0 var(--accent),0 2px 4px var(--rep-sh2),inset 0 1px 0 var(--rep-hi),inset 0 -2px 3px color-mix(in srgb,var(--accent) 12%,transparent)}
+/* search box a little lower (RYU 2026-11-14, v0.91) */
+.search input{padding:4px 10px 4px 32px;line-height:1.5}
+/* review questions: compact rows, no fixed minimum height, smaller show-answer button (RYU 2026-11-14, v0.95) */
+.qa{padding:5px 12px;min-height:0;align-items:center}
+.qa+.qa{margin-top:6px}
+.qa .qq{align-items:center}
+.qa .qq>.exn{margin-top:0}
+.qa button.btn{padding:2px 12px;min-height:0;font-size:14px;line-height:1.5}
+@media (min-width:760px){ .qa{min-height:0;padding:5px 14px} }
+/* all repeat buttons share one width (RYU 2026-11-15, v1.08) */
+.wrep{min-width:7.7em;justify-content:center;text-align:center;box-sizing:border-box}
+/* area chip: Korean line left-aligned under the Lao name (RYU 2026-11-15, v1.13) */
+.group small{text-align:left;padding-left:18px}
+/* footer lines run on without gaps (RYU 2026-11-15, v1.15) */
+.foot,.dlline,.ver{margin:0;line-height:1.55}
+.foot:empty{display:none}
+.foot+.foot,.foot+.dlline,.dlline+.ver,.foot+.ver{margin-top:-12px}
+/* top numbers: one small line, right-aligned like lao-app (RYU 2026-11-15, v1.18) */
+.top .stats{margin-left:auto;align-self:flex-end;gap:12px;font-size:12px;align-items:baseline;white-space:nowrap;padding:4px 10px}
+.top .stats span{display:inline-flex;align-items:baseline;gap:4px}
+.top .stats b{display:inline;font-size:14px}
+/* lesson picker in the band, in place of the lesson title (RYU 2026-11-15, v1.19) */
+.band .bandin{flex:1 1 100%;min-width:0}
+.band #bsel{width:100%;margin-bottom:10px}
+.band #bsel .bsel{height:44px;font-size:20px;font-weight:600;background:var(--sheet)}
+.band #bsel .ddo{font-weight:400}
+@media (max-width:759px){ .band #bsel .bsel{height:40px;font-size:18px} }
+/* area cards: a vertical bar instead of the round dot, running beside both lines (RYU 2026-11-15, v1.20) */
+.group{position:relative}
+.group i{position:absolute;left:10px;top:9px;bottom:9px;width:4px;height:auto;border-radius:2px}
+.group .gn{padding-left:12px}
+.group small{padding-left:12px}
+/* sub cards: no top colour line; the chosen card shows by its border colour (RYU 2026-11-15, v1.23) */
+.sub{border-top:1px solid var(--line);border-radius:12px;padding:4px 12px 5px;line-height:1.3}
+.sub .name{font-size:14.5px}
+.sub .kn,.sub .prog{font-size:12px}  /* sub cards a bit smaller and flatter than area cards (RYU 2026-11-15, v1.24) */
+.sub[aria-selected="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+/* area cards: no vertical bar; a colour line along the top edge that follows the rounded corners (RYU 2026-11-15, v1.25) */
+.group i{display:none}
+.group .gn,.group small{padding-left:4px}
+.group{border-top:3px solid var(--accent);border-bottom:3px solid var(--accent);padding-top:4px;padding-bottom:4px}  /* bottom line too (v1.26) */
+/* chosen area: inside shown in reverse (light on dark screens, dark on light), colour lines stay (RYU 2026-11-15, v1.27) */
+.group[aria-pressed="true"]{background:var(--ink);border-left-color:var(--ink);border-right-color:var(--ink);border-top-color:var(--accent);border-bottom-color:var(--accent);color:var(--sheet)}
+.group[aria-pressed="true"] small{color:var(--sheet);opacity:.75}
+/* chosen sub: area-colour line on the rounded bottom edge only, like the area cards (RYU 2026-11-15, v1.28) */
+.sub[aria-selected="true"]{border-color:var(--line);border-bottom:3px solid var(--accent);box-shadow:none;padding-bottom:3px}
+/* chosen area: softer reverse, light grey and dark grey instead of white and black (RYU 2026-11-15, v1.29) */
+:root{--rev-bg:#4A5250;--rev-ink:#E4E8E6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--rev-bg:#C9CFCD;--rev-ink:#2E3533}}
+:root[data-theme="dark"]{--rev-bg:#C9CFCD;--rev-ink:#2E3533}
+.group[aria-pressed="true"]{background:var(--rev-bg);border-left-color:var(--rev-bg);border-right-color:var(--rev-bg);color:var(--rev-ink)}
+.group[aria-pressed="true"] small{color:var(--rev-ink);opacity:.8}
+/* area cards: top and bottom lines grey for all; the chosen card filled with its own area colour (RYU 2026-11-15, v1.30) */
+.group{border-top-color:var(--muted);border-bottom-color:var(--muted)}
+.group[aria-pressed="true"]{background:var(--accent);border-left-color:var(--accent);border-right-color:var(--accent);border-top-color:var(--muted);border-bottom-color:var(--muted);color:var(--sheet)}
+.group[aria-pressed="true"] small{color:var(--sheet);opacity:.85}
+/* area cards back to their own colour lines (top and bottom); sub cards get a left colour line that follows the rounded corners (RYU 2026-11-15, v1.31) */
+.group,.group[aria-pressed="true"]{border-top-color:var(--accent);border-bottom-color:var(--accent)}
+.sub,.sub[aria-selected="true"]{border-left:3px solid var(--accent);border-bottom:1px solid var(--line);padding-bottom:5px;padding-left:10px}
+.sub[aria-selected="true"]{background:var(--accent-soft);border-color:var(--accent);border-left-color:var(--accent)}
+/* sub-categories as tabs: no boxes, the chosen one gets an area-colour underline (RYU 2026-11-15, v1.32, option C) */
+.sub,.sub[aria-selected="true"]{border:0;border-radius:0;background:none;box-shadow:none;border-bottom:3px solid transparent;padding:4px 10px 6px}
+.sub[aria-selected="true"]{border-bottom-color:var(--accent)}
+.sub[aria-selected="true"] .name{color:var(--accent)}
+#subs{border-bottom:1px solid var(--line)}
+/* sub tabs sit closer: each as wide as its own name, small gap (RYU 2026-11-15, v1.35) */
+.subs{gap:2px}
+.sub,.sub[aria-selected="true"]{min-width:0;padding-left:10px;padding-right:10px}
+/* area cards: both lines centred (RYU 2026-11-15, v1.36) */
+.group{align-items:center;text-align:center;padding-left:12px;padding-right:12px}
+.group .gn{justify-content:center;padding-left:0}
+.group small{text-align:center;padding-left:0}
+/* sub tabs: lines centred too (RYU 2026-11-15, v1.37) */
+.sub{align-items:center;text-align:center}
+/* chosen lesson in the picker list: a check in its own colour (RYU 2026-11-15, v1.39) */
+.ddck{flex:none;align-self:center;color:var(--accent);font-weight:700;margin-right:2px}
+/* PC/tablet sizes matched to lao-app proportions: example meaning and notes a step smaller (RYU 2026-11-15, v1.43) */
+@media (min-width:760px){
+  .sec .word .exs .line.ex .m,.dlg .line .m,.line .m{font-size:15px}
+  .sec .word>.line.head .m{font-size:16px}
+  .gl{font-size:13.5px}
+}
+/* repeat buttons in lao-app form: flat pill, thin accent border, accent text and icon, no 3D; filled while playing (RYU 2026-11-15, v1.44) */
+.wrep,.wrep:hover{background:var(--sheet);box-shadow:none;transform:none;border:1px solid var(--accent);color:var(--accent);font-weight:600;font-size:12.5px;height:30px;padding:0 11px 0 9px;gap:5px;display:inline-flex;align-items:center}
+.wrep:hover{background:var(--accent-soft)}
+.wrep:active,.word.playing .wrep,.sec:has(.letters.playing) .hrep,.sec:has(.rows.playing) .hrep,.sec.playing>h3 .hrep{transform:none;box-shadow:none;background:var(--accent);border-color:var(--accent);color:var(--sheet)}
+/* control row smaller so tabs, count and speed fit on one line (RYU 2026-11-15, v1.45; from 561px up since v1.47, so a narrower window does not get bigger text) */
+@media (min-width:561px){
+  .controls{gap:6px;padding:10px 20px;justify-content:center}  /* centred when there is room (v1.46) */
+  .controls .seg button{font-size:14px;height:28px;padding:0 10px}
+  .ctl{font-size:12.5px;gap:4px}
+  .controls .ctl .bsel{font-size:14px;height:28px;padding:0 4px}
+}
+@media (min-width:561px) and (max-width:639px){ .controls{padding:10px 12px;gap:4px} .controls .seg button{padding:0 7px} .ctl{gap:3px} }
+/* player bar like lao-app: full width along the bottom edge, smaller text and buttons (RYU 2026-11-16, v1.53) */
+.player{position:fixed;left:0;right:0;bottom:0;z-index:20;justify-content:center;align-self:auto;max-width:none;border-radius:0;gap:8px;font-size:12px;
+  padding:7px max(16px,env(safe-area-inset-right,0px)) calc(7px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.player .t{margin-right:4px}
+.player button{height:26px;padding:0 11px;font-size:11.5px;line-height:1}
+#pstop{background:transparent;color:var(--bg);border:1px solid currentColor}
+/* player bar only as wide as the app column, not the whole window (RYU 2026-11-16, v1.54) */
+.player{left:50%;right:auto;transform:translateX(-50%);width:min(calc(100% - 32px),968px);box-sizing:border-box;border-radius:12px 12px 0 0;padding-left:16px;padding-right:16px}
+@media (max-width:560px){ .player{width:100%;border-radius:0} }
+/* player: info fills the left half and ends at the centre, buttons start at the centre, so nothing jumps while it plays (RYU 2026-11-16, v1.55) */
+.player{display:grid;grid-template-columns:minmax(0,1fr) auto auto minmax(0,1fr);border-radius:20px 20px 0 0}
+.player[hidden]{display:none}
+.player .t{grid-column:1;text-align:right;margin-right:4px}
+#ppause{grid-column:2} #pstop{grid-column:3}
+.player button{display:inline-flex;align-items:center;gap:5px}
+.player button .ico svg{width:11px;height:11px}
+/* player: info left-aligned and given all the room it can take, buttons pushed to the right edge (RYU 2026-11-16, v1.57) */
+.player{grid-template-columns:minmax(0,1fr) auto auto}
+.player .t{text-align:left;margin-right:6px}
+/* phone: player info may take two lines, buttons show only their marks, so the info is not cut (RYU 2026-11-16, v1.58) */
+@media (max-width:560px){
+  .player{padding-left:12px;padding-right:12px;gap:6px}
+  .player .t{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
+  .player button{width:30px;height:30px;padding:0;justify-content:center}
+  .player button .bt{display:none}
+  .player button .ico svg{width:12px;height:12px}
+}
+/* phone: one line with "…", slimmer bar sitting lower (RYU 2026-11-16, v1.59) */
+@media (max-width:560px){
+  .player .t{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .player{padding-top:5px;padding-bottom:calc(4px + env(safe-area-inset-bottom,0px) * .45);border-radius:14px 14px 0 0}
+  .player button{width:26px;height:26px}
+}
+/* player buttons end on the same right line as the repeat buttons above (RYU 2026-11-16, v1.60) */
+.player{padding-left:21px;padding-right:21px}
+@media (max-width:560px){ .player{padding-left:29px;padding-right:29px} }
+/* tips box under the intro (RYU 2026-11-16, like lao-app) */
+.band .tipbox{margin-top:10px;background:var(--sheet);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:4px 10px 10px 4px;padding:10px 14px;display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.55}
+.band .tipbox p{margin:0;color:var(--ink);padding-left:1em;text-indent:-1em}
+@media (max-width:560px){ .band .tipbox{font-size:14px;padding:8px 11px} }
+/* lesson top row: hide-meaning box left, the two repeat buttons centred (RYU 2026-11-16) */
+.rowbtns.toprow{display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+.rowbtns.toprow>.rowbtns{justify-content:center}
+@media (max-width:560px){ .rowbtns.toprow{grid-template-columns:1fr} .rowbtns.toprow>.check{justify-self:start} }
+/* review quiz: no centre divider; the show-answer button and the answer sit at the right (RYU 2026-11-16) */
+.qa{background-image:none!important}
+.qa .a,.qa>button{justify-self:end;text-align:right}
+@media (min-width:760px){ .qa{grid-template-columns:minmax(0,1fr) fit-content(50%)} }
+.rowbtns.toprow{display:flex;justify-content:center}
+/* repeat buttons in the control bar (v1.67) */
+.controls .ctlrep{gap:8px;justify-content:center}
+.controls .ctlrep[hidden]{display:none}
+@media (max-width:560px){ .controls .ctlrep{grid-column:1 / -1} }
+/* repeat buttons on their own line under the controls, centred (RYU 2026-11-16, v1.68) */
+.controls .ctlrep{flex:1 0 100%;width:100%}
+/* word study cards, all at once like lao-app (RYU 2026-11-16, v1.69) */
+.wcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.wcard{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--sheet);min-height:128px;padding:14px 50px 14px 16px;cursor:pointer;display:grid;align-content:center;min-width:0}
+.wcard .spk{position:absolute;top:8px;right:8px;pointer-events:none}
+.wcard .k{font-size:26px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.wcard .p{color:var(--accent);font-size:15px;margin-top:4px}
+.wcard .m{font-size:18px;font-weight:600;line-height:1.4}
+.wcard .ex{margin-top:8px;font-size:14px;line-height:1.45}
+.wcard .ex .exm{color:var(--muted)}
+.wcard>.fr,.wcard>.bk{grid-area:1/1}
+.wcard.back>.fr,.wcard:not(.back)>.bk{visibility:hidden}
+.wcard.back{background:var(--accent-soft)}
+.wcard.now,.wcard.now.back{background:var(--now);border-color:var(--now-bar)}
+.wcard.now>.spk{border-color:var(--now-bar);background:var(--now)}
+@media (max-width:560px){ .wcards{grid-template-columns:1fr 1fr;gap:8px} .wcard{min-height:112px;padding:12px 40px 12px 12px} .wcard .k{font-size:22px} .wcard .m{font-size:16px} .wcard .ex{font-size:13px} .wcard .spk{top:6px;right:6px} }
+.wcard .k,.wcard .ex .ko{word-break:keep-all}
+.wcard .k.long{font-size:21px}
+@media (max-width:560px){ .wcard .k.long{font-size:18px} .wcard{padding-right:34px} .wcard .spk{transform:scale(.85);transform-origin:top right} }
+/* word cards v1.70: same size and same height for every word, very long words smaller; four lines on the back */
+.wcard{align-content:start;min-height:150px;padding-top:16px}
+.wcard .k{font-size:24px;line-height:32px;height:32px;white-space:nowrap;overflow:hidden;word-break:keep-all}
+.wcard .k.long{font-size:20px}
+.wcard .k.xl{font-size:16px}
+.wcard .hn{font-size:14px;color:var(--muted);margin-top:6px;line-height:1.45}
+.wcard .bk .p{color:var(--accent);font-size:15px;line-height:32px;height:32px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wcard .bk .m{font-size:17px;font-weight:600;margin-top:2px;line-height:1.4}
+.wcard .exk{margin-top:8px;font-size:14px;line-height:1.45;word-break:keep-all}
+.wcard .exm{font-size:14px;line-height:1.45;color:var(--muted)}
+@media (max-width:560px){ .wcard{min-height:150px;padding:12px 34px 12px 12px} .wcard .k{font-size:20px;line-height:28px;height:28px} .wcard .k.long{font-size:17px} .wcard .k.xl{font-size:14px} .wcard .bk .p{line-height:28px;height:28px;font-size:14px} .wcard .bk .m{font-size:15px} .wcard .exk,.wcard .exm,.wcard .hn{font-size:13px} }
+/* lesson picker: order number in front, smaller list with tighter rows (v1.70) */
+.ddn{flex:none;color:var(--muted);font-weight:500;font-size:.8em;margin-right:4px;align-self:center}
+.ddi{font-size:13.5px;padding:3px 10px;line-height:1.3}
+/* order number in the Korean font, same weight and colour as the lesson name (RYU 2026-11-16, v1.71) */
+.ddn{align-self:baseline;font-family:var(--ko);font-size:1em;font-weight:600;color:var(--ink);margin-right:6px;font-variant-numeric:tabular-nums;letter-spacing:0}
+/* v1.72: list text a little bigger again; phone shows only the last part of the order number */
+.ddi{font-size:15px;padding:4px 10px;line-height:1.35}
+@media (max-width:560px){ .ddn .ddn-ab{display:none} .ddi{font-size:14.5px} }
+.wcard .hn{word-break:keep-all}
+/* phones: picker text starts at the left edge so long names are cut less (RYU 2026-11-16, v1.73) */
+@media (max-width:560px){ .ddb{justify-content:flex-start;padding-left:10px;padding-right:26px;gap:5px} .ddi{justify-content:flex-start;padding-left:8px;padding-right:6px} }
+/* note after the mp3 zip download (v1.76) */
+.dlnote{max-width:560px;margin:4px auto 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--sheet);font-size:13px;line-height:1.55;color:var(--muted);text-align:left}
+.dlnote .ko{font-size:12.5px}
+.dlnote{word-break:keep-all}
+/* phones only: progress / done mark on its own line under the save link (RYU 2026-11-16, v1.78) */
+@media (max-width:560px){ #dlbox #dlMsg{display:block;margin-top:2px} #dlbox #dlMsg:empty{display:none} }
+/* v1.80: review answer can be hidden again */
+.qa .a[hidden]{display:none}
+.qa .qr{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;justify-self:end;min-width:0}
+.qa .qr .a{text-align:right}
+@media (max-width:759px){ .qa .qr{margin-left:30px} }
+/* v1.80 quiz kinds: listen and pick, fill the blank */
+.quizq.listen{display:flex;justify-content:center}
+.quizq.listen .btn{font-size:18px;padding:10px 22px;display:inline-flex;align-items:center;gap:6px}
+.quizq.qblank .ko{font-size:clamp(20px,4.5vw,26px);line-height:1.5;word-break:keep-all}
+.quizq.qblank .qlo{font-size:16px;color:var(--muted);margin-top:4px}
+.quizq .blank{display:inline-block;min-width:2.6em;margin:0 3px;border-bottom:2px solid var(--accent);color:var(--accent);text-align:center;font-weight:700}
+
+/* related lessons (v1.80) */
+.relrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;width:100%;text-align:left;background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:0 0 6px;cursor:pointer;font:inherit;color:var(--ink)}
+.relrow:hover{border-color:var(--accent)}
+.relrow .ddo{color:var(--muted);font-size:.92em}
+.wcard .fp{color:var(--accent);font-size:15px;line-height:1.35;margin-top:2px;overflow-wrap:anywhere}
+@media (max-width:560px){ .wcard .fp{font-size:13px} }
+/* chosen sub tab shown in reverse: filled with the area colour, dark text, so it stands out (RYU 2026-11-18, v1.91) */
+.sub[aria-selected="true"]{background:var(--accent);border-bottom-color:var(--accent);border-radius:10px 10px 0 0;color:var(--sheet)}
+.sub[aria-selected="true"] .name,.sub[aria-selected="true"] .kn,.sub[aria-selected="true"] .prog,.sub[aria-selected="true"] .code{color:var(--sheet)}
+.sub[aria-selected="true"] .kn,.sub[aria-selected="true"] .prog{opacity:.85}
+/* open lesson title box ([01] ...) in reverse too, like the chosen sub tab (RYU 2026-11-18, v1.92) */
+.band #bsel .bsel{background:var(--accent);border-color:var(--accent);color:var(--sheet)}
+.band #bsel .bsel .ddo,.band #bsel .bsel .ddn{color:var(--sheet);opacity:.85}
+.band #bsel .bsel::after{border-color:var(--sheet)}
+/* reverse softened (RYU 2026-11-18, v1.94): chosen items use a pale mix of the area colour with normal text instead of full colour */
+:root,[data-g]{--rev:color-mix(in srgb,var(--accent) 42%,var(--sheet))}
+.group[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 42%,var(--sheet));border-left-color:var(--accent);border-right-color:var(--accent);color:var(--ink)}
+.group[aria-pressed="true"] small{color:var(--ink);opacity:.8}
+.sub[aria-selected="true"]{background:var(--rev)}
+.sub[aria-selected="true"] .name,.sub[aria-selected="true"] .kn,.sub[aria-selected="true"] .prog,.sub[aria-selected="true"] .code{color:var(--ink)}
+.band #bsel .bsel{background:var(--rev);border-color:var(--accent);color:var(--ink)}
+.band #bsel .bsel .ddo,.band #bsel .bsel .ddn{color:var(--ink);opacity:.8}
+.band #bsel .bsel::after{border-color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--rev);color:var(--ink)}
+.ddi[aria-selected="true"]{background:var(--rev);color:var(--ink)}
+/* repeat buttons back to plain pills; only the one pressed or playing is shown in reverse */
+.wrep:active,.word.playing .wrep,.sec:has(.letters.playing) .hrep,.sec:has(.rows.playing) .hrep,.sec.playing>h3 .hrep,
+#ctlrep[data-on="chain"] .tbtn:first-of-type,#ctlrep[data-on="bundle"] .tbtn:last-of-type{background:var(--rev);border-color:var(--accent);color:var(--ink)}
+/* lesson title box a bit smaller and flatter (RYU 2026-11-18, v1.95) */
+.band #bsel .bsel{height:36px;font-size:17px}
+@media (max-width:759px){ .band #bsel .bsel{height:34px;font-size:16px} }
+/* lesson title text centred vertically in its box; count and speed boxes get the same pale background (RYU 2026-11-18, v1.96) */
+.band #bsel .bsel{align-items:center;padding-top:0;padding-bottom:0;line-height:1.2}
+.band #bsel .bsel>*{line-height:1.2;align-self:center}
+.controls .bsel,.ctl select{background-color:var(--rev);border-color:var(--accent);color:var(--ink)}
+.ctl select option{background:var(--sheet);color:var(--ink)}
+/* lesson title box like RYU's sample (2026-11-19, v1.97): rounder ends, one bold dark line "[1-02-03] 외모 (ຮູບຮ່າງໜ້າຕາ)", filled ▼ on the right */
+.band #bsel .bsel{border-radius:16px 16px 0 0;font-weight:700;gap:0;border-width:1.5px}
+.band #bsel .bsel .ddn,.band #bsel .bsel .ddo{color:var(--ink);opacity:1;font-weight:700;font-size:1em;margin-right:0}
+.band #bsel .bsel .ddn{margin-right:.3em}
+.band #bsel .bsel .ddo{margin-left:.3em}
+.band #bsel .bsel::after{border:0;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--ink);transform:translateY(-50%);right:14px}
+/* related lessons box + prev/next buttons (RYU sample, 2026-11-19, v2.02) */
+.relbox{margin:22px 0 0;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;background:var(--sheet);padding:14px 18px 12px}
+.relhd{font-weight:700;color:var(--accent);font-size:15px;margin-bottom:6px}
+.relbox .relrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 6px;width:100%;background:none;border:0;border-radius:0;padding:3px 0;margin:0;text-align:left;font-size:16px;color:var(--ink);cursor:pointer}
+.relbox .relrow:hover .ko{text-decoration:underline}
+.relbox .relrow .rc{color:var(--accent);font-weight:700;text-decoration:none!important}
+.relbox .relrow .ddo{color:var(--muted);font-size:1em}
+.pnrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:22px 0 4px}
+.pn{display:flex;flex-direction:column;gap:1px;min-width:0;max-width:44%;background:var(--sheet);border:1px solid var(--accent);color:var(--accent);padding:6px 16px;cursor:pointer;font:inherit;line-height:1.3}
+.pn b{font-size:14.5px;white-space:nowrap}
+.pn small{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.pn.pv{align-items:flex-start;text-align:left;border-radius:0 24px 24px 0}
+.pn.nx{align-items:flex-end;text-align:right;border-radius:24px 0 0 24px}
+.pn:hover{background:var(--accent-soft)}
+.pndone{font-size:13px;padding:6px 12px}
+@media (max-width:560px){ .pnrow{flex-wrap:wrap} .pndone{order:-1;width:100%} .pn{max-width:48%;padding:6px 10px} .pn b{font-size:13px} .pn small{font-size:11.5px} .relbox{padding:12px 12px 10px} .relbox .relrow{font-size:14.5px} }
+@media (max-width:560px){ .ord-ab{display:none} }
+/* tighter related list and flatter prev/next buttons (RYU 2026-11-19, v2.05) */
+.relbox{padding:10px 16px 8px}
+.relhd{margin-bottom:2px;line-height:1.3}
+.relbox .relrow{padding:1px 0;line-height:1.3;row-gap:0}
+.pn{padding:3px 16px;gap:0;line-height:1.15}
+.pn b,.pn small{line-height:1.15}
+.pnrow{margin-top:16px}
+@media (max-width:560px){ .pn{padding:3px 10px} .relbox{padding:8px 12px 6px} }
+.relbox+.pnrow{margin-top:-10px}
+html{overflow-y:scroll}   /* PC: scrollbar always shown so the page does not jump (RYU 2026-11-19, v2.07) */
+/* lesson list: one space between [01] and the title; only the chosen lesson bold (RYU 2026-11-19, v2.08) */
+.ddi{gap:0}
+.ddi .ddn{margin-right:.28em;font-weight:400;font-size:1em}
+.ddi .ddo{margin-left:.28em}
+.ddi,.ddi .ddk,.ddi .ddo{font-weight:400}
+.ddi[aria-selected="true"],.ddi[aria-selected="true"] .ddn,.ddi[aria-selected="true"] .ddk,.ddi[aria-selected="true"] .ddo{font-weight:700}
+/* tables: tighter rows (RYU 2026-11-19, v2.09) */
+.tablewrap th,.tablewrap td{padding-top:5px;padding-bottom:5px;line-height:1.35}
+@media (max-width:600px){.tablewrap th,.tablewrap td{padding-top:4px;padding-bottom:4px}}
+@media (max-width:560px){ .ddi{justify-content:center;padding-left:8px;padding-right:8px} }   /* phone lesson list centred again (RYU 2026-11-19, v2.10) */
+@media (max-width:560px){ .ddi{font-size:13.5px} }   /* phone lesson list a step smaller (RYU 2026-11-19, v2.11) */
+/* right-side repeat buttons: round left end, square right end; the two play buttons join in the middle (RYU 2026-11-19, v2.12) */
+.wrep,.wrep.hrep{border-radius:999px 0 0 999px}
+#ctlrep .wrep.tbtn:first-of-type{border-radius:999px 0 0 999px}
+#ctlrep .wrep.tbtn:last-of-type{border-radius:0 999px 999px 0}
+/* area and sub menus in the lao-app look: text tabs with an underline, then numbered pills, then one info line (RYU 2026-11-19, v2.13) */
+.groups{gap:18px!important;padding:0 4px!important;border-bottom:1px solid var(--line);scrollbar-width:none;margin-bottom:-4px}
+.groups::-webkit-scrollbar{display:none}
+.group{gap:0!important;border:none!important;border-radius:0!important;background:none!important;color:var(--muted)!important;padding:8px 0 9px!important;font-size:15px!important;font-weight:600!important;position:relative;box-shadow:none!important;line-height:1.3!important}
+.group i,.group small{display:none!important}
+.group .gn{padding-left:0!important}
+.group[aria-pressed="true"]{color:var(--ink)!important;background:none!important;border:none!important}
+.group[aria-pressed="true"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--accent)}
+.subs{gap:8px!important;padding:2px 0 4px!important}
+.sub{flex-direction:row!important;align-items:center!important;gap:5px!important;border:1.5px solid var(--accent)!important;border-radius:8px 999px 999px 8px!important;background:var(--sheet)!important;padding:3px 12px 4px!important;min-width:0!important;color:var(--ink)!important;line-height:1.35}
+.sub .code{font-family:inherit!important;font-size:12px!important;color:var(--accent)!important;letter-spacing:0!important;font-weight:700}
+.sub .name{font-size:14px!important;font-weight:600;color:var(--ink)!important}
+.sub .kn,.sub .prog{display:none!important}
+.sub[aria-selected="true"]{border:1.5px solid var(--accent)!important;border-left:5px solid var(--accent)!important;padding-left:10px!important;background:var(--rev)!important;border-radius:0 999px 999px 0!important}
+.sinfo{font-size:12px;color:var(--muted);padding:0 4px;margin-top:-6px}
+.sinfo b{font-weight:600;color:var(--accent)}
+.subs{border-bottom:0!important;box-shadow:none!important}
+/* 대한민국 info pages, like lao-app's 라오스 tab (RYU 2026-11-20, v2.19) */
+.info{padding:6px 4px 12px;font-size:15.5px;line-height:1.5;color:var(--ink)}
+.info h2{font-size:22px;margin:4px 0 0;line-height:1.3}
+.info .sub2{color:var(--muted);font-size:14.5px;margin-bottom:14px}
+.info figure{margin:0 0 14px;text-align:center}
+.info figure img{display:block;width:100%;max-width:420px;height:auto;margin:0 auto;border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.18);background:var(--line)}
+.info figcaption{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.5}
+.info figcaption small{display:block;font-size:11px;opacity:.85}
+.info .facts{width:100%;border-collapse:collapse;margin:2px 0 14px;font-size:14.5px}
+.info .facts th{width:31%;text-align:left;font-weight:700;color:var(--accent);padding:6px 6px;vertical-align:top;border:0;border-bottom:1px solid var(--line);background:none;white-space:normal;font-size:14.5px;line-height:1.45}
+.info .facts td{text-align:left;padding:6px 6px;border:0;border-bottom:1px solid var(--line);line-height:1.5}
+.info h3{font-size:16.5px;margin:18px 0 6px;padding-left:9px;border-left:4px solid var(--accent);line-height:1.35}
+.info p{margin:0 0 8px}
+.info .ko{font-family:var(--ko)}
+.info .r{color:var(--accent);font-size:.92em}
+.info .terms{background:var(--accent-soft);border-radius:12px;padding:8px 14px;margin:8px 0 14px}
+.info .terms div{padding:5px 0;border-bottom:1px dashed var(--line)}
+.info .terms div:last-child{border:0}
+.info .terms .ko{font-size:17px;font-weight:700}
+.info .terms .r{margin:0 8px 0 6px}
+@media (min-width:700px){
+  .info{padding:8px 14px 14px}
+  .info .top2{display:grid;grid-template-columns:44% 1fr;gap:28px;align-items:start}
+  .info .two{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+  .info .facts th{width:28%}
+}
+/* 대한민국 pages in boxes (RYU 2026-11-23, v2.46): each part in its own card with a head line;
+   basic facts (ib-f), explanations (.ibs, two by two on wide screens), sentences to try (ib-s), good to know (ib-k), words (ib-t) */
+.info .ib{background:var(--sheet);border:1px solid var(--line);border-radius:14px;margin:0 0 14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.info .ib>h3{margin:0;padding:9px 16px 8px;border:0;border-bottom:1px solid var(--line);background:var(--raise);font-size:16.5px;line-height:1.35;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.info .ib>h3::before{content:"";flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:var(--accent);align-self:center}
+.info .ib>h3 small{font-size:13px;font-weight:500;color:var(--muted)}
+.info .ibb{padding:12px 16px 6px}
+.info .ibb>p:last-child{margin-bottom:6px}
+.info .ib-f>h3,.info .ib-t>h3{background:var(--accent-soft)}
+.info .ib-f .ibb{padding-bottom:8px}
+.info .ib-f .facts{margin:0}
+.info .ib-f .facts tr:last-child th,.info .ib-f .facts tr:last-child td{border-bottom:0}
+.info .ib-f figure{margin:0 0 4px}
+.info .ib-s>h3{background:color-mix(in srgb,var(--good) 13%,var(--sheet))}
+.info .ib-s>h3::before{background:var(--good)}
+.info .ib-k{border-color:color-mix(in srgb,#E0A800 45%,var(--line))}
+.info .ib-k>h3{background:color-mix(in srgb,#E0A800 16%,var(--sheet))}
+.info .ib-k>h3::before{background:#E0A800}
+.info .ibs{display:grid;grid-template-columns:1fr;gap:0 14px}
+.info .says{display:grid;grid-template-columns:1fr;gap:10px;padding-bottom:8px}
+.info .says>div{border-left:4px solid var(--good);border-radius:0 10px 10px 0;background:var(--raise);padding:7px 12px}
+.info .says .ko{font-size:17px;font-weight:600;line-height:1.5;word-break:keep-all}
+.info .says .m{font-size:15px;color:var(--muted);line-height:1.5}
+.info .ib-t .terms{background:none;border-radius:0;padding:0 0 6px;margin:0;display:grid;grid-template-columns:1fr;column-gap:24px}
+.info .ib-t .terms div{border-bottom:1px dashed var(--line)!important;padding:6px 0}
+@media (min-width:700px){
+  .info .ibs{grid-template-columns:1fr 1fr}
+  .info .ibs>.ib:last-child:nth-child(odd){grid-column:1 / -1}
+  .info .says{grid-template-columns:1fr 1fr}
+  .info .ib-t .terms{grid-template-columns:1fr 1fr}
+  .info .ib-f .top2{gap:24px}
+}
+@media (min-width:900px){.info .ib-t .terms{grid-template-columns:1fr 1fr 1fr}}
+#controls[hidden],#ctlrep[hidden]{display:none!important}
+/* keyboard shortcut list (? key), v2.23 */
+#kbhelp{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35)}
+#kbhelp .kbcard{background:var(--sheet);color:var(--ink);border-radius:16px;padding:18px 22px;max-width:92vw;max-height:88vh;overflow:auto;font-size:15px;line-height:1.7;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+#kbhelp b{font-size:17px}
+#kbhelp table{border-collapse:collapse;margin-top:8px;font-size:15px}
+#kbhelp td{border:0;padding:2px 16px 2px 0;text-align:left;vertical-align:top;line-height:1.6}
+#kbhelp kbd{font:600 14px var(--ko);white-space:nowrap}
+#kbhelp .m{color:var(--muted);font-size:13.5px}
+
+/* TOPIK practice questions (v2.24) */
+.tq{margin:8px 4px 18px}
+.tq>h3{font-size:16.5px;margin:18px 0 10px;padding-left:9px;border-left:4px solid var(--accent);line-height:1.35}
+.tqi{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 14px}
+.tqd{font-size:17px;font-weight:600;line-height:1.5;word-break:keep-all}
+.tqdl{font-size:14.5px;color:var(--muted);margin:2px 0 10px;line-height:1.5}
+.tqa{margin:4px 0 12px}
+.tqa .tqplay{min-width:7.7em;justify-content:center}
+.tqp{font-size:17px;line-height:1.8;margin:4px 0 12px;word-break:keep-all}
+.tqp .notice,.info .notice{border:1.5px solid var(--accent);border-radius:10px;padding:10px 14px;background:var(--accent-soft);line-height:1.75}
+.info .notice{font-size:16px;margin:6px 0 14px}
+.tqo{grid-template-columns:1fr 1fr;gap:8px}
+.tqo .choice{font-size:16.5px;padding:10px 14px;line-height:1.45;word-break:keep-all}
+.tqo .choice .n{color:var(--accent);font-weight:700}
+.tqo .choice:disabled{color:var(--ink);opacity:1;cursor:default}
+.tqx{margin-top:12px;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0;padding:10px 14px}
+.tqx .res{font-weight:700;margin-bottom:4px}
+.tqx .res.ok{color:var(--good)} .tqx .res.no{color:var(--bad)}
+.tqs{font-size:15.5px;line-height:1.7;padding:6px 2px}
+.tqsd{margin:0 0 10px;border:1px dashed var(--line);border-radius:10px;padding:4px 12px}
+.tqsd summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:14.5px}
+.tqsub{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.tqq{font-size:16px;font-weight:600;margin-bottom:8px;line-height:1.5;word-break:keep-all}
+.tqo.two{grid-template-columns:1fr 1fr}
+.tqsc{text-align:center;font-weight:700;color:var(--accent);margin:6px 0 10px;font-size:16px}
+.pics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:4px 0}
+.pics>div{border:1px solid var(--line);border-radius:10px;padding:8px 4px;text-align:center;background:var(--sheet)}
+.pics b{display:block;color:var(--accent);font-size:14px}
+.pics span{display:block;font-size:34px;line-height:1.25;letter-spacing:2px}
+.pics small{display:block;font-family:var(--lao);font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:2px}
+.tqx p{margin:6px 0 8px;font-size:15.5px;line-height:1.6}
+.tqx .btn{font-size:14px;padding:4px 12px}
+.sign{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:84px;height:84px;border-radius:14px;border:3px solid;margin:4px 6px 4px 0;vertical-align:top;background:var(--sheet)}
+.sign span{font-size:34px;line-height:1}
+.sign small{font-family:var(--ko);font-size:12px;margin-top:5px;font-weight:600;text-align:center;line-height:1.2}
+.sign.big{width:110px;height:110px}.sign.big span{font-size:56px}
+.s-red{border-color:#D23C3C}.s-yel{border-color:#E0A800}.s-blue{border-color:#2D6FD2}.s-green{border-color:#2E9B57}.s-plain{border-color:var(--line)}
+.signs{margin:4px 0 10px}
+.bars{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:8px 0 14px;background:var(--sheet)}
+.bars .bt{font-weight:700;text-align:center;margin-bottom:8px}
+.bars .bw{display:flex;justify-content:space-around;align-items:flex-end;height:150px;border-bottom:2px solid var(--line)}
+.bars .bw>div{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;width:28%}
+.bars .bw b{font-size:13.5px;margin-bottom:4px}
+.bars i{display:block;width:60%;background:var(--accent);border-radius:6px 6px 0 0}
+.bars .bw span{font-size:13.5px;margin-top:6px;position:relative;top:24px}
+.bars .bn{font-size:12.5px;color:var(--muted);margin-top:30px;text-align:center}
+@media (max-width:600px){.tqo{grid-template-columns:1fr}.pics{grid-template-columns:1fr 1fr}.pics span{font-size:28px}.tqi{padding:12px}.tqd,.tqp{font-size:16px}.tqo .choice{font-size:15.5px}}
+/* key badges next to buttons and the key line under the play buttons, PC and pad only (like lao-app v2.75-2.77, v2.25) */
+.kc{display:none;font:600 10.5px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;align-items:center;justify-content:center;border:1px solid currentColor;border-bottom-width:2.5px;border-radius:5px;margin-left:6px;opacity:.72;vertical-align:1px;letter-spacing:0;white-space:nowrap}
+.pn.pv .kc{margin:0 6px 0 0}
+.kbinfo{display:none;flex:1 0 100%;width:100%;justify-content:center;flex-wrap:wrap;gap:4px 16px;font-size:11.5px;color:var(--muted);margin-top:2px}
+.kbinfo span,.kbinfo label{display:inline-flex;align-items:center;white-space:nowrap}
+.kbinfo span.ko{margin-left:4px}
+.kbinfo .kc{margin:0 5px 0 0;font-size:10px;height:16px;min-width:16px}
+.kbinfo label{cursor:pointer}
+.kbinfo input{margin:0 6px 0 0;width:15px;height:15px;accent-color:var(--accent);cursor:pointer}
+@media (hover:hover) and (pointer:fine){.kc{display:inline-flex}.kbinfo{display:flex}}
+html.tab .kc{display:inline-flex;min-width:21px;height:21px;border-radius:6px}
+html.tab .kbinfo{display:flex}
+html.tab .kbinfo input{width:18px;height:18px}
+html.tab .kbinfo .kc{height:19px;min-width:19px}
+.kbinfo[hidden]{display:none!important}
+/* flatter header (lao-app v2.77) */
+.top{padding:12px 20px 10px;min-height:124px}
+.eyebrow{line-height:1.4}
+.top h1{line-height:.98;margin-top:-.06em}
+/* v2.30 (lao-app v2.80, v2.84, v2.85): middle dot between main tabs; K checkbox on phones too; tighter count and speed lists */
+.groups .group{position:relative;overflow:visible}
+.groups .group+.group::before{content:"·";position:absolute;left:-9px;top:50%;transform:translate(-50%,-55%);color:var(--muted);opacity:.55;font-weight:700;pointer-events:none;border:0}
+.kbinfo{display:flex}
+.kbinfo>span{display:none}
+.kbinfo label{color:var(--ink)}
+@media (hover:hover) and (pointer:fine){.kbinfo>span{display:inline-flex}.kbinfo label{color:var(--muted)}}
+html.tab .kbinfo>span{display:inline-flex}
+#repSel option,#rateSel option{padding:0 6px;line-height:1.15;min-height:0}
+@media (max-width:560px){.kbinfo{grid-column:1 / -1}}
+
+/* phones: tabs 문장·단어·퀴즈 as one pill group left, ⇄ 2회 and x 1.0 pills right, all on one line like lao-app (RYU 2026-11-22, v2.31) */
+.controls .sl,.rpi{display:none}
+.controls .opts{display:contents}   /* PC: count and speed sit in the row as before */
+@media (max-width:560px){
+  .controls{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 10px}
+  .controls .seg{width:auto;flex:0 0 auto;margin-right:auto;border:0;border-radius:999px;padding:3px;gap:2px;background:var(--bg)}
+  .controls .seg button{flex:0 0 auto;border:1.5px solid transparent!important;border-radius:999px;padding:0 11px;height:30px;font-size:15px;color:var(--muted);background:none}
+  .controls .seg button[aria-pressed="true"]{border-color:var(--accent)!important;background:var(--rev);color:var(--ink)}
+  .controls .ll,.controls .seg kbd{display:none}
+  .controls .sl{display:inline}
+  .controls .ctl{flex:0 0 auto;flex-direction:row;align-items:center;gap:0;position:relative}
+  .controls .ctl>span{display:none}
+  .controls .ctl .bsel{width:auto;height:32px;border-radius:999px;border:1.5px solid var(--accent);background-color:var(--rev);color:var(--ink);font-size:15px;font-weight:600;padding:0 24px 0 11px;text-align:left;text-align-last:left;-webkit-appearance:none;appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0h10L5 6z' fill='%23777'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;background-size:9px 6px}
+  .controls .crep .rpi{display:block;position:absolute;left:10px;width:16px;height:16px;pointer-events:none;color:var(--ink)}
+  .controls .crep .bsel{padding-left:31px}
+  .controls .seg button{padding:0 10px}
+  .controls .opts{display:flex;flex:0 0 auto;border-radius:999px;padding:3px;gap:2px;background:var(--bg)}   /* count + speed in one pill group like the tabs (v2.32) */
+  .controls .ctl .bsel{height:30px}
+  .controls #ctlrep,.controls .kbinfo{flex-basis:100%}
+}
+@media (max-width:560px){
+  .controls{gap:4px;padding:10px 8px}
+  .controls .seg button{padding:0 9px;font-size:14px}
+  .controls .ctl .bsel{font-size:14px;padding:0 20px 0 9px;background-position:right 7px center}
+  .controls .crep .bsel{padding-left:27px} .controls .crep .rpi{left:8px;width:15px;height:15px}
+}
+@media (max-width:389px){
+  .controls{padding:10px 6px}
+  .controls .seg button{padding:0 7px;font-size:13.5px}
+  .controls .ctl .bsel{font-size:13.5px;padding:0 17px 0 7px;background-position:right 6px center}
+  .controls .crep .bsel{padding-left:24px} .controls .crep .rpi{left:7px;width:14px;height:14px}
+}
+.pics span.tx{font-family:var(--ko);font-size:15px;letter-spacing:0;line-height:1.5}
+/* menu in a box like the content box; PC padding = content padding; phones: thin outer and inner side margins (lao-app v2.98-2.99, v2.35) */
+.menubox{background:var(--sheet);border:1px solid var(--line);border-radius:16px;padding:12px 20px 10px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.menubox .groups{padding-left:0!important;padding-right:0!important}
+.menubox .sinfo{margin-top:-4px;padding:0}
+@media (max-width:640px){
+  .wrap{padding-left:max(6px,env(safe-area-inset-left,0px));padding-right:max(6px,env(safe-area-inset-right,0px))}
+  .menubox{padding:8px 8px 6px;border-radius:12px}
+  .sheet{border-radius:12px}
+  .sheet>.band,.sheet>.controls,.sheet>.body{padding-left:8px!important;padding-right:8px!important}
+}
+/* help: keyboard page shows only the phone note on phones */
+.info .kbph{display:none}
+@media not ((hover:hover) and (pointer:fine)){html:not(.tab) .info .kbph{display:block;font-size:1.1em}html:not(.tab) .info .kbpc{display:none}}
+#ctlrep #loLbl{display:inline-flex;align-items:center;gap:3px;font-size:12px;color:var(--muted);white-space:nowrap;margin-right:2px}   /* one centred line with the play buttons (RYU 2026-11-22, v2.42) */
+#ctlrep #loLbl .ko{display:none}
+/* 듣기연습: speaker name before each line (v2.45) */
+.dlg.lis .who{color:var(--accent);font-weight:600;margin-right:2px}
+[data-g="LS"]{--accent:#566079;--accent-soft:#E7E9EF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) [data-g="LS"]{--accent:#AEB8CF;--accent-soft:#262B36}}
+:root[data-theme="dark"] [data-g="LS"]{--accent:#AEB8CF;--accent-soft:#262B36}
+.ytrow{margin:4px 0 14px;text-align:center}.ytbtn{display:inline-flex;gap:6px;align-items:center;text-decoration:none}
+/* 대한민국: "더 알아보기" boxes and "이럴 때 이렇게 말해요" (v2.48, like lao-app v3.22); tighter lines */
+.info .ib .ibb p{margin:0 0 5px}
+.info .ib-m{border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.info .ib-m>h3{background:color-mix(in srgb,var(--accent) 10%,var(--sheet))}
+.info .ib-m>h3::before{background:var(--accent)}
+.info .ib-w>h3{background:color-mix(in srgb,#2F6FB5 13%,var(--sheet))}
+.info .ib-w>h3::before{background:#2F6FB5}
+.info .when{width:100%;border-collapse:collapse;margin:0}
+.info .when th{background:none;width:34%;text-align:left;vertical-align:top;font-weight:600;color:var(--muted);font-size:.9em;padding:6px 10px 6px 0;border-bottom:1px dashed var(--line)}
+.info .when td{padding:6px 0;border-bottom:1px dashed var(--line);line-height:1.4}
+.info .when tr:last-child th,.info .when tr:last-child td{border-bottom:0}
+.info .when .ko{font-weight:600}.info .when .m{color:var(--muted);font-size:.92em}
+.info .ibml{font-weight:700;font-size:15px;margin:4px 2px 8px;color:var(--accent)}.info .ibml .ko{font-weight:500;color:var(--muted);font-size:13px;margin-left:6px}
+.info .ib{margin-bottom:12px}.info .ibb{padding:10px 16px 5px}
+/* menu separators | before 기초회화, before 대한민국, before and after 도움말; · stays inside a section (RYU 2026-11-23, lao-app v3.27, v2.53) */
+.groups .group.msep::before{content:"|"!important;font-weight:400!important;opacity:.7!important;transform:translate(-50%,-52%)!important}
+/* the outer bars are drawn lines, so the first one sits exactly on the left edge of the first sub-group button below */
+.groups::before,.groups::after{content:"";flex:0 0 auto;align-self:center;width:1.5px;height:17px;background:var(--muted);opacity:.6;margin-top:-3px}
+.groups::before{margin-right:-8px}
+.groups::after{margin-left:-8px}
+
+/* 듣기연습: blurred text until 본문 보기 (2026-11-24) */
+.veilbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 10px}
+.veilbar .veilbtn{font-weight:600}
+.veilhint{font-size:14px;color:var(--muted)}
+.dlg.veil .line .k,.dlg.veil .line .p,.dlg.veil .line .m,.dlg.veil .line .gl{filter:blur(7px);user-select:none;-webkit-user-select:none}
+/* ---------- 사용 통계 page (src/stats.js, v1.3) ---------- */
+.stwrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:6px}
+.sttiles{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px}
+.sttile{display:flex;flex-direction:column;gap:1px;padding:12px 14px;border-radius:14px;background:var(--raise);border:1px solid var(--line);position:relative;overflow:hidden}
+.sttile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+.sttile b{font:700 28px/1.15 var(--display);color:var(--ink);letter-spacing:-.5px}
+.sttile span{font-size:13px;color:var(--ink)} .sttile span.ko{font-size:12px;color:var(--muted)} .sttile small{font-size:11px;color:var(--muted)}
+.stcard{padding:14px 14px 10px;border-radius:14px;background:var(--sheet);border:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.05);min-width:0}
+.stcard.wide{grid-column:1/-1}
+.info .stcard h3{margin:0 0 8px;font-size:15px} .info .stcard h3 .ko{font-weight:400;color:var(--muted);font-size:13px}
+.stsvg{width:100%;height:auto;display:block;overflow:visible}
+.stgrid{stroke:var(--line);stroke-width:1} .stax{fill:var(--muted);font-size:11px;font-family:var(--lao)}
+.stline{fill:none;stroke:var(--k3);stroke-width:2.2;stroke-linejoin:round} .stdot{fill:var(--sheet);stroke:var(--k3);stroke-width:2}
+.stleg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-top:4px;flex-wrap:wrap}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:6px} .sw.ln{height:3px;background:var(--k3);border-radius:2px}
+.sthb{display:flex;flex-direction:column;gap:7px}
+.sthr{display:grid;grid-template-columns:minmax(90px,38%) 1fr auto;align-items:center;gap:8px;font-size:13px}
+.sthl{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .sthl small{display:block;font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.stht{height:12px;border-radius:6px;background:var(--line);overflow:hidden} .stht i{display:block;height:100%;border-radius:6px;transition:width .6s ease}
+.sthr b{font-variant-numeric:tabular-nums;font-size:13px}
+.stdnw{display:flex;align-items:center;gap:14px;flex-wrap:wrap} .stdnw .stsvg{width:150px;flex:none}
+.stdn{fill:none;stroke-width:26} .stdc{fill:var(--ink);font:700 30px var(--display)}
+.stdl{list-style:none;margin:0;padding:0;font-size:13px;display:flex;flex-direction:column;gap:6px} .stdl .sw{margin:0 6px 0 0}
+.stnote{grid-column:1/-1;font-size:12px;color:var(--muted);margin:2px 0 0}
+/* satisfaction survey (like KoJey, v2.68) */
+.svbox:empty{display:none}.svhead .svq{margin:0}
+.svstars{display:flex;gap:4px;margin:6px 0 2px}
+.svchips{display:flex;flex-wrap:wrap;gap:6px}
+.svchip{border:1px solid var(--line);background:var(--sheet,#fff);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:14px;cursor:pointer}
+.svtext{width:100%;box-sizing:border-box;margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;font:inherit;font-size:14px;background:var(--sheet,#fff);color:var(--ink)}
+.svbtns{display:flex;justify-content:flex-end;margin-top:8px}
+.svx{position:absolute;right:8px;top:6px;border:0;background:none;font-size:22px;color:var(--muted);cursor:pointer}
+.svdone p{margin:0}
+.ver .cl{display:inline-block;transform:scaleX(-1)}
+@media (max-width:600px){#ver{font-size:11.5px;white-space:nowrap;letter-spacing:-.1px}}   /* copyleft line on one line on phones (v2.69) */
+/* TOPIK question design, random practice, picture choices (as KoJey, v2.70) */
+.tprrow{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;align-items:center}
+.tprrow .seg{border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:13.5px;cursor:pointer}
+.tprrow .seg.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tprrow .seg:disabled{opacity:.45;cursor:default}
+.tprrow .btn{margin-left:auto}
+.tprinfo{font-size:13px;color:var(--muted);margin:4px 0 10px}
+.tq h3 .tqnew{float:right;font-size:13px;padding:4px 12px}
+.tprrow .seg .ko{margin-left:4px}
+.tqd{display:flex;align-items:flex-start;gap:6px;margin-bottom:10px;width:100%;align-self:stretch;box-sizing:border-box}
+.tqd .tqn{flex:none}
+.tqd .tqdt{flex:1;min-width:0}
+.tqd .tqdl{font-weight:400;margin:2px 0 0}
+.tqd .tqplay{flex:none;min-width:7.7em;justify-content:center;margin-left:6px}
+.tqi{--ind:26px}
+.tqd .tqn{width:var(--ind);flex:none}
+.tqd{gap:0}
+.tqi > :not(.tqd){margin-left:var(--ind)}
+.tqq{display:flex;align-items:flex-start}
+.tqq .tqn{width:2.1em;flex:none}
+.tqsub > :not(.tqq){margin-left:2.1em}
+.tqo .choice{padding:7px 12px}
+@media (max-width:600px){.tqi{--ind:23px}.tqq .tqn{width:1.9em}.tqsub > :not(.tqq){margin-left:1.9em}}
+.tq h3{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.tq h3 .tqnew{float:none;margin-left:auto}
+@media (max-width:600px){.tqd{flex-wrap:wrap}.tqd .tqdt{flex:1 1 calc(100% - var(--ind))}.tqd .tqplay{margin:8px 0 0 var(--ind)}}   /* phone: listen button under the direction, at the text start (RYU v1.18.3) */
+.tqi{--ind2:34px}
+.tqq .tqn{width:var(--ind2)}
+.tqsub > :not(.tqq){margin-left:var(--ind2)}
+.tqi > .tqo{margin-left:calc(var(--ind) - 13px)}
+.tqsub > .tqo{margin-left:calc(var(--ind2) - 13px)}
+@media (max-width:600px){.tqi{--ind2:30px}.tqq .tqn{width:var(--ind2)}.tqsub > :not(.tqq){margin-left:var(--ind2)}.tqi > .tqo{margin-left:calc(var(--ind) - 13px)}.tqsub > .tqo{margin-left:calc(var(--ind2) - 13px)}}
+@media (max-width:600px){.tqd .tqplay{margin:6px 0 0 auto}}   /* phone: own row, right side for the right thumb (RYU v1.18.5) */
+.info .ib-t .terms div{padding:3px 0 3px 16px}
+.tqi:has(> .tqp .notice) > .tqo,.tqi:has(> .tqp .pics) > .tqo{margin-left:var(--ind)}   /* v1.18.9 (RYU): with a boxed text or pictures, the choice boxes line up with that box */
+.tqo.picgrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tqo .choice.picch{text-align:center;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.picch .pic span{display:block;font-size:30px;line-height:1.25;letter-spacing:1px;overflow-wrap:anywhere;word-break:break-all}
+.picch .pic span.tx{font-size:15px;letter-spacing:0;word-break:keep-all}
+.picch .pic small{display:block;font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:2px}
+.pics>div{min-width:0}.pics span{overflow-wrap:anywhere;word-break:break-all}
+@media (max-width:600px){.tqo.picgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.picch .pic span{font-size:26px}.pics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tqi > .tqo.picgrid{margin-left:var(--ind)}
+.picch .pic i.em{display:block;font-style:normal;font-size:26px;line-height:1.2}
+.picch .pic span.tx.kt{font-size:15.5px;font-weight:700;line-height:1.4;color:var(--ink)}
+@media (max-width:600px){.picch .pic i.em{font-size:22px}.picch .pic span.tx.kt{font-size:14.5px}}
+.info .ib-j{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.info .ib-j>h3{background:var(--accent-soft)}
+.tq>h3{font-size:17.5px;padding:8px 12px;border-left:0;border-radius:12px;background:var(--accent-soft);color:var(--accent)}
+.tq>h3 .ko{color:var(--ink)}
+.tqi{background:var(--raise);background:color-mix(in srgb,var(--accent-soft) 55%,var(--sheet));border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.04);padding:16px 18px}
+.tqi{--ind:34px}
+.tqd .tqn{width:26px;height:26px;margin-right:8px;border-radius:50%;background:var(--accent);color:var(--sheet);display:inline-flex;align-items:center;justify-content:center;font-size:14px;line-height:1;margin-top:1px}
+.tqd .tqdt>.ko{font-size:17px}
+.tqp{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.tqp:has(> .pics){background:none;border:0;padding:0}
+.tqp .notice{background:var(--sheet)}
+.tqsd{background:var(--sheet);border-style:solid}
+.tqsub{border-top:1px dashed color-mix(in srgb,var(--accent) 30%,var(--line))}
+.tqo .choice{background:var(--sheet);box-shadow:0 1px 2px rgba(0,0,0,.05);transition:border-color .15s,transform .15s,box-shadow .15s}
+.tqo .choice:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.tqo .choice.right{background:var(--good-soft)} .tqo .choice.wrong{background:var(--bad-soft)}
+.tqx{background:var(--sheet);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px}
+.tqx .res{font-size:16px}
+.tqsc{display:table;margin:6px auto 12px;padding:8px 20px;border-radius:999px;background:var(--accent-soft)}
+.tqd .tqplay{background:var(--sheet)}
+@media (max-width:600px){.tqi{padding:14px 12px;--ind:31px}.tqd .tqn{width:24px;height:24px;margin-right:7px;font-size:13px}}
+.info .two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 14px}.info .two>div>.ib{margin:0;height:100%}
+.info .ib .terms{margin:4px 0 10px}
+.tqi:has(> .tqp) > .tqo{margin-left:var(--ind)}
+.tqsub:has(> .tqp) > .tqo{margin-left:var(--ind2)}
+
+/* ☆ 단어 담기 on word cards and the 오답 노트 list, as PhasaLAO (RYU 2026-11-28, v2.99) */
+.wcard .star{position:absolute;right:6px;bottom:6px;border:0;background:none;font-size:22px;line-height:1;color:#c9a227;cursor:pointer;padding:4px;z-index:1}
+.wcard .star:not(.on){color:var(--muted);opacity:.6}
+@media (max-width:560px){ .wcard .star{right:3px;bottom:3px;font-size:20px} }
+.wbook{margin:0 0 12px;border:1px solid var(--line);border-radius:14px;background:var(--sheet);padding:2px 12px}
+.wbook summary{cursor:pointer;font-weight:700;padding:9px 0;color:#B45309}
+.wbook ul{list-style:none;margin:0;padding:0;max-height:340px;overflow:auto}
+.wbook li{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:14px}
+.wbook li .wk{font-size:17px;font-weight:600}
+.wbook li .r{color:var(--accent);font-size:13px}
+.wbook li .m{flex:1;min-width:0}
+.wbook li .src{color:#B45309;font-size:12px;white-space:nowrap}
+.wbook .wbgo,.wbook .wbdel{border:1px solid var(--line);background:none;border-radius:999px;font:inherit;font-size:11.5px;padding:2px 8px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.wbook .wbdel{padding:2px 7px}
+.wbhint{font-size:12px;color:var(--muted);margin:6px 0 10px}
+@media (max-width:600px){ .wbook li{flex-wrap:wrap;row-gap:2px} .wbook li .m{flex-basis:100%;order:5} }

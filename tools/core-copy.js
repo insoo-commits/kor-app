@@ -26,7 +26,7 @@ const BEGIN = "/* core BEGIN: written by kor-app tools/core-copy.js from tools/c
 const END = "/* core END */";
 const CBEGIN = "/* core css BEGIN: written by kor-app tools/core-copy.js from tools/core/*.css; do not edit between BEGIN and END */", CEND = "/* core css END */";
 /* parts an app does not take (RYU 2026-11-28): PhasaLAO keeps its own statistics (so its sheet columns stay) , its own keys (its player works differently) , its own last-screen copy (other fields) and its own ☆ / 오답 노트 data (other format) */
-const SKIP = {"lao-app": ["keys", "snap", "stats", "wbook"]};
+const SKIP = {"lao-app": ["keys", "look", "snap", "stats", "wbook"]};
 let behind = 0;
 for (const t of targets){
   const app = path.basename(path.resolve(t)), lao = !fs.existsSync(path.join(t, "build.js"));
