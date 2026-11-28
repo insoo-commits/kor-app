@@ -857,15 +857,10 @@ addEventListener("resize", () => { if (S.mode === "cards"){ document.querySelect
 /* last screen first, as PhasaLAO (RYU 2026-11-28, v2.99): the clean screen is kept in localStorage ("kolearn-snap");
    index.html shows it at once on the next start, before app.js and the lesson data arrive, with a "ກຳລັງໂຫຼດ 불러오는 중 (n ວິ)" pill.
    Not kept while playing, searching or in a quiz. The first full render takes the copy away (html.snap) and the pill (#boot). */
-function bootDone(){ document.documentElement.classList.remove("snap"); const bt = document.getElementById("boot"); if (bt) bt.remove(); }
-let snapT = 0;
-function snapLater(){ clearTimeout(snapT); snapT = setTimeout(() => { try {
-  if (P.mode || query || S.mode === "quiz" || !bundle(S.code) || document.documentElement.classList.contains("snap")) return;
-  const a = $("app"); a.querySelectorAll("select option").forEach(o => o.toggleAttribute("selected", o.selected));
-  const ids = ["stats", "mine", "groups", "subs", "sinfo", "band", "controls", "view"];
-  localStorage.setItem("kolearn-snap", JSON.stringify({sig: [META.ver, S.code, S.mode, innerWidth].join("|"), g: a.getAttribute("data-g"),
-    hid: ids.filter(i => $(i).hidden), h: ids.map(i => [i, $(i).innerHTML])}));
-} catch (e) { try { localStorage.removeItem("kolearn-snap"); } catch (e2) {} } }, 500); }
+/* now the shared part src/core/snap.js (2026-11-28); its storage key is in src/app-config.js */
+SNAP.init({skip: () => !!(P.mode || query || S.mode === "quiz" || !bundle(S.code)), sig: () => [META.ver, S.code, S.mode, innerWidth].join("|")});
+function bootDone(){ SNAP.done(); }
+function snapLater(){ SNAP.later(); }
 function drawAll(){ drawStats(); drawGroups(); drawSubs(); drawControls(); render(); }
 /* RYU 2026-11-14: coming back to an area or sub-group reopens the lesson last opened there */
 function lastIn(m, k, rows){ const c = m && m[k]; return c && byCode.has(c) && rows.some(r => r[0] === c) ? c : rows[0][0]; }
@@ -898,47 +893,12 @@ document.addEventListener("keydown", ev => { if (ev.key === "Escape") ddClose();
    Space pause / resume (idle: 묶음 재생) · C 연속 재생 · G 묶음 재생 (again = stop) · Esc stop · ← → previous / next line
    , . previous / next lesson · Enter this line without end (∞) · 1-5 횟수 · - = 속도 · S W E tabs (was Q W E; S since v2.79, same keys in all apps, RYU 2026-11-26) · ? list of keys.
    Keys go by e.code too, so they work with the Korean or Lao keyboard on; ↑ ↓ still scroll. */
-const KEYS = [["Space", "ຢຸດຊົ່ວຄາວ · ສືບຕໍ່ (ບໍ່ມີສຽງ: ຟັງບົດນີ້)", "일시정지 · 재개"], ["C", "ຟັງຕໍ່ເນື່ອງ", "연속 재생"], ["G", "ຟັງບົດນີ້", "묶음 재생"],
-  ["Esc", "ຍົກເລີກ", "정지"], ["← →", "ປະໂຫຍກກ່ອນ · ຕໍ່ໄປ", "이전 · 다음 문장"], ["< >  (, .)", "ບົດກ່ອນ · ບົດຕໍ່ໄປ", "이전 · 다음 묶음"],
-  ["Enter", "ຊ້ຳອັນນີ້ບໍ່ຢຸດ · ປິດ", "지금 문장 무한 반복"], ["K", "ເປີດ · ປິດ ສຽງລາວ", "라오스어 음성 켜기 · 끄기"], ["1 ~ 5", "ຈຳນວນເທື່ອ", "반복 횟수"], ["-  =", "ຊ້າລົງ · ໄວຂຶ້ນ", "배속"],
-  ["S W E", "ປະໂຫຍກ · ຄຳສັບ · ແບບທົດສອບ", "예문 · 단어 · 퀴즈"], ["?", "ເປີດ · ປິດ ລາຍການນີ້", "단축키 목록"]];
-function keyHelp(){
-  const box = h("div", {id: "kbhelp", onclick: () => box.remove()},
-    h("div", {class: "kbcard"}, h("b", null, "ປຸ່ມລັດແປ້ນພິມ ", h("span", {class: "ko"}, "키보드 단축키")),
-      h("table", null, KEYS.map(r => h("tr", null, h("td", null, h("kbd", null, r[0])), h("td", null, r[1], " ", h("span", {class: "ko m"}, r[2])))))));
-  document.body.appendChild(box);
-}
 function setSayLo(v){ S.sayLo = !!v; save(); const c = $("loChk"); if (c) c.checked = S.sayLo; }
 { const c = $("loChk"); if (c){ c.checked = S.sayLo !== false; c.addEventListener("change", () => { setSayLo(c.checked); try { c.blur(); } catch (e) {} }); } }
-const setSel = (id, i) => { const r = $(id); if (!r || i < 0 || i >= r.options.length || i === r.selectedIndex) return; r.selectedIndex = i; r.dispatchEvent(new Event("change", {bubbles: true})); };
-document.addEventListener("keydown", e => {
-  if (e.ctrlKey || e.metaKey || e.altKey) return;
-  const t = e.target, tn = t && t.tagName;
-  if (tn === "INPUT" || tn === "TEXTAREA" || tn === "SELECT" || (t && t.isContentEditable)) return;
-  const hp = $("kbhelp"); if (hp){ hp.remove(); e.preventDefault(); return; }
-  const c = e.code, k = (e.key || "").toLowerCase();
-  const is = (code, ...ks) => c === code || ks.includes(k);
-  if (e.key === "?" || (c === "Slash" && e.shiftKey)){ e.preventDefault(); keyHelp(); return; }
-  if (query) return;
-  if (e.key === "Escape"){ if (P.mode){ e.preventDefault(); stopPlay(); } return; }
-  if (is("KeyK", "k", "ㅏ")){ e.preventDefault(); setSayLo(S.sayLo === false); return; }
-  if (is("Comma", ",", "<") || is("Period", ".", ">")){
-    e.preventDefault(); const i = byCode.get(S.code), d = is("Period", ".", ">") ? 1 : -1;
-    go(IDX[(i + d + IDX.length) % IDX.length][0]); window.scrollTo(0, 0); return; }
-  const ctl = !$("controls").hidden, rep = ctl && !$("ctlrep").hidden;
-  if (is("KeyS", "s", "ㄴ") || is("KeyW", "w", "ㅈ") || is("KeyE", "e", "ㄷ")){
-    if (!ctl) return; e.preventDefault(); const b = $(is("KeyS", "s", "ㄴ") ? "m-learn" : is("KeyW", "w", "ㅈ") ? "m-cards" : "m-quiz"); if (b) b.click(); return; }
-  if (is("KeyC", "c", "ㅊ")){ if (rep){ e.preventDefault(); playBundle(true); } return; }
-  if (is("KeyG", "g", "ㅎ")){ if (rep){ e.preventDefault(); playBundle(false); } return; }
-  if (/^Digit[1-5]$/.test(c) || /^[1-5]$/.test(e.key)){ if (ctl){ e.preventDefault(); setSel("repSel", +(e.key.match(/[1-5]/) || c.slice(-1))[0] - 1); } return; }
-  if (is("Minus", "-", "_") || is("Equal", "=", "+")){ if (ctl){ e.preventDefault(); const r = $("rateSel"); setSel("rateSel", r.selectedIndex + (is("Equal", "=", "+") ? 1 : -1)); } return; }
-  if (c === "Space" || e.key === " "){
-    if (P.mode){ e.preventDefault(); togglePause(); return; }
-    if (rep && tn !== "BUTTON" && tn !== "A"){ e.preventDefault(); playBundle(false); } return; }
-  if (!P.mode) return;
-  if (e.key === "Enter"){ e.preventDefault(); if (P.mode === "single") return; P.hold = !P.hold; if (P.paused) togglePause(); return; }
-  if (e.key === "ArrowRight" || e.key === "ArrowLeft"){ e.preventDefault(); skipBy(e.key === "ArrowRight" ? 1 : -1); }
-});
+/* the keys themselves: the shared part src/core/keys.js (2026-11-28); help-card words in src/app-config.js */
+KBD.init({busy: () => !!query, playing: () => !!P.mode, stop: stopPlay, voice: () => setSayLo(S.sayLo === false),
+  lesson: d => { const i = byCode.get(S.code); go(IDX[(i + d + IDX.length) % IDX.length][0]); window.scrollTo(0, 0); },
+  play: chain => playBundle(chain), pause: togglePause, hold: () => { if (P.mode === "single") return; P.hold = !P.hold; if (P.paused) togglePause(); }, skip: d => skipBy(d)});
 /* phones show short Korean option text (2회, x 1.0) so tabs, count and speed fit on one line (RYU 2026-11-22, v2.31) */
   { const mq = matchMedia("(max-width:560px)"), lab = () => { for (const o of $("repSel").options) o.textContent = mq.matches ? o.value + "회" : o.value + " ເທື່ອ";
       for (const o of $("rateSel").options) o.textContent = (mq.matches ? "x " : "×") + (+o.value).toFixed(1); };
@@ -1044,40 +1004,7 @@ window.PK = {S, save, applyPrefs, setSayLo, speak: speakOne, quiet, ver: META.ve
 // v2.54 RYU: design A — sticky menu bar, PC hover glide, arrow buttons (same code as the hotel English app v1.51–v1.57)
 // menu bar that stays at the top while reading down: now the shared part src/core/stick.js (2026-11-28)
 
-// PC: a soft pill with a line under it slides along the menu after the mouse (RYU 2026-11-24)
-(function(){
-  if (!matchMedia("(hover:hover) and (pointer:fine)").matches) return;
-  for (const id of ["groups", "stickG"]) { const nav = $(id); if (!nav) continue;
-    const gl = () => { let e = nav.querySelector(".glide"); if (!e) { e = h("span", {class: "glide", "aria-hidden": "true"}); nav.appendChild(e); } return e; };
-    nav.addEventListener("mouseover", ev => { const t = ev.target.closest(".group"); if (!t || !nav.contains(t)) return; const e = gl(), first = e.style.opacity !== "1";
-      if (first) { e.style.transition = "none"; e.style.left = t.offsetLeft + "px"; e.style.width = t.offsetWidth + "px"; e.style.top = t.offsetTop + "px"; e.style.height = t.offsetHeight + "px"; e.offsetWidth; e.style.transition = ""; }
-      e.style.left = t.offsetLeft + "px"; e.style.width = t.offsetWidth + "px"; e.style.top = t.offsetTop + "px"; e.style.height = t.offsetHeight + "px"; e.style.opacity = "1"; });
-    nav.addEventListener("mouseleave", () => { const e = nav.querySelector(".glide"); if (e) e.style.opacity = "0"; });
-  }
-})();
-
-// PC: menu rows that do not fit get a round arrow button at the end that has more; the mouse wheel moves the row too (RYU 2026-11-24)
-(function(){
-  if (!matchMedia("(hover:hover) and (pointer:fine)").matches) return;
-  const chev = d => { const b = h("button", {class: "hsb " + (d < 0 ? "l" : "r"), type: "button", "aria-label": d < 0 ? "왼쪽 메뉴 보기" : "오른쪽 메뉴 보기"}); b.hidden = true;
-    b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (d < 0 ? "m15 5-7 7 7 7" : "m9 5 7 7-7 7") + '"/></svg>'; return b; };
-  for (const id of ["groups", "subs", "stickG"]) { const nav = $(id); if (!nav) continue;
-    const w = h("div", {class: "hs"}); nav.parentNode.insertBefore(w, nav); w.appendChild(nav);
-    const l = chev(-1), r = chev(1); w.append(l, r);
-    const upd = () => { const m = nav.scrollWidth - nav.clientWidth, x = nav.scrollLeft; l.hidden = !(m > 2 && x > 2); r.hidden = !(m > 2 && x < m - 2); w.classList.toggle("ml", !l.hidden); w.classList.toggle("mr", !r.hidden); };
-    const mv = d => nav.scrollBy({left: d * Math.max(120, nav.clientWidth * .6), behavior: "smooth"});
-    l.addEventListener("click", () => mv(-1)); r.addEventListener("click", () => mv(1));
-    nav.addEventListener("scroll", upd, {passive: true});
-    nav.addEventListener("wheel", e => { if (nav.scrollWidth - nav.clientWidth < 3 || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; e.preventDefault(); nav.scrollLeft += e.deltaY; }, {passive: false});
-    addEventListener("resize", upd);
-    const show = () => { const t = nav.querySelector('[aria-pressed="true"],[aria-selected="true"]'); if (t) { const a = t.offsetLeft - 40, z = t.offsetLeft + t.offsetWidth + 40 - nav.clientWidth; if (nav.scrollLeft > a) nav.scrollLeft = Math.max(0, a); else if (nav.scrollLeft < z) nav.scrollLeft = z; } upd(); };
-    new MutationObserver(() => requestAnimationFrame(show)).observe(nav, {childList: true, subtree: true, attributes: true, attributeFilter: ["aria-pressed", "aria-selected"]});
-    requestAnimationFrame(show);
-    if ("ResizeObserver" in window) new ResizeObserver(upd).observe(nav);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(upd);
-    upd();
-  }
-})();
+// PC menu rows (glide after the mouse, arrow buttons, wheel): now the shared part src/core/menu.js (2026-11-28)
 }
 
 // 당겨서 새로고침 (RYU 2026-11-27): the shared part core/ptr.js
