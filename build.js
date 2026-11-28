@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-28 v3.15";
+const VER = "2026-11-28 v3.16";
 const STATS_PUBLIC = /^\s*statsPublic: true,/m.test(fs.readFileSync(path.join(src, "app-config.js"), "utf8"));   // core stats (2026-11-28): the switch is in app-config.js
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
