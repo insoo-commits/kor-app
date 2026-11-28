@@ -64,7 +64,7 @@ const bundle = code => (cache.get(areaOf(code)) || []).find(b => b.code === code
 const synth = window.speechSynthesis || null;
 let koVoice = null, loVoice = null;
 const P = {tok: 0, mode: "", paused: false, round: 1, nav: false};
-let loLbl = null;
+let loLbl = document.getElementById("loLbl");   // taken at start: on a phone the restored last screen (v2.99) has it inside #ctlrep, which the first render empties (v3.01 "null" fix)
 function markMode(){ const c = document.getElementById("ctlrep"); if (c) c.dataset.on = P.mode; }   // bar repeat button shown in reverse while it plays (v1.94)
 function pickVoice(){
   if (!synth) return;
