@@ -1207,3 +1207,20 @@ html.tab .kbinfo>span{display:inline-flex}
 /* v2.78 (RYU): app name as a small badge on the first line, like KoJey; big title 한국어 배우기 */
 #app .top .eyebrow .logo{display:inline-block;font:700 12px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.6px;padding:3px 7px 2px;border-radius:6px;background:#fff;color:#1A3F86;margin-right:6px;vertical-align:1px;opacity:1}
 @media (max-width:600px){#app .top .eyebrow .logo{font-size:11px;padding:2px 6px 1px}}
+
+/* ☆ 단어 담기 on word cards and the 오답 노트 list, as PhasaLAO (RYU 2026-11-28, v2.99) */
+.wcard .star{position:absolute;right:6px;bottom:6px;border:0;background:none;font-size:22px;line-height:1;color:#c9a227;cursor:pointer;padding:4px;z-index:1}
+.wcard .star:not(.on){color:var(--muted);opacity:.6}
+@media (max-width:560px){ .wcard .star{right:3px;bottom:3px;font-size:20px} }
+.wbook{margin:0 0 12px;border:1px solid var(--line);border-radius:14px;background:var(--sheet);padding:2px 12px}
+.wbook summary{cursor:pointer;font-weight:700;padding:9px 0;color:#B45309}
+.wbook ul{list-style:none;margin:0;padding:0;max-height:340px;overflow:auto}
+.wbook li{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:14px}
+.wbook li .wk{font-size:17px;font-weight:600}
+.wbook li .r{color:var(--accent);font-size:13px}
+.wbook li .m{flex:1;min-width:0}
+.wbook li .src{color:#B45309;font-size:12px;white-space:nowrap}
+.wbook .wbgo,.wbook .wbdel{border:1px solid var(--line);background:none;border-radius:999px;font:inherit;font-size:11.5px;padding:2px 8px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.wbook .wbdel{padding:2px 7px}
+.wbhint{font-size:12px;color:var(--muted);margin:6px 0 10px}
+@media (max-width:600px){ .wbook li{flex-wrap:wrap;row-gap:2px} .wbook li .m{flex-basis:100%;order:5} }
