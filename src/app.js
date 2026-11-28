@@ -629,7 +629,7 @@ function quizBody(b){
     q.say && q.kind === "mean" || q.picked != null && q.say ? h("div", {class: "rowbtns", style: "justify-content:center", "data-say": q.say}, spk()) : null,
     h("div", {class: "choices"}, q.opts.map(o => h("button", {class: "choice" + (q.toLo ? "" : " ko") + (q.picked != null ? (o === q.a ? " right" : o === q.picked ? " wrong" : "") : ""), type: "button", disabled: q.picked != null,
       onclick: () => { q.picked = o; if (o === q.a){ quiz.right++; if (quiz.review) wbDrop(q); } render(); if (!q.toLo){ stopPlay(); const tok = ++P.tok; say(tok, q.kind === "blank" ? q.blank.full : q.a); } }}, o))),
-    q.picked != null ? h("div", {class: "rowbtns", style: "justify-content:flex-end"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz.at++; if (quiz.at === quiz.qs.length){ if (!quiz.review){ ST.log("quiz", quiz.code, quiz.right, quiz.qs.length); wbAdd(quiz); S.td = MINE.fresh(S.td, d => ({d: d, l: 0, q: 0})); S.td.q++; } save(); drawMine(); } render(); const nq = quiz.qs[quiz.at], el = document.querySelector(".quizq.listen"); if (nq && nq.kind === "listen" && el) playSingle(el); }}, T.nextCard)) : null];
+    q.picked != null ? h("div", {class: "rowbtns", style: "justify-content:flex-end"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz.at++; if (quiz.at === quiz.qs.length){ if (!quiz.review){ ST.log("quiz", quiz.code, quiz.right, quiz.qs.length); wbAdd(quiz); } S.td = MINE.quiz(S.td, d => ({d: d, l: 0, q: 0})); save(); drawMine(); } render(); const nq = quiz.qs[quiz.at], el = document.querySelector(".quizq.listen"); if (nq && nq.kind === "listen" && el) playSingle(el); }}, T.nextCard)) : null];
 }
 
 /* ---------- search ---------- */
