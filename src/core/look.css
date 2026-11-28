@@ -1,4 +1,4 @@
-/* core look v1.0 (master: kor-app src/core/look.css). Shared by PhasaKAO and JeyCampus (not PhasaLAO: its screens are built differently).
+/* core look v1.1 (master: kor-app src/core/look.css). Shared by PhasaKAO and JeyCampus (not PhasaLAO: its screens are built differently).
    Edit only this master, raise the version, then run  node tools/core-copy.js  to copy it to the other apps.
    The look of the lesson screens that both apps share rule for rule (word cards, sentence lines, dialogues, quizzes, player, info pages …),
    taken out of each app's src/app.css on 2026-11-28 (RYU: "메인 콘텐츠에서도 동일한 유형으로 보여주는 방법 등은 공통으로").
@@ -562,8 +562,9 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 .player .t{margin-right:4px}
 .player button{height:26px;padding:0 11px;font-size:11.5px;line-height:1}
 #pstop{background:transparent;color:var(--bg);border:1px solid currentColor}
-/* player bar only as wide as the app column, not the whole window (RYU 2026-11-16, v1.54) */
-.player{left:50%;right:auto;transform:translateX(-50%);width:min(calc(100% - 32px),968px);box-sizing:border-box;border-radius:12px 12px 0 0;padding-left:16px;padding-right:16px}
+/* player bar only as wide as the app column, not the whole window (RYU 2026-11-16, v1.54); look v1.1 (RYU 2026-11-28): as wide as the lesson cards
+   = page column 1176px (skin.css #app.wrap) - wrap padding 2x16 - sheet padding 2x20, was 968px; phones keep the full width (below) */
+.player{left:50%;right:auto;transform:translateX(-50%);width:calc(min(100%,1176px) - 72px);box-sizing:border-box;border-radius:12px 12px 0 0;padding-left:16px;padding-right:16px}
 @media (max-width:560px){ .player{width:100%;border-radius:0} }
 /* player: info fills the left half and ends at the centre, buttons start at the centre, so nothing jumps while it plays (RYU 2026-11-16, v1.55) */
 .player{display:grid;grid-template-columns:minmax(0,1fr) auto auto minmax(0,1fr);border-radius:20px 20px 0 0}
