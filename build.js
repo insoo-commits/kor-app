@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-28 v3.10";
+const VER = "2026-11-28 v3.11";
 const STATS_PUBLIC = /^\s*statsPublic: true,/m.test(fs.readFileSync(path.join(src, "app-config.js"), "utf8"));   // core stats (2026-11-28): the switch is in app-config.js
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
@@ -71,7 +71,7 @@ function tabCss(src){
   while (i < s.length){ const r = block(); out.push(...r); }
   return "\n/* tablet text (generated) */\nhtml.tab{zoom:1}\n" + out.join("\n");
 }
-const css = read("app.css") + tabCss(read("app.css")) + "\n" + read("tab.css") + "\n" + read("skin.css") + "\n" + read("intro.css"), body = read("body.html"), clip = read("clip.js"), js = read("app-config.js") + "\n" + fs.readdirSync(path.join(src, "core")).filter(f => f.endsWith(".js")).sort().map(f => read("core/" + f)).join("\n") + "\n" + clip + "\n" + read("audiopack.js") + "\n" + read("app.js") + "\n" + read("intro.js");
+const css = fs.readdirSync(path.join(src, "core")).filter(f => f.endsWith(".css")).sort().map(f => read("core/" + f)).join("\n") + "\n" /* shared CSS parts first, so the app's own CSS can still adjust them (core edge v1.0, 2026-11-28) */ + read("app.css") + tabCss(read("app.css")) + "\n" + read("tab.css") + "\n" + read("skin.css") + "\n" + read("intro.css"), body = read("body.html"), clip = read("clip.js"), js = read("app-config.js") + "\n" + fs.readdirSync(path.join(src, "core")).filter(f => f.endsWith(".js")).sort().map(f => read("core/" + f)).join("\n") + "\n" + clip + "\n" + read("audiopack.js") + "\n" + read("app.js") + "\n" + read("intro.js");
 
 // audio: audio/list.json = every clip the app can use; audio/index.js = the clips that exist as mp3 in audio/
 const {cleanKo, cleanLo, clipKey} = new Function(clip + "; return {cleanKo, cleanLo, clipKey};")();
