@@ -63,13 +63,9 @@ const bundle = code => (cache.get(areaOf(code)) || []).find(b => b.code === code
    sentence: exactly N times · bundle repeat: this bundle round and round · all repeat: every bundle in app order, then back to the first */
 let loLbl = document.getElementById("loLbl");   // taken at start: on a phone the restored last screen (v2.99) has it inside #ctlrep, which the first render empties (v3.01 "null" fix)
 const CLIPS = window.AUDIO_INDEX || {}, AP = makeAudioPack({db: "ko-audio"});   // clips come in one pack per lesson (v2.65)
-/* playback = core play (src/core/play.js, 2026-11-28); this app keeps the audio pack (AP), follow and flipCard */
-const PL = makePlay({$, h, ico, T, S, IDX, byCode, AP, lg: "lo", ordParts, loadArea, areaOf, drawAll, save, snapLater, follow, flipCard, log: (...a) => ST.log(...a)});
+/* playback = core play (src/core/play.js, 2026-11-28); this app keeps the audio pack (AP) and flipCard */
+const PL = makePlay({$, h, ico, T, S, IDX, byCode, AP, lg: "lo", ordParts, loadArea, areaOf, drawAll, save, snapLater, flipCard, log: (...a) => ST.log(...a)});
 const {P, markMode, hasClip, speakOne, quiet, gap, mark, showPlayer, skipBy, say, sayItem, playSingle, playBundle, playWord, playDialogue, playSents, playCard, stopPlay, togglePause} = PL;
-function follow(el){
-  const r = el.getBoundingClientRect(), pl = $("player"), ph = pl && !pl.hidden ? pl.getBoundingClientRect().height + 16 : 0, H = innerHeight - ph, c = r.top + r.height / 2;
-  if (c < H * .25 || c > H * .75 || (r.top < 0 && r.height < H) || (r.bottom > H && r.height < H)) window.scrollBy({top: c - H * .25, behavior: "smooth"});   // land at ~25% so reading downward stays still until 75% (RYU 2026-11-22)
-}
 const spk = () => h("button", {class: "spk", type: "button", "aria-label": "ຟັງ", onclick: ev => { const el = ev.currentTarget.closest("[data-say]"); if (el) playSingle(el); }}, ico("spk"));
 
 /* ---------- chrome ---------- */

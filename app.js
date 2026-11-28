@@ -170,13 +170,13 @@ window.APPCFG = {
    one 🔊 / a tapped card: that line over and over · bundle / all-bundle repeat (G / C) · word, dialogue and section repeat ·
    횟수 (S.rep) and speed (S.rate) · Enter = this line ∞ · ← → line before / after · pause · lock-screen buttons.
    The app gives once:  const PL = makePlay({$, h, ico, T, S, IDX, byCode, AP, lg, ordParts, loadArea, areaOf, drawAll, save,
-   snapLater, follow, flipCard, log})  and takes the functions it uses from PL (P, playSingle, playBundle, stopPlay …).
-   Kept in the app: the audio pack (AP), follow (how the screen moves with the playing line), flipCard (the card look),
+   snapLater, flipCard, log})  and takes the functions it uses from PL (P, playSingle, playBundle, stopPlay …).
+   Kept in the app: the audio pack (AP), flipCard (the card look),
    lg = the meaning language's clip / voice code ("lo"; JeyCampus: the chosen explanation language).
    Per-app value from window.APPCFG.play (app-config.js): title = the lock-screen title. */
 window.makePlay = function(A){
   const C = (window.APPCFG && window.APPCFG.play) || {}, LG = A.lg;
-  const {$, h, ico, T, S, IDX, byCode, AP, ordParts, loadArea, areaOf, drawAll, save, snapLater, follow, flipCard} = A, ST = {log: A.log};
+  const {$, h, ico, T, S, IDX, byCode, AP, ordParts, loadArea, areaOf, drawAll, save, snapLater, flipCard} = A, ST = {log: A.log};
   const synth = window.speechSynthesis || null;
   let koVoice = null, loVoice = null;
   const P = {tok: 0, mode: "", paused: false, round: 1, nav: false};
@@ -228,7 +228,14 @@ window.makePlay = function(A){
   const SILENT = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
   function quiet(){ if (synth) try { synth.cancel(); } catch (e) {} if (AEL) try { AEL.onended = AEL.onerror = null; AEL.pause(); } catch (e) {} const f = CUR_END; CUR_END = null; if (f) f(); }
   const gap = ms => new Promise(r => setTimeout(r, ms));
-  /* keep the playing line in view, but move only when it leaves the middle of the screen (25-75%) or is cut off (lao-app v2.79, v2.30) */
+  /* keep the playing line in view (JeyCampus v1.19.24 way, for both apps since play v1.0, RYU 2026-11-28): the TOP of the playing
+     line lands at ~30% of the space under the sticky menu bar, so it is never hidden under it; it moves only when the line
+     goes above that space, below 70% of it, or is cut off at the bottom */
+  function follow(el){
+    const r = el.getBoundingClientRect(), pl = $("player"), ph = pl && !pl.hidden ? pl.getBoundingClientRect().height + 16 : 0, H = innerHeight - ph;
+    const sk = $("stick"), t0 = sk && !sk.hidden ? Math.max(0, sk.getBoundingClientRect().bottom) : 0, AH = H - t0;
+    if (r.top < t0 + 4 || r.top > t0 + AH * .7 || (r.bottom > H && r.height < AH * .7)) window.scrollBy({top: r.top - (t0 + AH * .3), behavior: "smooth"});
+  }
   function mark(el){
     document.querySelectorAll(".now").forEach(x => x.classList.remove("now"));
     if (el && el.isConnected){ el.classList.add("now"); if (P.mode !== "single") follow(el); }
@@ -1034,13 +1041,9 @@ const bundle = code => (cache.get(areaOf(code)) || []).find(b => b.code === code
    sentence: exactly N times · bundle repeat: this bundle round and round · all repeat: every bundle in app order, then back to the first */
 let loLbl = document.getElementById("loLbl");   // taken at start: on a phone the restored last screen (v2.99) has it inside #ctlrep, which the first render empties (v3.01 "null" fix)
 const CLIPS = window.AUDIO_INDEX || {}, AP = makeAudioPack({db: "ko-audio"});   // clips come in one pack per lesson (v2.65)
-/* playback = core play (src/core/play.js, 2026-11-28); this app keeps the audio pack (AP), follow and flipCard */
-const PL = makePlay({$, h, ico, T, S, IDX, byCode, AP, lg: "lo", ordParts, loadArea, areaOf, drawAll, save, snapLater, follow, flipCard, log: (...a) => ST.log(...a)});
+/* playback = core play (src/core/play.js, 2026-11-28); this app keeps the audio pack (AP) and flipCard */
+const PL = makePlay({$, h, ico, T, S, IDX, byCode, AP, lg: "lo", ordParts, loadArea, areaOf, drawAll, save, snapLater, flipCard, log: (...a) => ST.log(...a)});
 const {P, markMode, hasClip, speakOne, quiet, gap, mark, showPlayer, skipBy, say, sayItem, playSingle, playBundle, playWord, playDialogue, playSents, playCard, stopPlay, togglePause} = PL;
-function follow(el){
-  const r = el.getBoundingClientRect(), pl = $("player"), ph = pl && !pl.hidden ? pl.getBoundingClientRect().height + 16 : 0, H = innerHeight - ph, c = r.top + r.height / 2;
-  if (c < H * .25 || c > H * .75 || (r.top < 0 && r.height < H) || (r.bottom > H && r.height < H)) window.scrollBy({top: c - H * .25, behavior: "smooth"});   // land at ~25% so reading downward stays still until 75% (RYU 2026-11-22)
-}
 const spk = () => h("button", {class: "spk", type: "button", "aria-label": "ຟັງ", onclick: ev => { const el = ev.currentTarget.closest("[data-say]"); if (el) playSingle(el); }}, ico("spk"));
 
 /* ---------- chrome ---------- */
