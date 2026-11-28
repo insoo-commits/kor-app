@@ -1051,17 +1051,7 @@ window.PK = {S, save, applyPrefs, setSayLo, speak: speakOne, quiet, ver: META.ve
 { const $ = id => document.getElementById(id);
   const h = (tag, attrs) => { const el = document.createElement(tag); for (const k in attrs || {}) el.setAttribute(k, attrs[k]); return el; };
 // v2.54 RYU: design A — sticky menu bar, PC hover glide, arrow buttons (same code as the hotel English app v1.51–v1.57)
-// menu bar that stays at the top while reading down (design A, RYU 2026-11-24)
-(function(){
-  const st = $("stick"), mb = document.querySelector(".menubox"), sg = $("stickG"), g = $("groups");
-  if (!st || !mb || !("IntersectionObserver" in window)) return;
-  const sync = () => { sg.innerHTML = g.innerHTML; sg.querySelectorAll(".glide").forEach(x => x.remove()); { const B = $("bselBtn"), q = c => (B.querySelector(c) || {}).textContent || ""; $("stickT").textContent = B.querySelector(".ddk") ? (q(".ddn") + " " + q(".ddk") + (q(".ddo") ? " (" + q(".ddo") + ")" : "")).trim() : B.textContent.trim(); } const on = sg.querySelector('[aria-pressed="true"]'); if (on && !st.hidden) on.scrollIntoView({block: "nearest", inline: "center"}); };
-  new IntersectionObserver(es => { const e = es[0]; const show = !e.isIntersecting && e.boundingClientRect.bottom < 0; if (show === !st.hidden) return; st.hidden = !show; if (show) sync(); }).observe(mb);
-  new MutationObserver(() => { if (!st.hidden) sync(); }).observe(g, {childList: true, subtree: true, attributes: true});
-  new MutationObserver(() => { if (!st.hidden) sync(); }).observe($("bselBtn"), {childList: true, subtree: true, characterData: true});
-  sg.addEventListener("click", e => { const t = e.target.closest(".group"); if (!t) return; const i = [...sg.querySelectorAll(".group")].indexOf(t); const o = g.querySelectorAll(".group")[i]; if (o) o.click(); document.querySelector(".search").scrollIntoView({block: "start"}); });
-  $("stickQ").addEventListener("click", () => { window.scrollTo(0, 0); $("q").focus(); });
-})();
+// menu bar that stays at the top while reading down: now the shared part src/core/stick.js (2026-11-28)
 
 // PC: a soft pill with a line under it slides along the menu after the mouse (RYU 2026-11-24)
 (function(){
