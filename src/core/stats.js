@@ -1,4 +1,4 @@
-/* core stats v1.0 (master: kor-app src/core/stats.js). Shared by PhasaKAO and JeyCampus (PhasaLAO keeps its own, RYU 2026-11-28,
+/* core stats v1.1 (master: kor-app src/core/stats.js). Shared by PhasaKAO and JeyCampus (PhasaLAO keeps its own, RYU 2026-11-28,
    so its sheet's columns stay as they are). Edit only this master, raise the version, then run  node tools/core-copy.js ../kor-app-en.
    Three parts: ST = anonymous usage events sent to the app's Google Sheet, STP = the public 학습 통계 page, SV = the short survey.
    What is sent (rows [time, event, code, a, b] and the batch fields id, v, dev, os, pwa, lang) must not change: the sheet's
@@ -43,8 +43,25 @@ var ST = (() => {
     addEventListener("online", () => send());
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") send(true); });
   }
-  let last = "";
-  return {log, send, meta: () => ({id, v: (window.KO_META || {}).ver || "", dev, os, pwa, lang: navigator.language || ""}), lesson(code){ if (code && code !== last){ last = code; log("lesson", code); } }};
+  /* v1.1 (RYU 2026-11-28): "lesson" is sent only after the lesson has been on screen DWELL seconds, so the lesson that
+     shows by itself when the app opens (first visit: the first lesson; later: the last one) and lessons only passed through
+     are not counted. Seconds count only while the page is visible and the intro (html.introon) does not cover it.
+     10 s: a lesson read even briefly passes it; paging through lessons takes 2–3 s each. The same lesson twice in a row = once.
+     lesson(code, done): done() runs at the same moment, so the app can write its 내 학습 record (seen, days, today) then too. */
+  const DWELL = 10, root = document.documentElement;
+  let last = "", pend = "", fn = null, sec = 0, tick = 0;
+  const shown = () => document.visibilityState === "visible" && !root.classList.contains("introon");
+  function lesson(code, done){
+    if (!code) return;
+    if (code === pend){ if (done) fn = done; return; }
+    if (code === last){ pend = ""; fn = null; return; }
+    pend = code; fn = done || null; sec = 0;
+    if (!tick) tick = setInterval(() => {
+      if (!pend){ clearInterval(tick); tick = 0; return; }
+      if (shown() && ++sec >= DWELL){ const f = fn; last = pend; pend = ""; fn = null; log("lesson", last); if (f) try { f(last); } catch (e) {} }
+    }, 1000);
+  }
+  return {log, send, lesson, meta: () => ({id, v: (window.KO_META || {}).ver || "", dev, os, pwa, lang: navigator.language || ""})};
 })();
 
 /* ---------- public statistics page (도움말 > 학습 통계, RYU 2026-11-25) ----------
@@ -123,7 +140,7 @@ var STP = (() => {
       d.survey && d.survey.n ? card(TX.survey, "만족도 설문", el("div", null, el("div", {class: "sttiles"}, tile(fmt(d.survey.n), TX.sAnswers, "응답"), tile(d.survey.avg == null ? "–" : d.survey.avg + " ★", TX.sAvg, "평균 별점"), tile(d.survey.recPct == null ? "–" : d.survey.recPct + "%", TX.sRec, "추천 의향")), vbars(["★1", "★2", "★3", "★4", "★5"].map((l, i) => [l, d.survey.dist[i] || 0]), "var(--k5)"))) : null,
       d.quizHist && d.quizHist.some(Boolean) ? card(TX.quizHist, "퀴즈 점수 분포", vbars(["0–19%", "20–39%", "40–59%", "60–79%", "80–100%"].map((l, i) => [l, d.quizHist[i] || 0]), "var(--good)")) : null,
       d.hours && d.hours.some(Boolean) ? card(TX.hours, "공부하는 시간", vbars(d.hours.map((v, i) => [String(i), v]), "var(--k6)"), true) : null,
-      el("p", {class: "stnote"}, TX.updated + " " + (d.updated || "–") + (d.first ? " · " + TX.since + " " + d.first : "") + ". " + TX.totals + " ", el("span", {class: "ko"}, "이름 없이 모은 전체 합계입니다."))];
+      el("p", {class: "stnote"}, TX.updated + " " + (d.updated || "–") + (d.first ? " · " + TX.since + " " + d.first : "") + ". " + TX.totals + " ", el("span", {class: "ko"}, "이름 없이 모은 전체 합계입니다."), TX.dwell ? " " + TX.dwell + " " : " ", el("span", {class: "ko"}, "2026-11-28부터 묶음 열람은 10초 넘게 본 묶음만 셉니다(그 전보다 적게 나와요)."))];
     box.replaceChildren(el("div", {class: "stwrap"}, kids));
   }
   function page(box){ requestAnimationFrame(() => page2(box)); }   // after the page is on screen, so the cards have their width

@@ -305,7 +305,8 @@ function track(code){
   const t = dayStr(new Date()), r = IDX[byCode.get(code)]; if (!r || r[3] === "info") return;
   S.seen = S.seen || {}; if (!S.seen[code]) S.seen[code] = t;
   S.days = MINE.addDay(S.days, t);
-  S.td = MINE.fresh(S.td, d => ({d: d, l: 0, q: 0}), t); S.td.l++;
+  S.td = MINE.fresh(S.td, d => ({d: d, l: 0, q: 0}), t); S.td.s = S.td.s || {};
+  if (!S.td.s[code]){ S.td.s[code] = 1; S.td.l++; }   // 오늘 공부 = different lessons today (like PhasaLAO, RYU 2026-11-28); s = today's lessons
 }
 const streak = () => MINE.streak(S.days);
 function drawMine(){
@@ -612,7 +613,7 @@ function quizEnd(){
       wrong.map(q => h("div", {class: "qw"}, h("span", {class: q.toLo ? "ko" : ""}, qText(q)), h("b", {class: q.toLo ? "" : "ko"}, q.a)))) : null,
     h("div", {class: "rowbtns", style: "justify-content:center"},
       !quiz.review && nbRows().length ? h("button", {class: "btn", type: "button", onclick: wbReview}, "ທວນຄຳທີ່ຜິດ ແລະ ☆ ", h("span", {class: "ko"}, "오답·별표 복습"), " · " + nbRows().length) : null,
-      wrong.length && wrong.length < N ? h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz = {code: quiz.code, review: quiz.review, qs: wrong.map(q => Object.assign({}, q, {picked: null})), at: 0, right: 0}; render(); }}, "ສະເພາະຂໍ້ທີ່ຜິດ ", h("span", {class: "ko"}, "틀린 것만")) : null,
+      wrong.length && wrong.length < N ? h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz = {code: quiz.code, review: quiz.review, again: 1, qs: wrong.map(q => Object.assign({}, q, {picked: null})), at: 0, right: 0}; render(); }}, "ສະເພາະຂໍ້ທີ່ຜິດ ", h("span", {class: "ko"}, "틀린 것만")) : null,
       h("button", {class: "btn" + (wrong.length && wrong.length < N ? "" : " primary"), type: "button", onclick: () => { stopPlay(); quiz = null; render(); }}, T.again))];
 }
 function renderQuiz(b){ const r = quizBody(b); return quiz && quiz.review ? [wbBook(), quiz.at < quiz.qs.length ? revHead() : null].concat(r) : r; }   // 오답 노트 list above the review (v2.99)
@@ -629,7 +630,7 @@ function quizBody(b){
     q.say && q.kind === "mean" || q.picked != null && q.say ? h("div", {class: "rowbtns", style: "justify-content:center", "data-say": q.say}, spk()) : null,
     h("div", {class: "choices"}, q.opts.map(o => h("button", {class: "choice" + (q.toLo ? "" : " ko") + (q.picked != null ? (o === q.a ? " right" : o === q.picked ? " wrong" : "") : ""), type: "button", disabled: q.picked != null,
       onclick: () => { q.picked = o; if (o === q.a){ quiz.right++; if (quiz.review) wbDrop(q); } render(); if (!q.toLo){ stopPlay(); const tok = ++P.tok; say(tok, q.kind === "blank" ? q.blank.full : q.a); } }}, o))),
-    q.picked != null ? h("div", {class: "rowbtns", style: "justify-content:flex-end"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz.at++; if (quiz.at === quiz.qs.length){ if (!quiz.review){ ST.log("quiz", quiz.code, quiz.right, quiz.qs.length); wbAdd(quiz); } S.td = MINE.quiz(S.td, d => ({d: d, l: 0, q: 0})); save(); drawMine(); } render(); const nq = quiz.qs[quiz.at], el = document.querySelector(".quizq.listen"); if (nq && nq.kind === "listen" && el) playSingle(el); }}, T.nextCard)) : null];
+    q.picked != null ? h("div", {class: "rowbtns", style: "justify-content:flex-end"}, h("button", {class: "btn primary", type: "button", onclick: () => { stopPlay(); quiz.at++; if (quiz.at === quiz.qs.length){ if (!quiz.review){ if (!quiz.again) ST.log("quiz", quiz.code, quiz.right, quiz.qs.length); wbAdd(quiz); } S.td = MINE.quiz(S.td, d => ({d: d, l: 0, q: 0})); save(); drawMine(); } render(); const nq = quiz.qs[quiz.at], el = document.querySelector(".quizq.listen"); if (nq && nq.kind === "listen" && el) playSingle(el); }}, T.nextCard)) : null];
 }
 
 /* ---------- search ---------- */
@@ -856,7 +857,8 @@ async function route(){
   if (byCode.has(name)) S.code = name;
   (S.lastA = S.lastA || {})[areaOf(S.code)] = S.code; (S.lastS = S.lastS || {})[subOf(S.code)] = S.code;
   if (P.nav) P.nav = false; else stopPlay();
-  track(S.code); quiz = null; save(); drawAll(); drawMine(); ST.lesson(S.code);   // usage statistics: lesson opened (src/stats.js)
+  quiz = null; save(); drawAll(); drawMine();
+  ST.lesson(S.code, c => { track(c); save(); drawMine(); drawSubs(); });   // 10 s on screen: statistics + 내 학습 record (core stats v1.1, RYU 2026-11-28)
   { const c = S.code, i = IDX.findIndex(x => x[0] === c); AP.warm(c).then(() => { const n = IDX[i + 1]; if (n && S.code === c) AP.warm(n[0]); }); }   // this lesson's sound, then the next one's (for 연속 재생)
   const a = areaOf(S.code);
   if (!cache.has(a)){
