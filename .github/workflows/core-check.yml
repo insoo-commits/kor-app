@@ -1,0 +1,84 @@
+# 공용 부품 점검 (RYU 2026-11-28: "core-copy.js --check를 자동으로 돌려 세 앱이 어긋나면 알려 주기").
+# Every day, when src/core or core-copy.js changes on main, and when started by hand (Actions → 공용 부품 점검 → Run workflow),
+# this runs  node tools/core-copy.js --check  against JeyCampus (kor-app-en) and PhasaLAO (lao-app) main.
+# Parts an app does not take on purpose (play, look, stats ... for PhasaLAO) are in SKIP in tools/core-copy.js, so they are not reported.
+# When a copy is behind: the run is red, and one issue "공용 부품 어긋남" is opened (or commented on) with the list,
+# so GitHub sends RYU an e-mail. When everything matches again, the next run closes that issue. It never changes any app.
+# Another app using the same parts (e.g. hotel English): add a checkout below with path = its repository name, and that path to APPS.
+name: 공용 부품 점검
+on:
+  schedule:
+    - cron: "40 21 * * *"   # 06:40 in Korea
+  push:
+    branches: [main]
+    paths: ["src/core/**", "tools/core-copy.js", ".github/workflows/core-check.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+concurrency: core-check
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      APPS: kor-app-en lao-app
+      TITLE: 공용 부품 어긋남
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: kor-app
+          sparse-checkout: |
+            src/core
+            tools/core-copy.js
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          repository: insoo-commits/kor-app-en
+          path: kor-app-en
+          sparse-checkout: |
+            build.js
+            src/core
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          repository: insoo-commits/lao-app
+          path: lao-app
+          sparse-checkout: |
+            app.js
+            index.html
+            tools/core
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check
+        id: check
+        run: |
+          set +e
+          node kor-app/tools/core-copy.js --check $APPS > out.txt 2>&1
+          code=$?
+          cat out.txt
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          { echo '```'; cat out.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Report
+        run: |
+          num=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --search "\"$TITLE\" in:title" --json number,title --jq ".[] | select(.title==\"$TITLE\") | .number" | head -1)
+          if [ "${{ steps.check.outputs.code }}" = "0" ]; then
+            if [ -n "$num" ]; then gh issue close "$num" -R "$GITHUB_REPOSITORY" -c "다시 점검했더니 세 앱이 모두 원본과 같습니다. 닫습니다."; fi
+            exit 0
+          fi
+          {
+            echo "공용 부품 원본(kor-app src/core)과 앱 사본이 다릅니다. \`→\` 표시가 있는 줄이 뒤처진(또는 앱에서 직접 고친) 사본입니다."
+            echo "(JeyCampus = kor-app-en, PhasaLAO = lao-app. 일부러 빼 둔 부품은 core-copy.js의 SKIP에 있어 여기에 안 나옵니다.)"
+            echo
+            echo '```'; grep -v ' = ' out.txt; echo '```'
+            echo
+            echo "고치는 법: 세 저장소를 나란히 clone한 뒤 kor-app에서 \`node tools/core-copy.js\` → JeyCampus는 \`node build.js\`, PhasaLAO는 버전 올리기 → 각 앱 배포."
+            echo "앱 사본을 직접 고친 경우라면 그 변경을 먼저 원본(kor-app src/core)으로 옮긴 뒤 위처럼 복사합니다."
+            echo
+            echo "점검 실행: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > body.md
+          if [ -n "$num" ]; then gh issue comment "$num" -R "$GITHUB_REPOSITORY" -F body.md
+          else gh issue create -R "$GITHUB_REPOSITORY" -t "$TITLE" -F body.md -a insoo-commits || gh issue create -R "$GITHUB_REPOSITORY" -t "$TITLE" -F body.md; fi
+          exit 1
