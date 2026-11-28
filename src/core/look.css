@@ -1,4 +1,4 @@
-/* core look v1.1 (master: kor-app src/core/look.css). Shared by PhasaKAO and JeyCampus (not PhasaLAO: its screens are built differently).
+/* core look v1.2 (master: kor-app src/core/look.css). Shared by PhasaKAO and JeyCampus (not PhasaLAO: its screens are built differently).
    Edit only this master, raise the version, then run  node tools/core-copy.js  to copy it to the other apps.
    The look of the lesson screens that both apps share rule for rule (word cards, sentence lines, dialogues, quizzes, player, info pages …),
    taken out of each app's src/app.css on 2026-11-28 (RYU: "메인 콘텐츠에서도 동일한 유형으로 보여주는 방법 등은 공통으로").
@@ -593,6 +593,10 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* player buttons end on the same right line as the repeat buttons above (RYU 2026-11-16, v1.60) */
 .player{padding-left:21px;padding-right:21px}
 @media (max-width:560px){ .player{padding-left:29px;padding-right:29px} }
+/* look v1.2 (RYU 2026-11-28): the same bar as PhasaLAO: a pill floating a little above the bottom edge, all corners round, with a shadow;
+   PC / iPad as wide as the lesson cards (v1.1), phones as wide as the cards too; phone buttons keep only their marks (v1.58) */
+.player{bottom:max(6px,calc(env(safe-area-inset-bottom,0px) - 14px));border-radius:999px;padding:4px 5px 4px 16px;box-shadow:0 4px 14px rgba(0,0,0,.28)}
+@media (max-width:560px){ .player{width:calc(100% - 28px);border-radius:999px;padding:4px 5px 4px 14px} }
 /* tips box under the intro (RYU 2026-11-16, like lao-app) */
 .band .tipbox{margin-top:10px;background:var(--sheet);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:4px 10px 10px 4px;padding:10px 14px;display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.55}
 .band .tipbox p{margin:0;color:var(--ink);padding-left:1em;text-indent:-1em}

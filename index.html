@@ -36,7 +36,7 @@ html.tab .stick{-webkit-backdrop-filter:none!important;backdrop-filter:none!impo
 body::before{content:"";position:fixed;left:0;right:0;top:0;height:var(--sat);background:var(--bg);z-index:24;pointer-events:none}
 html.introon body::before{background:var(--intro-deep,#000);z-index:2147483000}
 
-/* core look v1.1 (master: kor-app src/core/look.css). Shared by PhasaKAO and JeyCampus (not PhasaLAO: its screens are built differently).
+/* core look v1.2 (master: kor-app src/core/look.css). Shared by PhasaKAO and JeyCampus (not PhasaLAO: its screens are built differently).
    Edit only this master, raise the version, then run  node tools/core-copy.js  to copy it to the other apps.
    The look of the lesson screens that both apps share rule for rule (word cards, sentence lines, dialogues, quizzes, player, info pages …),
    taken out of each app's src/app.css on 2026-11-28 (RYU: "메인 콘텐츠에서도 동일한 유형으로 보여주는 방법 등은 공통으로").
@@ -631,6 +631,10 @@ th{border-top:0;background:var(--accent-soft);font-size:16px;color:var(--ink);fo
 /* player buttons end on the same right line as the repeat buttons above (RYU 2026-11-16, v1.60) */
 .player{padding-left:21px;padding-right:21px}
 @media (max-width:560px){ .player{padding-left:29px;padding-right:29px} }
+/* look v1.2 (RYU 2026-11-28): the same bar as PhasaLAO: a pill floating a little above the bottom edge, all corners round, with a shadow;
+   PC / iPad as wide as the lesson cards (v1.1), phones as wide as the cards too; phone buttons keep only their marks (v1.58) */
+.player{bottom:max(6px,calc(env(safe-area-inset-bottom,0px) - 14px));border-radius:999px;padding:4px 5px 4px 16px;box-shadow:0 4px 14px rgba(0,0,0,.28)}
+@media (max-width:560px){ .player{width:calc(100% - 28px);border-radius:999px;padding:4px 5px 4px 14px} }
 /* tips box under the intro (RYU 2026-11-16, like lao-app) */
 .band .tipbox{margin-top:10px;background:var(--sheet);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:4px 10px 10px 4px;padding:10px 14px;display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.55}
 .band .tipbox p{margin:0;color:var(--ink);padding-left:1em;text-indent:-1em}
@@ -2154,8 +2158,8 @@ html.introon,html.introon body{overflow:hidden}
 (function(){var t=Date.now(),iv=setInterval(function(){var b=document.getElementById("bootsec");if(!b){clearInterval(iv);return}var s=Math.floor((Date.now()-t)/1000);if(s>=2)b.textContent="("+s+" ວິ · "+s+"초)"},500);
 try{var S=JSON.parse(localStorage.getItem("kolearn-v1")||"null")||{},r=document.documentElement;if(S.theme==="light"||S.theme==="dark")r.setAttribute("data-theme",S.theme);if(S.fz)r.style.setProperty("--fz",String(S.fz));
 var h=decodeURIComponent(location.hash.replace(/^#/,""))||S.code,sn=JSON.parse(localStorage.getItem("kolearn-snap")||"null");
-if(sn&&sn.h&&sn.sig===["2026-11-28 v3.22",h,S.mode||"learn",innerWidth].join("|")){sn.h.forEach(function(x){var e=document.getElementById(x[0]);if(e){e.innerHTML=x[1];e.hidden=(sn.hid||[]).indexOf(x[0])>=0}});document.getElementById("app").setAttribute("data-g",sn.g);r.classList.add("snap")}}catch(e){}
-var done=0;function go(){if(done)return;done=1;["audio/index.js?v=2026-11-28%20v3.22","app.js?v=2026-11-28%20v3.22"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})}
+if(sn&&sn.h&&sn.sig===["2026-11-28 v3.23",h,S.mode||"learn",innerWidth].join("|")){sn.h.forEach(function(x){var e=document.getElementById(x[0]);if(e){e.innerHTML=x[1];e.hidden=(sn.hid||[]).indexOf(x[0])>=0}});document.getElementById("app").setAttribute("data-g",sn.g);r.classList.add("snap")}}catch(e){}
+var done=0;function go(){if(done)return;done=1;["audio/index.js?v=2026-11-28%20v3.23","app.js?v=2026-11-28%20v3.23"].forEach(function(u){var s=document.createElement("script");s.src=u;s.async=false;document.body.appendChild(s)})}
 requestAnimationFrame(function(){setTimeout(go,60)});setTimeout(go,400)})()</script>
 <script>/* v2.97: if the app has not started after 12 s (a file did not arrive), reload once by itself, then offer a button */(function(){setTimeout(function(){if(window.PK)return;var k="pk-reload",n=0;try{n=+sessionStorage.getItem(k)||0}catch(e){}if(n<1){try{sessionStorage.setItem(k,n+1)}catch(e){}location.reload();return}var bt=document.getElementById("boot");if(bt)bt.remove();document.documentElement.classList.remove("snap");var v=document.getElementById("view");if(v)v.innerHTML='<p class="empty">Could not load. Check the internet connection. · 불러오지 못했어요.<br><br><button type="button" onclick="try{sessionStorage.removeItem(&quot;pk-reload&quot;)}catch(e){}location.reload()" style="font:inherit;padding:10px 22px;border-radius:999px;border:0;background:#2E5AAC;color:#fff">Try again · 다시 시도</button></p>'},12000);window.addEventListener("load",function(){setTimeout(function(){if(window.PK)try{sessionStorage.removeItem("pk-reload")}catch(e){}},1000)})})()</script>
 </body></html>
