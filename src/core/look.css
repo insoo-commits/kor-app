@@ -1,4 +1,4 @@
-/* core look v1.2 (master: kor-app src/core/look.css). Shared by PhasaKAO and JeyCampus (not PhasaLAO: its screens are built differently).
+/* core look v1.3 (master: kor-app src/core/look.css). Shared by PhasaKAO and JeyCampus (not PhasaLAO: its screens are built differently).
    Edit only this master, raise the version, then run  node tools/core-copy.js  to copy it to the other apps.
    The look of the lesson screens that both apps share rule for rule (word cards, sentence lines, dialogues, quizzes, player, info pages …),
    taken out of each app's src/app.css on 2026-11-28 (RYU: "메인 콘텐츠에서도 동일한 유형으로 보여주는 방법 등은 공통으로").
@@ -1124,3 +1124,25 @@ html.tab .kbinfo>span{display:inline-flex}
 .wbook .wbdel{padding:2px 7px}
 .wbhint{font-size:12px;color:var(--muted);margin:6px 0 10px}
 @media (max-width:600px){ .wbook li{flex-wrap:wrap;row-gap:2px} .wbook li .m{flex-basis:100%;order:5} }
+/* look v1.3 (RYU 2026-11-28): the JeyCampus type scale for both apps (from JeyCampus app.css v1.31.0) */
+/* v1.31.0 type scale (RYU 2026-11-27 design review): Korean › meaning › romanization › ※ note on every screen.
+   Before: PC romanization 18px bold over a 16px meaning, the ※ note 13.5px on PC but 14.5px on phones.
+   Pads get these ×1.2 from tabCss() in build.js; the text-size setting (--fz) still scales all of it. */
+#view .line .k{font-size:19px}
+#view .line .p{font-size:14.5px;font-weight:400}
+#view .line .m{font-size:16px}
+#view .line .gl{font-size:14px}
+#view .line .gl .p{font-size:13.5px}
+#view .word>.line.head .k{font-size:24px}
+#view .word>.line.head .p{font-size:16px;font-weight:500}
+#view .word>.line.head .m{font-size:17px}
+@media (max-width:759px){
+  #view .line .k{font-size:17px}
+  #view .line .p{font-size:13.5px}
+  #view .line .m{font-size:15.5px}
+  #view .line .gl{font-size:13px}
+  #view .line .gl .p{font-size:12.5px}
+  #view .word>.line.head .k{font-size:20px}
+  #view .word>.line.head .p{font-size:14.5px}
+  #view .word>.line.head .m{font-size:15.5px}
+}
