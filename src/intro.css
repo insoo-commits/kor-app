@@ -253,3 +253,9 @@ html.introon,html.introon body{overflow:hidden}
 /* speed and volume sliders line up (RYU 2026-11-28): same label and value widths */
 #intro .rate .lab{flex:0 0 5.6em;min-width:0;overflow-wrap:anywhere}
 #intro .rate output{min-width:3.8em;flex:none}
+
+/* iPad (T) and PC (D) intro text a step bigger than the phone (RYU 2026-11-28): base 16 → 17.5px, small grey Korean labels .78 → .84em;
+   PC language chips keep their size so "Tiếng Việt" stays on one line. Phone (P) unchanged. */
+#intro.m.T,#intro.m.D{font-size:calc(17.5px * var(--fz,1))}
+#intro.T .row .lab small,#intro.D .row .lab small,#intro.T .lopt .nm small,#intro.T .mt .t small,#intro.D .mt .t small,#intro.T .kosub,#intro.D .kosub{font-size:.84em}
+#intro.D .lgrid .lchip{font-size:.72em}
