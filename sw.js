@@ -1,4 +1,4 @@
-const SHELL="ko-shell-2026-11-28-v3.16";
+const SHELL="ko-shell-2026-11-28-v3.17";
 const FILES=["./","index.html","app.js","audio/index.js","manifest.webmanifest","icon.svg","data/K2.json","data/K1.json","data/K6.json","data/K7.json","data/LS.json","data/TP.json","data/K4.json","data/K3.json","data/KR.json","data/HP.json"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(SHELL).then(c=>Promise.all(FILES.map(f=>fetch(new Request(f,{cache:"reload"})).then(r=>{if(r.ok)return c.put(f,r)}).catch(()=>{})))).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith("ko-shell-")&&k!==SHELL).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
