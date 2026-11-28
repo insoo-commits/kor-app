@@ -7,7 +7,7 @@ const fs = require("fs"), path = require("path");
 const root = __dirname, src = path.join(root, "src");
 const bundles = process.argv[2] || path.join(root, "data");
 const M = require(path.join(src, "meta.js"));
-const VER = "2026-11-28 v3.14";
+const VER = "2026-11-28 v3.15";
 const STATS_PUBLIC = /^\s*statsPublic: true,/m.test(fs.readFileSync(path.join(src, "app-config.js"), "utf8"));   // core stats (2026-11-28): the switch is in app-config.js
 const read = f => fs.readFileSync(path.join(src, f), "utf8");
 fs.mkdirSync(path.join(root, "data"), {recursive: true});
@@ -106,7 +106,7 @@ const fonts = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?fa
 // standalone site
 fs.writeFileSync(path.join(root, "app.js"), meta + "\nwindow.KO_SW=true;\n" + js);
 fs.writeFileSync(path.join(root, "index.html"), `<!doctype html>
-<html lang="lo"><head><meta charset="utf-8">
+<html lang="lo"><head><meta charset="utf-8"><script>/* v3.15 (RYU 2026-11-28): the old address kor4lao.pages.dev moves to phasakao.pages.dev, taking this device's progress along (saved audio stays behind: save it again there) */(function(){var O="kor4lao.pages.dev",N="https://phasakao.pages.dev/",P="pkm",X=/audio|aref|snap|reload/,ls;try{ls=localStorage;if(location.hostname===O){var d={},i,k,s;for(i=0;i<ls.length;i++){k=ls.key(i);if(!X.test(k))d[k]=ls.getItem(k)}s=JSON.stringify(d);location.replace(N+(s!=="{}"?"?"+P+"="+encodeURIComponent(s):"")+location.hash);return}var m=new RegExp("[?&]"+P+"=([^&]*)").exec(location.search);if(m){var v=JSON.parse(decodeURIComponent(m[1])),j,t,o;for(j in v)if(ls.getItem(j)===null&&!X.test(j)){t=v[j];if(j==="kolearn-v1"){try{o=JSON.parse(t);delete o.offline;t=JSON.stringify(o)}catch(e){}}ls.setItem(j,t)}history.replaceState(null,"",location.pathname+location.hash)}}catch(e){}})()</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>PhasaKAO</title>
 <meta name="description" content="ແອັບຮຽນພາສາເກົາຫຼີສຳລັບຄົນລາວ">
