@@ -28,5 +28,6 @@ window.APPCFG = {
   stick: { title: function(){ var B = document.getElementById("bselBtn"), q = function(c){ return (B.querySelector(c) || {}).textContent || ""; };
             return B.querySelector(".ddk") ? (q(".ddn") + " " + q(".ddk") + (q(".ddo") ? " (" + q(".ddo") + ")" : "")).trim() : B.textContent.trim(); },
            watch: ["bselBtn"] },   /* core stick: the bar's lesson line = the lesson picker's text */
+  play: { title: "KOR Lang" },   /* core play: the lock-screen title while playing */
   vol: { sub: "음량" }          /* core vol: small Korean label under the volume slider's title */
 };
