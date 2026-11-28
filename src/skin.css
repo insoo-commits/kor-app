@@ -309,3 +309,7 @@ html.tab .stick{-webkit-backdrop-filter:none!important;backdrop-filter:none!impo
 /* v2.93 (RYU): no blur or soft shadow on iPad, also when not detected as html.tab */
 html.tab .stick{box-shadow:0 1px 0 var(--line)!important}
 @media (min-width:601px) and (any-pointer:coarse){.stick{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:var(--sheet)!important;box-shadow:0 1px 0 var(--line)!important}}
+
+/* (RYU 2026-11-28) iPad/iPhone home-screen app: iPadOS blurs the status-bar strip and smeared the menu just under it upward.
+   Half a status bar more plain space above the menu (only when there is a status bar inset; 0 in a browser tab). */
+.stick{padding-top:calc(env(safe-area-inset-top,0px) * 1.5)!important}
